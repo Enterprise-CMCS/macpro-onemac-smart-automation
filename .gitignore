@@ -1,0 +1,15 @@
+
+.idea/
+*.iml
+out/
+shelf/
+.idea/workspace.xml
+
+
+target/
+
+
+reports/
+extent-report/
+screenshots/
+logs/

@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="OneMACSmart">
+    <test name="OneMacSmart UI Tests">
+        <classes>
+            <class name="gov.cms.smart.tests.MedicaidSPATests"/>
+        </classes>
+    </test>
+    <listeners>
+        <listener class-name="gov.cms.smart.testutils.TestListener"/>
+    </listeners>
+</suite>
