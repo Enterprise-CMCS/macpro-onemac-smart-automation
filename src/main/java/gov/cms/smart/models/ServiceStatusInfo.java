@@ -1,11 +1,13 @@
 package gov.cms.smart.models;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class ServiceStatus {
+@EqualsAndHashCode
+public class ServiceStatusInfo {
 
     private String initialSubmissionComplete;   // Yes/No
     private String missingInformation;          // Text or Yes/No depending on UI
@@ -20,6 +22,5 @@ public class ServiceStatus {
     private String fifteenthDayCallHeld;        // Yes/No
     private String reasonNoFifteenthDayCall;    // Text
 
-    // getters and setters
 
 }

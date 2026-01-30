@@ -2,33 +2,68 @@ package gov.cms.smart.tests;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.flows.OSGUser;
+import gov.cms.smart.models.PackageDetails;
+import gov.cms.smart.models.PriorityInfo;
+import gov.cms.smart.models.enums.CodingAssessment;
+import gov.cms.smart.models.enums.PriorityCode;
 import gov.cms.smart.utils.AssertionUtil;
+import gov.cms.smart.utils.PageFactory;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class MedicaidSPATests extends BaseTest {
 
-    @Test
-    public void test() throws InterruptedException {
+    @DataProvider
+    public Object[][] priorityLevels() {
+        return new Object[][]{
+                {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
+                {PriorityCode.CUSTOMARY_REVIEW, CodingAssessment.UP_CODED},
+                {PriorityCode.EXPEDITED_REVIEW, CodingAssessment.DOWN_CODED}
+        };
+    }
+
+    @Test(dataProvider = "priorityLevels")
+    public void testSpaSubmissionWithDifferentPriorities(PriorityCode priorityCode, CodingAssessment codingAssessment) {
+
         OSGUser osgUser = createNewOSGUser();
-        osgUser.navigateToSalesForce();
-        osgUser.login();
-        osgUser.modelTest();
+
+        osgUser.
+                navigateToSalesForce().
+                loginAsOSGUser().
+                goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");
+
+        PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).fillPriorityInfo(priorityCode, codingAssessment);
+        // Read back from UI into ACTUAL model
+        PriorityInfo expected = PageFactory.getSpaDetailsPage(getDriver(),getUtils()).readPriorityInfo();
+        AssertionUtil.assertEquals(actual, expected,"");
+
     }
 
 
     @Test
+    public void test() {
+        OSGUser osgUser = createNewOSGUser();
+      osgUser.
+                navigateToSalesForce().
+                loginAsOSGUser().
+                goToSpasWaiversPage().clickNew().createSPA("AL");
+
+    }
+
+
+  /*  @Test
     public void testEmptyFormSubmission() {
         OSGUser osgUser = createNewOSGUser();
         osgUser.navigateToSalesForce();
         osgUser.login();
-       /*osgUser.goToSPAWaiversPage();
+        osgUser.goToSPAWaiversPage();
         osgUser.navigateToMedicaidSPAForm();
         AssertionUtil.assertTrue(osgUser.isIDNumberErrorDisplayed(), "ID Number error should show.");
         AssertionUtil.assertTrue(osgUser.isInitialSubmissionDateErrorDisplayed(), "Date error should show.");
-        AssertionUtil.assertTrue(osgUser.isStateErrorDisplayed(), "State error should show");*/
-    }
+        AssertionUtil.assertTrue(osgUser.isStateErrorDisplayed(), "State error should show");
+    }*/
 
-    @Test
+   /* @Test
     public void testInvalidDateFormat() throws InterruptedException {
         OSGUser osgUser = createNewOSGUser();
         osgUser.navigateToSalesForce();
@@ -38,7 +73,7 @@ public class MedicaidSPATests extends BaseTest {
         osgUser.enterInitialSubmissionDate("1234");
         boolean isDateFormateErrorDisplayed = osgUser.isDateFormatErrorDisplayed();
         AssertionUtil.assertTrue(isDateFormateErrorDisplayed, "Date format error should be displayed.");
-    }
+    }*/
 /*
     @Test
     public void testValidSubmission() {

@@ -1,10 +1,7 @@
 package gov.cms.smart.utils;
 
 
-import gov.cms.smart.pages.HomePage;
-import gov.cms.smart.pages.LoginPage;
-import gov.cms.smart.pages.SPAPage;
-import gov.cms.smart.pages.SpaDetailsPage;
+import gov.cms.smart.pages.*;
 import org.openqa.selenium.WebDriver;
 
 public class PageFactory {
@@ -17,13 +14,16 @@ public class PageFactory {
     public static LoginPage getLoginPage(WebDriver driver, UIElementUtils ui) {
         return new LoginPage(driver, ui);
     }
+    public static SPAsWaiversPage getSpaWaiversPage(WebDriver driver, UIElementUtils ui) {
+        return new SPAsWaiversPage(driver, ui);
+    }
 
     public static SpaDetailsPage getSpaDetailsPage(WebDriver driver, UIElementUtils ui) {
         return new SpaDetailsPage(driver, ui);
     }
 
-    public static SPAPage getSPAPage(WebDriver driver, UIElementUtils ui) {
-        return new SPAPage(driver, ui);
+    public static NewSPAPage getSPAPage(WebDriver driver, UIElementUtils ui) {
+        return new NewSPAPage(driver, ui);
     }
 
 }

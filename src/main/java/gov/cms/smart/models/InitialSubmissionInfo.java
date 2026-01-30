@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class InitialSubmission {
+public class InitialSubmissionInfo {
 
     private String fifteenthDay;
     private String twentyFifthDay;

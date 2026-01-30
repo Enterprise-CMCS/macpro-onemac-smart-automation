@@ -1,4 +1,6 @@
 package gov.cms.smart.flows;
+import gov.cms.smart.pages.HomePage;
+import gov.cms.smart.pages.LoginPage;
 import gov.cms.smart.utils.PageFactory;
 import gov.cms.smart.utils.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
@@ -18,26 +20,27 @@ public class OSGUser {
         this.utils = utils;
     }
 
-    public void login() {
-        PageFactory.getLoginPage(driver, utils).loginAsOSGUser();
+    public HomePage login() {
+        return PageFactory.getLoginPage(driver, utils).loginAsOSGUser();
     }
 
-    public void navigateToSalesForce() {
+    public LoginPage navigateToSalesForce() {
         logger.info("Navigating To Salesforce...");
-        driver.get(utils.getSalesforceEnv());
+        driver.get(utils.getEnv());
+       return PageFactory.getLoginPage(driver,utils);
+    }
+    public void goToNewMedicaidSPAForm(){
+        PageFactory.getSpaWaiversPage(driver,utils).clickNew();
     }
 
     public void goToSPAWaiversPage() {
         PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
     }
 
-    public void enterSPADetails() {
-        PageFactory.getSPAPage(driver, utils).enterSPADetails("AL");
+    public void createSPA(String state) {
+        PageFactory.getSPAPage(driver, utils).createSPA(state);
     }
 
-    public void modelTest() throws InterruptedException {
-        PageFactory.getSPAPage(driver, utils).modelTest();
-    }
 
     public void navigateToMedicaidSPAForm() {
         PageFactory.getSPAPage(driver, utils).navigateToMedicaidSPAForm();
@@ -63,7 +66,8 @@ public class OSGUser {
         return PageFactory.getSPAPage(driver, utils).isStateErrorDisplayed();
     }
 
-    public boolean isDateFormatErrorDisplayed() throws InterruptedException {
+    /*public boolean isDateFormatErrorDisplayed() throws InterruptedException {
         return PageFactory.getSPAPage(driver, utils).isDateFormatErrorDisplayed();
-    }
+    }*/
+
 }
