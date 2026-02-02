@@ -29,6 +29,7 @@ public class OSGUser {
         logger.info("Navigating To Salesforce...");
         driver.get(utils.getEnv());
         logger.info("Selected SPA: "+ExcelPackageSelector.selectSpa("AL","Medicaid SPA",""));
+        //
        return PageFactory.getLoginPage(driver,utils);
     }
     public void goToNewMedicaidSPAForm(){
