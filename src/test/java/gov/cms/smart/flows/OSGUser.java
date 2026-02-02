@@ -1,6 +1,7 @@
 package gov.cms.smart.flows;
 import gov.cms.smart.pages.HomePage;
 import gov.cms.smart.pages.LoginPage;
+import gov.cms.smart.utils.ExcelPackageSelector;
 import gov.cms.smart.utils.PageFactory;
 import gov.cms.smart.utils.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +28,7 @@ public class OSGUser {
     public LoginPage navigateToSalesForce() {
         logger.info("Navigating To Salesforce...");
         driver.get(utils.getEnv());
+        logger.info("Selected SPA: "+ExcelPackageSelector.selectSpa("AL","Medicaid SPA",""));
        return PageFactory.getLoginPage(driver,utils);
     }
     public void goToNewMedicaidSPAForm(){
