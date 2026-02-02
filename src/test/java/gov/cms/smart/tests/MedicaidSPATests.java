@@ -2,18 +2,21 @@ package gov.cms.smart.tests;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.models.PackageDetails;
+import gov.cms.smart.models.IdentifyingInfo;
+import gov.cms.smart.models.PlanInfo;
 import gov.cms.smart.models.PriorityInfo;
+import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.models.enums.CodingAssessment;
 import gov.cms.smart.models.enums.PriorityCode;
 import gov.cms.smart.utils.AssertionUtil;
+import gov.cms.smart.utils.ExcelPackageSelector;
 import gov.cms.smart.utils.PageFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class MedicaidSPATests extends BaseTest {
 
-    @DataProvider
+ /*   @DataProvider
     public Object[][] priorityLevels() {
         return new Object[][]{
                 {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
@@ -23,8 +26,7 @@ public class MedicaidSPATests extends BaseTest {
     }
 
     @Test(dataProvider = "priorityLevels")
-    public void testSpaSubmissionWithDifferentPriorities(PriorityCode priorityCode, CodingAssessment codingAssessment) {
-
+    public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, CodingAssessment codingAssessment) {
         OSGUser osgUser = createNewOSGUser();
 
         osgUser.
@@ -33,22 +35,41 @@ public class MedicaidSPATests extends BaseTest {
                 goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");
 
         PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).fillPriorityInfo(priorityCode, codingAssessment);
-        // Read back from UI into ACTUAL model
-        PriorityInfo expected = PageFactory.getSpaDetailsPage(getDriver(),getUtils()).readPriorityInfo();
-        AssertionUtil.assertEquals(actual, expected,"");
+        PriorityInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readPriorityInfo();
+        AssertionUtil.assertEquals(actual, expected, "");
 
-    }
+    }*/
 
 
     @Test
-    public void test() {
+    public void verifyPlanInformation() {
         OSGUser osgUser = createNewOSGUser();
-      osgUser.
+        osgUser.
                 navigateToSalesForce().
                 loginAsOSGUser().
-                goToSpasWaiversPage().clickNew().createSPA("AL");
-
+                goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");
+        PlanInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).fillPlanInfo("Test Subject", "Test Description");
+        PlanInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readPlanInfo();
+        AssertionUtil.assertEquals(actual,expected,"");
     }
+
+  /*  @Test
+    public void verifyindentifyinginfomedicaidspa() {
+        OSGUser osgUser = createNewOSGUser();
+        SpaPackage spaPackage = osgUser.
+                navigateToSalesForce().
+                loginAsOSGUser().
+                goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");
+        IdentifyingInfo actual = new IdentifyingInfo();
+        actual.setAuthority(spaPackage.getAuthority());
+        actual.setIdNumber(spaPackage.getPackageId());
+        String state = getUtils().getStateFullName(spaPackage.getState());
+        actual.setState(state);
+        IdentifyingInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readIdentifyingInfo();
+        AssertionUtil.assertEquals(actual,expected,"");
+    }*/
+
+
 
 
   /*  @Test

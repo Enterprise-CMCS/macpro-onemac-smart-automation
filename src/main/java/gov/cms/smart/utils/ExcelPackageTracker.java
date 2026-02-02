@@ -13,9 +13,28 @@ import java.util.regex.Pattern;
 
 public class ExcelPackageTracker {
 
-    // ==== Defaults you approved ====
-    private static final String FILE = "src/test/resources/packages.xlsx";
+
+    private static final String FILE = resolveFilePath();
     private static final String SHEET = "Packages";
+
+    private static String resolveFilePath() {
+        String runOn = ConfigReader.get("runOn");
+
+        if (runOn == null || runOn.isBlank()) {
+            throw new RuntimeException("runOn not set in config.properties");
+        }
+
+        String key = "packages." + runOn.toLowerCase();
+        String path = ConfigReader.get(key);
+
+        if (path == null || path.isBlank()) {
+            throw new RuntimeException("No packages file configured for runOn=" + runOn);
+        }
+
+        return path;
+    }
+
+
 
     // Columns
     private static final int COL_TYPE   = 0; // SPA | Waiver

@@ -147,9 +147,10 @@ public class UIElementUtils {
 
     /* -------------------- LABEL-BASED METHODS -------------------- */
 
-    public void sendKeysToInputByLabel(String label, String text) {
+    public String sendKeysToInputByLabel(String label, String text) {
         By locator = By.xpath("//label[text()=\"" + label + "\"]/following-sibling::div/input");
         sendKeys(locator, text);
+        return  text;
     }
 
     public void clearInputByLabel(String label) {
@@ -157,9 +158,10 @@ public class UIElementUtils {
         clearInput(locator);
     }
 
-    public void sendKeysToTextAreaByLabel(String label, String text) {
+    public String sendKeysToTextAreaByLabel(String label, String text) {
         By locator = By.xpath("//label[text()=\"" + label + "\"]/following-sibling::div/textarea");
         sendKeys(locator, text);
+        return text;
     }
 
     public void selectFromComboBoxByLabel(String label, String value) {
@@ -215,10 +217,13 @@ public class UIElementUtils {
         wait.until(ExpectedConditions.numberOfElementsToBe(locator, num));
     }
 
+    public void waitForNumberOfElementsToBe(By locator) {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
     /* -------------------- DATE UTILITIES (UNCHANGED LOGIC) -------------------- */
 
     public String getTodayDateFormatted() {
-        return LocalDate.now().format(DateTimeFormatter.ofPattern("M/dd/yyyy"));
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("M/d/yyyy"));
     }
 
     public static String getFutureDateByDays(int days, String pattern) {
@@ -322,6 +327,6 @@ public class UIElementUtils {
 
     public void openRecord(String recordId) {
         waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
-        driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]//span[@title=\"" + recordId + "\"]/ancestor::tr/th//a")).click();
+        driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\""+recordId+"\"]")).click();
     }
 }

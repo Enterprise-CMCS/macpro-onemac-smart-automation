@@ -1,6 +1,8 @@
 package gov.cms.smart.utils;
 
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
@@ -9,7 +11,7 @@ import java.io.IOException;
 
 public class StateCounterTracker {
 
-    private static final String FILE = "src/test/resources/state_counters.xlsx";
+    private static final String FILE = resolveFilePath();
     private static final String SHEET = "StateCounters";
 
     private static final int COL_STATE = 0;
@@ -18,6 +20,23 @@ public class StateCounterTracker {
     private static final int COL_RENEWAL = 3;
     private static final int COL_AMEND = 4;
     private static final int COL_TE = 5;
+
+    private static String resolveFilePath() {
+        String runOn = ConfigReader.get("runOn");
+
+        if (runOn == null || runOn.isBlank()) {
+            throw new RuntimeException("runOn not set in config.properties");
+        }
+
+        String key = "stateCounters." + runOn.toLowerCase();
+        String path = ConfigReader.get(key);
+
+        if (path == null || path.isBlank()) {
+            throw new RuntimeException("No state counter file configured for runOn=" + runOn);
+        }
+
+        return path;
+    }
 
     private static Row findRow(Sheet sh, String state) {
         for (Row r : sh) {
@@ -48,7 +67,9 @@ public class StateCounterTracker {
             r.getCell(COL_SPA).setCellValue(current + 1);
             saveWorkbook(wb);
             return current;
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static synchronized int nextWaiverBase(String state) {
@@ -59,7 +80,9 @@ public class StateCounterTracker {
             r.getCell(COL_WAIVER).setCellValue(current + 1);
             saveWorkbook(wb);
             return current;
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static synchronized int nextAmendmentIndex(String state) {
@@ -70,7 +93,9 @@ public class StateCounterTracker {
             r.getCell(COL_AMEND).setCellValue(current + 1);
             saveWorkbook(wb);
             return current;
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static synchronized int nextTEIndex(String state) {
@@ -81,6 +106,8 @@ public class StateCounterTracker {
             r.getCell(COL_TE).setCellValue(current + 1);
             saveWorkbook(wb);
             return current;
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

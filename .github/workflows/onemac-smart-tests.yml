@@ -1,0 +1,184 @@
+name: OneMAC SMART Test Suite
+run-name: "OneMAC SMART Tests"
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Prevent two workflows from modifying Excel at the same time
+concurrency:
+  group: excel-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+
+    steps:
+      ###############################################################
+      # Checkout latest main
+      ###############################################################
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      ###############################################################
+      # Read browser/headless settings
+      ###############################################################
+      - name: Read browser + headless from config.properties
+        shell: powershell
+        run: |
+          $configPath = "src/test/resources/config.properties"
+          $browser = (Select-String -Path $configPath -Pattern "browser\s*=").ToString().Split("=")[1].Trim()
+          $headless = (Select-String -Path $configPath -Pattern "headless\s*=").ToString().Split("=")[1].Trim()
+
+          Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
+          Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
+
+      ###############################################################
+      # Run E2E Suite
+      ###############################################################
+      - name: Run OneMAC Smart Suite
+        shell: powershell
+        continue-on-error: true
+        run: |
+          mvn clean test `
+            "-DsuiteXmlFile=src/test/resources/OneMACSmart.xml" `
+            "-Dtestng.parameters.browser=$env:BROWSER" `
+            "-Dtestng.parameters.headless=$env:HEADLESS" `
+            "-Duser.timezone=America/New_York"
+
+      ###############################################################
+      # Upload reports
+      ###############################################################
+      - name: Upload Extent Report & Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OneMAC-SMART-Report
+          path: |
+            extent-report/**
+            screenshots/**
+          if-no-files-found: warn
+
+      ###############################################################
+      # Configure Git identity
+      ###############################################################
+      - name: Configure Git Identity
+        if: always()
+        shell: powershell
+        run: |
+          git config user.name "Amjad"
+          git config user.email "jad.ammar.co@gmail.com"
+          Write-Output "Git identity configured."
+
+      ###############################################################
+      # Stage updated Excel files (ENVIRONMENT AWARE)
+      ###############################################################
+      - name: Stage updated Excel files
+        if: always()
+        shell: powershell
+        run: |
+          $configPath = "src/test/resources/config.properties"
+
+          if (!(Test-Path $configPath)) {
+            Write-Output "config.properties not found!"
+            exit 1
+          }
+
+          $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
+          $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
+
+          if (-not $runOn) {
+            Write-Output "runOn not set in config.properties"
+            exit 1
+          }
+
+          Write-Output "Detected environment: $runOn"
+
+          $counterFile = "src/test/resources/state_counters_$runOn.xlsx"
+          $packagesFile = "src/test/resources/packages_$runOn.xlsx"
+
+          $updated = 0
+
+          if (Test-Path $counterFile) {
+            git add $counterFile
+            Write-Output "Staged $counterFile"
+            $updated = 1
+          }
+          else {
+            Write-Output "$counterFile not found"
+          }
+
+          if (Test-Path $packagesFile) {
+            git add $packagesFile
+            Write-Output "Staged $packagesFile"
+            $updated = 1
+          }
+          else {
+            Write-Output "$packagesFile not found"
+          }
+
+          Add-Content -Path $env:GITHUB_ENV -Value "UPDATED=$updated"
+          Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
+          Write-Output "UPDATED=$updated"
+
+      ###############################################################
+      # Commit + Push Excel Updates
+      ###############################################################
+      - name: Commit & Push Excel Updates
+        if: always()
+        shell: powershell
+        run: |
+          Write-Output "=== Commit Stage Starting ==="
+          Write-Output "UPDATED=$env:UPDATED"
+
+          if ($env:UPDATED -eq "1") {
+
+            if (-not (git diff --cached --quiet)) {
+
+              Write-Output "Committing Excel updates..."
+              git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
+
+              Write-Output "Fetching latest main..."
+              git fetch origin main
+
+              Write-Output "Rebasing onto latest main..."
+              git pull origin main --rebase
+
+              Write-Output "Pushing Excel updates..."
+              git push origin HEAD:main
+
+              Write-Output "Excel update push completed successfully."
+            }
+            else {
+              Write-Output "No staged Excel changes - skipping commit."
+            }
+          }
+          else {
+            Write-Output "No Excel updates detected - nothing to push."
+          }

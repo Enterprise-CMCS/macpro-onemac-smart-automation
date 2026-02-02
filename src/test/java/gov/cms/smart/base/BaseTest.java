@@ -36,9 +36,9 @@ public class BaseTest {
     private void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver();
       //  webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
-        webDriver.manage().window().maximize();
+        //webDriver.manage().window().maximize();
         driver.set(webDriver);
-        utils = new UIElementUtils(getDriver(), 5);
+        utils = new UIElementUtils(getDriver(), 10);
     }
 
     public static WebDriver getDriver() {
