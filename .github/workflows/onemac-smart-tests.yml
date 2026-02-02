@@ -60,7 +60,7 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
       ###############################################################
-      # Run E2E Suite
+      # Run Test Suite
       ###############################################################
       - name: Run OneMAC Smart Suite
         shell: powershell
@@ -90,41 +90,41 @@ jobs:
       ###############################################################
       - name: Configure Git Identity
         if: always()
-        shell: powershell
+        shell: pwsh
         run: |
           git config user.name "Amjad"
           git config user.email "jad.ammar.co@gmail.com"
           Write-Output "Git identity configured."
+      
 
       ###############################################################
       # Stage updated Excel files (ENVIRONMENT AWARE)
       ###############################################################
-      - name: Stage updated Excel files
-        if: always()
-        shell: powershell
+      - name: Stage environment files
+        shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
-
+          
           if (!(Test-Path $configPath)) {
             Write-Output "config.properties not found!"
             exit 1
           }
-
+          
           $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
           $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
-
+          
           if (-not $runOn) {
             Write-Output "runOn not set in config.properties"
             exit 1
           }
-
+          
           Write-Output "Detected environment: $runOn"
-
+          
           $counterFile = "src/test/resources/state_counters_$runOn.xlsx"
           $packagesFile = "src/test/resources/packages_$runOn.xlsx"
-
+          
           $updated = 0
-
+          
           if (Test-Path $counterFile) {
             git add $counterFile
             Write-Output "Staged $counterFile"
@@ -133,7 +133,7 @@ jobs:
           else {
             Write-Output "$counterFile not found"
           }
-
+          
           if (Test-Path $packagesFile) {
             git add $packagesFile
             Write-Output "Staged $packagesFile"
@@ -142,43 +142,45 @@ jobs:
           else {
             Write-Output "$packagesFile not found"
           }
-
+          
           Add-Content -Path $env:GITHUB_ENV -Value "UPDATED=$updated"
           Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
           Write-Output "UPDATED=$updated"
+      
 
       ###############################################################
       # Commit + Push Excel Updates
       ###############################################################
       - name: Commit & Push Excel Updates
         if: always()
-        shell: powershell
+        shell: pwsh
         run: |
           Write-Output "=== Commit Stage Starting ==="
           Write-Output "UPDATED=$env:UPDATED"
 
           if ($env:UPDATED -eq "1") {
 
-            if (-not (git diff --cached --quiet)) {
+              if (-not (git diff --cached --quiet)) {
 
-              Write-Output "Committing Excel updates..."
-              git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
+                  Write-Output "Committing Excel updates..."
+                  git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
 
-              Write-Output "Fetching latest main..."
-              git fetch origin main
+                  Write-Output "Fetching latest main..."
+                  git fetch origin main
 
-              Write-Output "Rebasing onto latest main..."
-              git pull origin main --rebase
+                  Write-Output "Rebasing onto latest main..."
+                  git pull origin main --rebase
 
-              Write-Output "Pushing Excel updates..."
-              git push origin HEAD:main
+                  Write-Output "Pushing Excel updates..."
+                  git push origin HEAD:main
 
-              Write-Output "Excel update push completed successfully."
-            }
-            else {
-              Write-Output "No staged Excel changes - skipping commit."
-            }
+                  Write-Output "Excel update push completed successfully."
+              }
+              else {
+                  Write-Output "No staged Excel changes - skipping commit."
+              }
           }
           else {
-            Write-Output "No Excel updates detected - nothing to push."
+              Write-Output "No Excel updates detected - nothing to push."
           }
+      
