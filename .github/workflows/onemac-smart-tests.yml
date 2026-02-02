@@ -49,13 +49,13 @@ jobs:
       ###############################################################
       # Read browser/headless settings
       ###############################################################
-      - name: Read browser + headless from config.properties
-        shell: powershell
+      - name: Set browser and headless from config
+        shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
           $browser = (Select-String -Path $configPath -Pattern "browser\s*=").ToString().Split("=")[1].Trim()
           $headless = (Select-String -Path $configPath -Pattern "headless\s*=").ToString().Split("=")[1].Trim()
-
+          
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
