@@ -62,15 +62,20 @@ jobs:
       ###############################################################
       # Run Test Suite
       ###############################################################
-      - name: Run OneMAC Smart Suite
-        shell: powershell
+      - name: Run E2E Suite (OneMAC + SEATool)
+        shell: pwsh
         continue-on-error: true
         run: |
-          mvn clean test `
-            "-DsuiteXmlFile=src/test/resources/OneMACSmart.xml" `
+          $suiteFile = "src/test/resources/OneMACSmart.xml"
+          Write-Output "Running E2E Suite with suite file: $suiteFile"
+
+          # Call Maven explicitly
+          & mvn clean test `
+            "-DsuiteXmlFile=$suiteFile" `
             "-Dtestng.parameters.browser=$env:BROWSER" `
             "-Dtestng.parameters.headless=$env:HEADLESS" `
             "-Duser.timezone=America/New_York"
+      
 
       ###############################################################
       # Upload reports
