@@ -62,7 +62,7 @@ jobs:
       ###############################################################
       # Run Test Suite
       ###############################################################
-      - name: Run E2E Suite (OneMAC + SEATool)
+      - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true
         run: |
@@ -188,4 +188,3 @@ jobs:
           else {
               Write-Output "No Excel updates detected - nothing to push."
           }
-      
