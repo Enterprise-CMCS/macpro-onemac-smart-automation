@@ -44,6 +44,7 @@ public class MedicaidSPATests extends BaseTest {
         PlanInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).fillPlanInfo("Test Subject", "Test Description");
         PlanInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readPlanInfo();
         AssertionUtil.assertEquals(actual, expected, "");
+        System.out.println();
     }
 
   /*  @Test
