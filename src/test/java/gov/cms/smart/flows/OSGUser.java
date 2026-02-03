@@ -12,8 +12,8 @@ import org.openqa.selenium.WebDriver;
 public class OSGUser {
 
     private static final Logger logger = LogManager.getLogger();
-    private WebDriver driver;
-    private UIElementUtils utils;
+    private final WebDriver driver;
+    private final UIElementUtils utils;
 
 
     public OSGUser(WebDriver driver, UIElementUtils utils) {
@@ -21,7 +21,7 @@ public class OSGUser {
         this.utils = utils;
     }
 
-    public HomePage login() {
+    public HomePage login() throws Exception {
         return PageFactory.getLoginPage(driver, utils).loginAsOSGUser();
     }
 

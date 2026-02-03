@@ -2,6 +2,7 @@ package gov.cms.smart.pages;
 
 
 import gov.cms.smart.utils.ConfigReader;
+import gov.cms.smart.utils.EmailOtpFetcher;
 import gov.cms.smart.utils.PageFactory;
 import gov.cms.smart.utils.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
@@ -17,18 +18,25 @@ public class LoginPage {
     private static final By USERNAME = By.id("username");
     private static final By PASSWORD = By.id("password");
     private static final By LOGIN_BUTTON = By.id("Login");
+    private static final By VERIFICATION_INPUT = By.cssSelector("input[name=\"emc\"]");
+    private static final By VERIFY = By.cssSelector("input[title=\"Verify\"]");
+
 
     public LoginPage(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
     }
 
-    public HomePage loginAsOSGUser() {
+    public HomePage loginAsOSGUser() throws Exception {
+        String host = "imap.gmail.com";
         logger.info("Signing in to Salesforce as a OSG user...");
         if (utils.getEnv().contains("qa")) {
             utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "qa"));
             utils.sendKeys(PASSWORD, ConfigReader.getPassword());
             utils.clickElement(LOGIN_BUTTON);
+            String otp = EmailOtpFetcher.fetchOtp(host, ConfigReader.get("email"), ConfigReader.get("APP_PASSWORD"), 20, 1);
+            utils.sendKeys(VERIFICATION_INPUT, otp);
+            utils.clickElement(VERIFY);
         } else {
             utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "dev"));
             utils.sendKeys(PASSWORD, ConfigReader.getPassword());
