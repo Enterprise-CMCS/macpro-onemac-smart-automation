@@ -2,16 +2,9 @@ package gov.cms.smart.tests;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.models.IdentifyingInfo;
 import gov.cms.smart.models.PlanInfo;
-import gov.cms.smart.models.PriorityInfo;
-import gov.cms.smart.models.SpaPackage;
-import gov.cms.smart.models.enums.CodingAssessment;
-import gov.cms.smart.models.enums.PriorityCode;
 import gov.cms.smart.utils.AssertionUtil;
-import gov.cms.smart.utils.ExcelPackageSelector;
 import gov.cms.smart.utils.PageFactory;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class MedicaidSPATests extends BaseTest {
@@ -45,12 +38,12 @@ public class MedicaidSPATests extends BaseTest {
     public void verifyPlanInformation() {
         OSGUser osgUser = createNewOSGUser();
         osgUser.
-                navigateToSalesForce();
-              /*  loginAsOSGUser().
+                navigateToSalesForce().
+                loginAsOSGUser().
                 goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");
         PlanInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).fillPlanInfo("Test Subject", "Test Description");
         PlanInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readPlanInfo();
-        AssertionUtil.assertEquals(actual,expected,"");*/
+        AssertionUtil.assertEquals(actual, expected, "");
     }
 
   /*  @Test
