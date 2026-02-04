@@ -36,6 +36,7 @@ public class MedicaidSPATests extends BaseTest {
 
     @Test
     public void verifyPlanInformation() throws Exception {
+
         OSGUser osgUser = createNewOSGUser();
         osgUser.
                 navigateToSalesForce().
