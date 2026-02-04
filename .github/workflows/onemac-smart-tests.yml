@@ -15,7 +15,6 @@ permissions:
 
 jobs:
   test:
-    # 1. CHANGE THIS LINE to use your custom runner
     runs-on: mdp-arm-runner
 
     env:
@@ -31,13 +30,22 @@ jobs:
           fetch-depth: 0
           ref: main
 
-      # 2. ADD THIS STEP: Install Chromium (Mandatory for ARM runners)
-      # Custom runners usually don't have browsers pre-installed.
-      - name: Install Chromium and Driver
+      ###############################################################
+      # Install Chromium (ARM compatible)
+      ###############################################################
+      - name: Install Chromium and ChromeDriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
+          sudo apt-get install -y chromium-driver chromium-browser || sudo apt-get install -y chromium chromium-driver
 
+      - name: Verify Binary Paths
+        run: |
+          which chromium-browser || which chromium
+          which chromedriver
+
+      ###############################################################
+      # Java + Maven
+      ###############################################################
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -48,20 +56,26 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-arm-${{ hashFiles('**/pom.xml') }} # Updated key to include 'arm'
+          key: ${{ runner.os }}-maven-arm-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-arm-
 
+      ###############################################################
+      # Read browser config
+      ###############################################################
       - name: Set browser and headless from config
         shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
           $browser = (Select-String -Path $configPath -Pattern "browser\s*=").ToString().Split("=")[1].Trim()
           $headless = (Select-String -Path $configPath -Pattern "headless\s*=").ToString().Split("=")[1].Trim()
-          
+
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
+      ###############################################################
+      # Run tests
+      ###############################################################
       - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true
@@ -69,13 +83,11 @@ jobs:
           $suiteFile = "src/test/resources/OneMACSmart.xml"
           Write-Output "Running E2E Suite with suite file: $suiteFile"
 
-          # Call Maven explicitly
           & mvn clean test `
             "-DsuiteXmlFile=$suiteFile" `
             "-Dtestng.parameters.browser=$env:BROWSER" `
             "-Dtestng.parameters.headless=$env:HEADLESS" `
             "-Duser.timezone=America/New_York"
-      
 
       ###############################################################
       # Upload reports
@@ -100,58 +112,44 @@ jobs:
           git config user.name "Amjad"
           git config user.email "jad.ammar.co@gmail.com"
           Write-Output "Git identity configured."
-      
 
       ###############################################################
-      # Stage updated Excel files (ENVIRONMENT AWARE)
+      # Stage updated Excel files
       ###############################################################
       - name: Stage environment files
         shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
-          
+
           if (!(Test-Path $configPath)) {
             Write-Output "config.properties not found!"
             exit 1
           }
-          
+
           $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
           $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
-          
-          if (-not $runOn) {
-            Write-Output "runOn not set in config.properties"
-            exit 1
-          }
-          
+
           Write-Output "Detected environment: $runOn"
-          
+
           $counterFile = "src/test/resources/state_counters_$runOn.xlsx"
           $packagesFile = "src/test/resources/packages_$runOn.xlsx"
-          
+
           $updated = 0
-          
+
           if (Test-Path $counterFile) {
             git add $counterFile
             Write-Output "Staged $counterFile"
             $updated = 1
           }
-          else {
-            Write-Output "$counterFile not found"
-          }
-          
+
           if (Test-Path $packagesFile) {
             git add $packagesFile
             Write-Output "Staged $packagesFile"
             $updated = 1
           }
-          else {
-            Write-Output "$packagesFile not found"
-          }
-          
+
           Add-Content -Path $env:GITHUB_ENV -Value "UPDATED=$updated"
           Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
-          Write-Output "UPDATED=$updated"
-      
 
       ###############################################################
       # Commit + Push Excel Updates
@@ -167,16 +165,9 @@ jobs:
 
               if (-not (git diff --cached --quiet)) {
 
-                  Write-Output "Committing Excel updates..."
                   git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
-
-                  Write-Output "Fetching latest main..."
                   git fetch origin main
-
-                  Write-Output "Rebasing onto latest main..."
                   git pull origin main --rebase
-
-                  Write-Output "Pushing Excel updates..."
                   git push origin HEAD:main
 
                   Write-Output "Excel update push completed successfully."

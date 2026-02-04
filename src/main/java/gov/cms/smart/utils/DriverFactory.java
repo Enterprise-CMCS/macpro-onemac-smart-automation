@@ -1,14 +1,8 @@
 package gov.cms.smart.utils;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DriverFactory {
 
@@ -23,8 +17,20 @@ public class DriverFactory {
       // chromeOptions.addArguments("--window-size=1920,1080");
         chromeOptions.setBinary("C:\\Users\\57901\\Desktop\\chrome-win64\\chrome-win64\\chrome.exe");
         driver = new ChromeDriver(chromeOptions);*/
+        WebDriver driver;
+        ChromeOptions chromeOptions= new ChromeOptions();
 
-        String projectRoot = System.getProperty("user.dir");
+        chromeOptions.addArguments("--headless=new");
+        chromeOptions.addArguments("--no-sandbox");
+        chromeOptions.addArguments("--disable-dev-shm-usage");
+
+// Only set binary if running in Linux CI
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("linux")) {
+            chromeOptions.setBinary("/usr/bin/chromium-browser"); // change to chromium if needed
+        }
+        driver = new ChromeDriver(chromeOptions);
+      /*  String projectRoot = System.getProperty("user.dir");
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("download.default_directory", projectRoot);
         prefs.put("download.prompt_for_download", false);
@@ -77,7 +83,7 @@ public class DriverFactory {
 
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browser);
-        }
+        }*/
         return driver;
     }
 
