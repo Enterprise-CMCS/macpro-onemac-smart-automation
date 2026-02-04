@@ -6,7 +6,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Prevent two workflows from modifying Excel at the same time
 concurrency:
   group: excel-sync
   cancel-in-progress: false
@@ -16,7 +15,8 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # 1. CHANGE THIS LINE to use your custom runner
+    runs-on: mdp-arm-runner
 
     env:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
@@ -25,14 +25,18 @@ jobs:
       EMAIL: ${{ secrets.EMAIL }}
 
     steps:
-      ###############################################################
-      # Checkout latest main
-      ###############################################################
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: main
+
+      # 2. ADD THIS STEP: Install Chromium (Mandatory for ARM runners)
+      # Custom runners usually don't have browsers pre-installed.
+      - name: Install Chromium and Driver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -44,13 +48,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-arm-${{ hashFiles('**/pom.xml') }} # Updated key to include 'arm'
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven-arm-
 
-      ###############################################################
-      # Read browser/headless settings
-      ###############################################################
       - name: Set browser and headless from config
         shell: pwsh
         run: |
@@ -61,9 +62,6 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
-      ###############################################################
-      # Run Test Suite
-      ###############################################################
       - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true

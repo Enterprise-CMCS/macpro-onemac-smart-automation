@@ -28,15 +28,15 @@ public class LoginPage {
     }
 
     public HomePage loginAsOSGUser() throws Exception {
-        String host = "imap.gmail.com";
+        //String host = "imap.gmail.com";
         logger.info("Signing in to Salesforce as a OSG user...");
         if (utils.getEnv().contains("qa")) {
             utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "qa"));
             utils.sendKeys(PASSWORD, ConfigReader.getPassword());
             utils.clickElement(LOGIN_BUTTON);
-            String otp = EmailOtpFetcher.fetchOtp(host, ConfigReader.get("email"), ConfigReader.get("APP_PASSWORD"), 20, 1);
-            utils.sendKeys(VERIFICATION_INPUT, otp);
-            utils.clickElement(VERIFY);
+          //  String otp = EmailOtpFetcher.fetchOtp(host, ConfigReader.get("email"), ConfigReader.get("APP_PASSWORD"), 20, 1);
+           // utils.sendKeys(VERIFICATION_INPUT, otp);
+         //   utils.clickElement(VERIFY);
         } else {
             utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "dev"));
             utils.sendKeys(PASSWORD, ConfigReader.getPassword());
