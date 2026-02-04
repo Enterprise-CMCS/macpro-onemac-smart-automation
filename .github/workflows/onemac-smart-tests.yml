@@ -6,6 +6,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# Prevent two workflows from modifying Excel at the same time
 concurrency:
   group: excel-sync
   cancel-in-progress: false
@@ -15,7 +16,7 @@ permissions:
 
 jobs:
   test:
-    runs-on: mdp-arm-runner
+    runs-on: ubuntu-latest
 
     env:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
@@ -24,58 +25,15 @@ jobs:
       EMAIL: ${{ secrets.EMAIL }}
 
     steps:
+      ###############################################################
+      # Checkout latest main
+      ###############################################################
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: main
-      ###############################################################
-      # Print Runner Public IP (for Salesforce IP whitelist)
-      ###############################################################
-      - name: Print Runner Public IP
-        run: |
-          echo "Fetching public IP..."
-          PUBLIC_IP=$(curl -s https://api.ipify.org)
-          echo "Runner public IP: $PUBLIC_IP"
-      ###############################################################
-      # Install NON-SNAP Chromium + Matching Driver
-      ###############################################################
-      - name: Install Chromium and ChromeDriver (no snap)
-        run: |
-          sudo snap remove chromium || true
-          
-          sudo apt-get update
-          sudo apt-get install -y chromium-driver
-          
-          # Install real Chromium (not snap)
-          sudo apt-get install -y chromium-browser || sudo apt-get install -y chromium
-          
-          echo "===== CHROMIUM VERSION ====="
-          chromium-browser --version || chromium --version
-          
-          echo "===== CHROMEDRIVER VERSION ====="
-          chromedriver --version
-          
-          echo "===== BINARY PATHS ====="
-          which chromium-browser || which chromium
-          which chromedriver
 
-      # Verify browser + driver versions (IMPORTANT for debugging)
-      ###############################################################
-      - name: Check Chromium and ChromeDriver versions
-        run: |
-          echo "===== CHROMIUM VERSION ====="
-          chromium --version || echo "Chromium not found"
-          
-          echo "===== CHROMEDRIVER VERSION ====="
-          chromedriver --version || echo "ChromeDriver not found"
-          
-          echo "===== BINARY PATHS ====="
-          which chromium || echo "Chromium path missing"
-          which chromedriver || echo "ChromeDriver path missing"
-
-      # Java + Maven
-      ###############################################################
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -86,12 +44,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-arm-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-arm-
+            ${{ runner.os }}-maven-
 
       ###############################################################
-      # Read browser config
+      # Read browser/headless settings
       ###############################################################
       - name: Set browser and headless from config
         shell: pwsh
@@ -99,12 +57,12 @@ jobs:
           $configPath = "src/test/resources/config.properties"
           $browser = (Select-String -Path $configPath -Pattern "browser\s*=").ToString().Split("=")[1].Trim()
           $headless = (Select-String -Path $configPath -Pattern "headless\s*=").ToString().Split("=")[1].Trim()
-
+          
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
       ###############################################################
-      # Run tests
+      # Run Test Suite
       ###############################################################
       - name: Run OneMAC Smart Suite
         shell: pwsh
@@ -113,11 +71,13 @@ jobs:
           $suiteFile = "src/test/resources/OneMACSmart.xml"
           Write-Output "Running E2E Suite with suite file: $suiteFile"
 
+          # Call Maven explicitly
           & mvn clean test `
             "-DsuiteXmlFile=$suiteFile" `
             "-Dtestng.parameters.browser=$env:BROWSER" `
             "-Dtestng.parameters.headless=$env:HEADLESS" `
             "-Duser.timezone=America/New_York"
+      
 
       ###############################################################
       # Upload reports
@@ -142,44 +102,58 @@ jobs:
           git config user.name "Amjad"
           git config user.email "jad.ammar.co@gmail.com"
           Write-Output "Git identity configured."
+      
 
       ###############################################################
-      # Stage updated Excel files
+      # Stage updated Excel files (ENVIRONMENT AWARE)
       ###############################################################
       - name: Stage environment files
         shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
-
+          
           if (!(Test-Path $configPath)) {
             Write-Output "config.properties not found!"
             exit 1
           }
-
+          
           $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
           $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
-
+          
+          if (-not $runOn) {
+            Write-Output "runOn not set in config.properties"
+            exit 1
+          }
+          
           Write-Output "Detected environment: $runOn"
-
+          
           $counterFile = "src/test/resources/state_counters_$runOn.xlsx"
           $packagesFile = "src/test/resources/packages_$runOn.xlsx"
-
+          
           $updated = 0
-
+          
           if (Test-Path $counterFile) {
             git add $counterFile
             Write-Output "Staged $counterFile"
             $updated = 1
           }
-
+          else {
+            Write-Output "$counterFile not found"
+          }
+          
           if (Test-Path $packagesFile) {
             git add $packagesFile
             Write-Output "Staged $packagesFile"
             $updated = 1
           }
-
+          else {
+            Write-Output "$packagesFile not found"
+          }
+          
           Add-Content -Path $env:GITHUB_ENV -Value "UPDATED=$updated"
           Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
+          Write-Output "UPDATED=$updated"
+      
 
       ###############################################################
       # Commit + Push Excel Updates
@@ -195,9 +169,16 @@ jobs:
 
               if (-not (git diff --cached --quiet)) {
 
+                  Write-Output "Committing Excel updates..."
                   git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
+
+                  Write-Output "Fetching latest main..."
                   git fetch origin main
+
+                  Write-Output "Rebasing onto latest main..."
                   git pull origin main --rebase
+
+                  Write-Output "Pushing Excel updates..."
                   git push origin HEAD:main
 
                   Write-Output "Excel update push completed successfully."
