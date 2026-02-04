@@ -36,7 +36,7 @@ public class LoginPage {
             utils.clickElement(LOGIN_BUTTON);
 
             // Use the secret you copied in Step 1 (remove spaces)
-            String sharedSecret = "7YRGKKU3SGMEDUCNLJJV56UIJSBC3IZM";
+            String sharedSecret = "";
             Totp totp = new Totp(sharedSecret);
             String mfaCode = totp.now(); // This generates the code Salesforce expects RIGHT NOW
             System.out.println(mfaCode);
