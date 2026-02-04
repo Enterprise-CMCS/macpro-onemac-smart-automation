@@ -7,25 +7,25 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class DriverFactory {
 
     public static WebDriver createDriver() {
-        WebDriver driver;
-        ChromeOptions chromeOptions = new ChromeOptions();
+        ChromeOptions options = new ChromeOptions();
 
-        chromeOptions.addArguments("--headless=new");
-        chromeOptions.addArguments("--no-sandbox");
-        chromeOptions.addArguments("--disable-dev-shm-usage");
+// CI stability flags
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--window-size=1920,1080");
 
         String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("linux")) {
-            // Path for GitHub Actions ARM runner
-            chromeOptions.setBinary("/usr/bin/chromium"); // safer than chromium-browser
+            options.setBinary("/usr/bin/chromium");   // MUST be chromium, not chromium-browser
             System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
-        } else {
-            // Local Windows/Mac — let Selenium find your installed Chrome automatically
         }
 
-        driver = new ChromeDriver(chromeOptions);
+        WebDriver driver = new ChromeDriver(options);
         return driver;
+
     }
 
 }

@@ -38,15 +38,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y chromium chromium-driver
 
-          echo "=== Versions Installed ==="
-          chromium --version
-          chromedriver --version
-
-          echo "=== Binary Locations ==="
-          which chromium
-          which chromedriver
-
       ###############################################################
+      # Verify browser + driver versions (IMPORTANT for debugging)
+      ###############################################################
+      - name: Check Chromium and ChromeDriver versions
+        run: |
+          echo "===== CHROMIUM VERSION ====="
+          chromium --version || echo "Chromium not found"
+          
+          echo "===== CHROMEDRIVER VERSION ====="
+          chromedriver --version || echo "ChromeDriver not found"
+          
+          echo "===== BINARY PATHS ====="
+          which chromium || echo "Chromium path missing"
+          which chromedriver || echo "ChromeDriver path missing"
+
       # Java + Maven
       ###############################################################
       - name: Set up JDK 17
