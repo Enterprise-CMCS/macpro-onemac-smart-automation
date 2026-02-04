@@ -19,7 +19,8 @@ public class DriverFactory {
         String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("linux")) {
-            options.setBinary("/usr/bin/chromium");   // MUST be chromium, not chromium-browser
+            options.setBinary("/usr/bin/chromium-browser");
+            // MUST be chromium, not chromium-browser
             System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
         }
 

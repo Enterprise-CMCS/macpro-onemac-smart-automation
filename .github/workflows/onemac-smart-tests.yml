@@ -31,14 +31,28 @@ jobs:
           ref: main
 
       ###############################################################
-      # Install Chromium (ARM compatible)
+      # Install NON-SNAP Chromium + Matching Driver
       ###############################################################
-      - name: Install Chromium and ChromeDriver
+      - name: Install Chromium and ChromeDriver (no snap)
         run: |
+          sudo snap remove chromium || true
+          
           sudo apt-get update
-          sudo apt-get install -y chromium chromium-driver
+          sudo apt-get install -y chromium-driver
+          
+          # Install real Chromium (not snap)
+          sudo apt-get install -y chromium-browser || sudo apt-get install -y chromium
+          
+          echo "===== CHROMIUM VERSION ====="
+          chromium-browser --version || chromium --version
+          
+          echo "===== CHROMEDRIVER VERSION ====="
+          chromedriver --version
+          
+          echo "===== BINARY PATHS ====="
+          which chromium-browser || which chromium
+          which chromedriver
 
-      ###############################################################
       # Verify browser + driver versions (IMPORTANT for debugging)
       ###############################################################
       - name: Check Chromium and ChromeDriver versions
