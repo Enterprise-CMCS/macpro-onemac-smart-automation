@@ -36,11 +36,14 @@ jobs:
       - name: Install Chromium and ChromeDriver
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-driver chromium-browser || sudo apt-get install -y chromium chromium-driver
+          sudo apt-get install -y chromium chromium-driver
 
-      - name: Verify Binary Paths
-        run: |
-          which chromium-browser || which chromium
+          echo "=== Versions Installed ==="
+          chromium --version
+          chromedriver --version
+
+          echo "=== Binary Locations ==="
+          which chromium
           which chromedriver
 
       ###############################################################
