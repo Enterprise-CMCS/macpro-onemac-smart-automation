@@ -29,7 +29,14 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-
+      ###############################################################
+      # Print Runner Public IP (for Salesforce IP whitelist)
+      ###############################################################
+      - name: Print Runner Public IP
+        run: |
+          echo "Fetching public IP..."
+          PUBLIC_IP=$(curl -s https://api.ipify.org)
+          echo "Runner public IP: $PUBLIC_IP"
       ###############################################################
       # Install NON-SNAP Chromium + Matching Driver
       ###############################################################
