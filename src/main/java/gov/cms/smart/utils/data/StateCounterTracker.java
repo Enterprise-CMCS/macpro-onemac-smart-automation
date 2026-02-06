@@ -1,5 +1,7 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.data;
 
+import gov.cms.smart.utils.config.ConfigReader;
+import gov.cms.smart.utils.config.TestContext;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,7 +13,7 @@ import java.io.IOException;
 
 public class StateCounterTracker {
 
-    private static final String FILE = resolveFilePath();
+    private static final String FILE = TestContext.packagesFile();
     private static final String SHEET = "StateCounters";
 
     private static final int COL_STATE = 0;

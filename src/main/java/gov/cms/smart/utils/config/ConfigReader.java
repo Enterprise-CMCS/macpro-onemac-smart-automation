@@ -1,4 +1,4 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;

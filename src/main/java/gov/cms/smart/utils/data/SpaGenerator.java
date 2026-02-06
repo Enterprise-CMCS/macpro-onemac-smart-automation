@@ -1,6 +1,7 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.data;
 
 import gov.cms.smart.models.SpaPackage;
+import gov.cms.smart.utils.excel.ExcelPackageTracker;
 
 public class SpaGenerator {
 

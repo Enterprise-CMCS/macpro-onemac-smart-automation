@@ -22,6 +22,7 @@ jobs:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
       APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+      OSG_QA_SECRET: ${{ secrets.OSG_QA_SECRET }}
       EMAIL: ${{ secrets.EMAIL }}
 
     steps:

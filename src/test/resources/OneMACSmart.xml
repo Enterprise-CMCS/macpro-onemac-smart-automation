@@ -6,6 +6,6 @@
         </classes>
     </test>
     <listeners>
-        <listener class-name="gov.cms.smart.testutils.TestListener"/>
+        <listener class-name="gov.cms.smart.listeners.TestListener"/>
     </listeners>
 </suite>

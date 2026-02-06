@@ -3,7 +3,7 @@ package gov.cms.smart.pages;
 import gov.cms.smart.models.*;
 import gov.cms.smart.models.enums.CodingAssessment;
 import gov.cms.smart.models.enums.PriorityCode;
-import gov.cms.smart.utils.UIElementUtils;
+import gov.cms.smart.utils.ui.UIElementUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 

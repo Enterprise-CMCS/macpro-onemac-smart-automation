@@ -2,9 +2,10 @@ package gov.cms.smart.flows;
 
 import gov.cms.smart.pages.HomePage;
 import gov.cms.smart.pages.LoginPage;
-import gov.cms.smart.utils.ExcelPackageSelector;
-import gov.cms.smart.utils.PageFactory;
-import gov.cms.smart.utils.UIElementUtils;
+import gov.cms.smart.utils.config.ConfigReader;
+import gov.cms.smart.utils.config.TestContext;
+import gov.cms.smart.utils.driver.PageFactory;
+import gov.cms.smart.utils.ui.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -21,15 +22,17 @@ public class OSGUser {
         this.utils = utils;
     }
 
-    public HomePage login() throws Exception {
-        return PageFactory.getLoginPage(driver, utils).loginAsOSGUser();
+    public HomePage login(){
+        String osgSharedSecret = TestContext.osgSharedSecret();
+        String osgUsername = TestContext.osgUsername();
+        return PageFactory.getLoginPage(driver, utils).login(osgUsername,osgSharedSecret);
     }
 
-    public LoginPage navigateToSalesForce() {
+ /*   public LoginPage navigateToSalesForce() {
         logger.info("Navigating To Salesforce...");
         driver.get(utils.getEnv());
         return PageFactory.getLoginPage(driver, utils);
-    }
+    }*/
 
     public void goToNewMedicaidSPAForm() {
         PageFactory.getSpaWaiversPage(driver, utils).clickNew();

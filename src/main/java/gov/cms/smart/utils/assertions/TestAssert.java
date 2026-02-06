@@ -1,4 +1,4 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.assertions;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -6,14 +6,14 @@ import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
-public class AssertionUtil {
+public class TestAssert {
 
-    private static final Logger logger = LogManager.getLogger(AssertionUtil.class);
+    private static final Logger logger = LogManager.getLogger(TestAssert.class);
 
     // Thread-safe SoftAssert for parallel execution
     private static final ThreadLocal<SoftAssert> softAssert = ThreadLocal.withInitial(SoftAssert::new);
 
-    private AssertionUtil() {
+    private TestAssert() {
         // prevent instantiation
     }
 

@@ -1,8 +1,10 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.excel;
 
 
 import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.models.WaiverPackage;
+import gov.cms.smart.utils.config.ConfigReader;
+import gov.cms.smart.utils.config.TestContext;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,7 +15,7 @@ import java.util.Random;
 
 public class ExcelPackageSelector {
 
-    private static final String FILE = resolveFilePath();
+    private static final String FILE = TestContext.packagesFile();
     private static final String SHEET = "Packages";
     private static final Random RAND = new Random();
 

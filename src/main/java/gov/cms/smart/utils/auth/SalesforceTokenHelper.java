@@ -1,8 +1,7 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import java.util.Map;
 
 public class SalesforceTokenHelper {
 

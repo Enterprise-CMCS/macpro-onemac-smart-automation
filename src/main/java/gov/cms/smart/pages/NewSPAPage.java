@@ -1,10 +1,8 @@
 package gov.cms.smart.pages;
 
-import gov.cms.smart.models.IdentifyingInfo;
 import gov.cms.smart.models.SpaPackage;
-import gov.cms.smart.utils.PageFactory;
-import gov.cms.smart.utils.SpaGenerator;
-import gov.cms.smart.utils.UIElementUtils;
+import gov.cms.smart.utils.data.SpaGenerator;
+import gov.cms.smart.utils.ui.UIElementUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 

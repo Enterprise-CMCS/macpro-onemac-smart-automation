@@ -1,4 +1,4 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.data;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.driver;
 
 
 import gov.cms.smart.pages.*;
+import gov.cms.smart.utils.ui.UIElementUtils;
 import org.openqa.selenium.WebDriver;
 
 public class PageFactory {

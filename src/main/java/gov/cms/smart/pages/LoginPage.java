@@ -1,9 +1,9 @@
 package gov.cms.smart.pages;
 
 
-import gov.cms.smart.utils.ConfigReader;
-import gov.cms.smart.utils.PageFactory;
-import gov.cms.smart.utils.UIElementUtils;
+import gov.cms.smart.utils.config.TestContext;
+import gov.cms.smart.utils.driver.PageFactory;
+import gov.cms.smart.utils.ui.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.aerogear.security.otp.Totp;
@@ -27,32 +27,22 @@ public class LoginPage {
         this.utils = utils;
     }
 
-    public HomePage loginAsOSGUser() throws Exception {
-        //String host = "imap.gmail.com";
-        logger.info("Signing in to Salesforce as a OSG user...");
-        if (utils.getEnv().contains("qa")) {
-            utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "qa"));
-            utils.sendKeys(PASSWORD, ConfigReader.getPassword());
-            utils.clickElement(LOGIN_BUTTON);
+    public HomePage login(String username, String sharedSecret) {
+        logger.info("Signing in to Salesforce as an OSG user...");
+        utils.sendKeys(USERNAME, username);
+        utils.sendKeys(PASSWORD, TestContext.password());
+        utils.clickElement(LOGIN_BUTTON);
+        // MFA
+        Totp totp = new Totp(sharedSecret);
+        String mfaCode = totp.now();
+        utils.sendKeys(VERIFICATION_INPUT, mfaCode);
+        utils.clickElement(VERIFY);
 
-            // Use the secret you copied in Step 1 (remove spaces)
-            String sharedSecret = "";
-            Totp totp = new Totp(sharedSecret);
-            String mfaCode = totp.now(); // This generates the code Salesforce expects RIGHT NOW
-            System.out.println(mfaCode);
-// Now use Selenium to type mfaCode into the Salesforce MFA field
-            //   driver.findElement(By.id("totp_field_id")).sendKeys(mfaCode);
-            //  String otp = EmailOtpFetcher.fetchOtp(host, ConfigReader.get("email"), ConfigReader.get("APP_PASSWORD"), 20, 1);
-            utils.sendKeys(VERIFICATION_INPUT, mfaCode);
-            utils.clickElement(VERIFY);
-        } else {
-            utils.sendKeys(USERNAME, ConfigReader.getUserName("osg", "dev"));
-            utils.sendKeys(PASSWORD, ConfigReader.getPassword());
-            utils.clickElement(LOGIN_BUTTON);
-        }
         logger.info("Signing in to Salesforce as OSG user was successful.");
+
         return PageFactory.getHomePage(driver, utils);
     }
-
 }
+
+
 

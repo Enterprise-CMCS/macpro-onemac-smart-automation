@@ -1,4 +1,4 @@
-package gov.cms.smart.utils;
+package gov.cms.smart.utils.auth;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMultipart;
@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmailOtpFetcher {
-
     /**
      * Fetches OTP from Salesforce Sandbox email, waits if necessary.
      *
@@ -20,9 +19,10 @@ public class EmailOtpFetcher {
      * @return OTP as String or null if timeout
      * @throws Exception
      */
+
     public static String fetchOtp(String host, String email, String password,
                                   int timeoutSeconds, int pollIntervalSeconds) throws Exception {
-
+//String host = "imap.gmail.com";
         Properties props = new Properties();
         props.put("mail.store.protocol", "imaps");
         props.put("mail.imaps.ssl.enable", "true");
@@ -63,10 +63,8 @@ public class EmailOtpFetcher {
                     }
                 }
             }
-
             // Wait before polling again
             Thread.sleep(pollIntervalSeconds * 1000L);
-
             // Refresh inbox to get newly arrived emails
             inbox.close(false);
             inbox.open(Folder.READ_WRITE);

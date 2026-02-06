@@ -1,10 +1,10 @@
-package gov.cms.smart.testutils;
+package gov.cms.smart.listeners;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import gov.cms.smart.base.BaseTest;
-import gov.cms.smart.utils.ExtentReportManager;
-import gov.cms.smart.utils.ScreenshotUtil;
+import gov.cms.smart.utils.reporting.ExtentReportManager;
+import gov.cms.smart.utils.reporting.ScreenshotUtil;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
