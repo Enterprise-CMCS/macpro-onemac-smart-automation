@@ -199,7 +199,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          FILE="extent-report/extent-report.json"
+          FILE="extent-report/OneMACTestReport.json"
 
           if [ -f "$FILE" ]; then
             PASSED=$(jq '.stats.pass' $FILE)
@@ -231,7 +231,7 @@ jobs:
           subject: "OneMAC SMART Automation - ${{ job.status }}"
           html_body: |
             <div style="font-family:Arial, sans-serif; padding:20px; max-width:700px;">
-              <h2 style="margin-bottom:5px;">🚀 OneMAC SMART Automation Report</h2>
+              <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
               <p style="margin-top:0; color:gray;">
                 Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
               </p>
@@ -261,7 +261,7 @@ jobs:
               <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                  style="display:inline-block; background:#2E86C1; color:white; padding:12px 20px;
                         text-decoration:none; border-radius:5px;">
-                 🔍 View Full Extent Report
+                  View Full Extent Report
               </a>
               <p style="margin-top:30px; font-size:12px; color:gray;">
                 Generated automatically by GitHub Actions CI.
