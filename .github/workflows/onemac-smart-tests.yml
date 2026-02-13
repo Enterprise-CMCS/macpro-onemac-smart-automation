@@ -164,7 +164,7 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL }}
           password: ${{ secrets.APP_PASSWORD }}
-          subject: "OneMAC SMART Automation - ${{ job.status }}"
+          subject: "OneMAC SMART Automation Report"
           html_body: |
             <table width="100%" cellpadding="0" cellspacing="0" 
                    style="font-family: Arial, Helvetica, sans-serif; max-width:700px; margin:auto; border-collapse:collapse;">
@@ -207,5 +207,5 @@ jobs:
                 </td>
               </tr>
             </table>
-          to: amjad.ammar@icf.com
+          to: nagaraju.krishna@icf.com
           from: OneMAC-SMART CI
