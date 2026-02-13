@@ -191,3 +191,84 @@ jobs:
           else {
               Write-Output "No Excel updates detected - nothing to push."
           }
+          ###############################################################
+          #= Extract Test Summary from TestNG
+          ###############################################################
+          - name: Extract Test Summary
+            if: always()
+            shell: bash
+            run: |
+              if [ -f "test-output/testng-results.xml" ]; then
+                PASSED=$(grep -o 'status="PASS"' test-output/testng-results.xml | wc -l)
+                FAILED=$(grep -o 'status="FAIL"' test-output/testng-results.xml | wc -l)
+                SKIPPED=$(grep -o 'status="SKIP"' test-output/testng-results.xml | wc -l)
+              else
+                PASSED=0
+                FAILED=0
+                SKIPPED=0
+              fi
+
+              echo "PASSED=$PASSED" >> $GITHUB_ENV
+              echo "FAILED=$FAILED" >> $GITHUB_ENV
+              echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+
+          ###############################################################
+          # Send Extent Report Email (Visual HTML)
+          ###############################################################
+          - name: Send Extent Report Email
+            if: always()
+            uses: dawidd6/action-send-mail@v3
+            with:
+              server_address: smtp.gmail.com
+              server_port: 465
+              secure: true
+              username: ${{ secrets.EMAIL }}
+              password: ${{ secrets.APP_PASSWORD }}
+              subject: "OneMAC SMART Automation - ${{ job.status }}"
+              html_body: |
+                <div style="font-family:Arial, sans-serif; padding:20px; max-width:700px;">
+
+                  <h2 style="margin-bottom:5px;">🚀 OneMAC SMART Automation Report</h2>
+                  <p style="margin-top:0; color:gray;">
+                    Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
+                  </p>
+
+                  <div style="padding:15px; border-radius:6px; background-color:${{ job.status == 'success' && '#E8F6F3' || '#FDEDEC' }};">
+                    <h3 style="margin:0; color:${{ job.status == 'success' && 'green' || 'red' }};">
+                      Status: ${{ job.status }}
+                    </h3>
+                  </div>
+
+                  <br>
+
+                  <table style="border-collapse: collapse; width:100%; text-align:center;">
+                    <tr>
+                      <td style="padding:15px; background:#D5F5E3;">
+                        <h2 style="margin:0;">${{ env.PASSED }}</h2>
+                        <p style="margin:0;">✅ Passed</p>
+                      </td>
+                      <td style="padding:15px; background:#FADBD8;">
+                        <h2 style="margin:0;">${{ env.FAILED }}</h2>
+                        <p style="margin:0;">❌ Failed</p>
+                      </td>
+                      <td style="padding:15px; background:#FCF3CF;">
+                        <h2 style="margin:0;">${{ env.SKIPPED }}</h2>
+                        <p style="margin:0;">⚠ Skipped</p>
+                      </td>
+                    </tr>
+                  </table>
+
+                  <br><br>
+
+                  <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                     style="display:inline-block; background:#2E86C1; color:white; padding:12px 20px;
+                            text-decoration:none; border-radius:5px;">
+                     🔍 View Full Extent Report
+                  </a>
+
+                  <p style="margin-top:30px; font-size:12px; color:gray;">
+                    Generated automatically by GitHub Actions CI.
+                  </p>
+                </div>
+              to: jad.ammar.co@gmail.com
+              from: OneMAC-SMART CI

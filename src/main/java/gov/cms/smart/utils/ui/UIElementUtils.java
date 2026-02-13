@@ -104,6 +104,7 @@ public class UIElementUtils {
         }
     }
 
+
     public String getEnv() {
         if (ConfigReader.get("runOn").equalsIgnoreCase("qa")) {
             return ConfigReader.get("QA");
@@ -151,7 +152,7 @@ public class UIElementUtils {
     public String sendKeysToInputByLabel(String label, String text) {
         By locator = By.xpath("//label[text()=\"" + label + "\"]/following-sibling::div/input");
         sendKeys(locator, text);
-        return  text;
+        return text;
     }
 
     public void clearInputByLabel(String label) {
@@ -165,7 +166,7 @@ public class UIElementUtils {
         return text;
     }
 
-    public void selectFromComboBoxByLabel(String label, String value) {
+    public void selectFromComboBoxByLabel(String label, String value) throws InterruptedException {
         clickElement(By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox"));
         selectDropdownBy(By.xpath("//lightning-base-combobox-item/span/span"), value);
     }
@@ -182,9 +183,8 @@ public class UIElementUtils {
 
     /* -------------------- DROPDOWNS -------------------- */
 
-    public void selectDropdownBy(By optionLocator, String value) {
-        List<WebElement> options = driver.findElements(optionLocator);
-
+    public void selectDropdownBy(By optionLocator, String value) throws InterruptedException {
+        List<WebElement> options = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(optionLocator));
         for (WebElement option : options) {
             if (option.getText().trim().equalsIgnoreCase(value)) {
                 WebElement parent = option.findElement(By.xpath("./.."));
@@ -208,6 +208,10 @@ public class UIElementUtils {
 
     public void waitForInvisibility(By locator) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    }
+
+    public void waitForVisibility(By locator) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     public void waitForText(By locator, String text) {
@@ -328,6 +332,6 @@ public class UIElementUtils {
 
     public void openRecord(String recordId) {
         waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
-        driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\""+recordId+"\"]")).click();
+        driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]")).click();
     }
 }

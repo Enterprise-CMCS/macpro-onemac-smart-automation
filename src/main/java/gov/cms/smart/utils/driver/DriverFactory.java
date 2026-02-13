@@ -1,31 +1,24 @@
 package gov.cms.smart.utils.driver;
 
-import gov.cms.smart.utils.config.TestContext;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DriverFactory {
 
     public static WebDriver createDriver() {
         // Read system properties first (from GitHub Actions), fallback to ConfigReader
-      /*  System.setProperty("webdriver.http.factory", "jdk-http-client");
+        System.setProperty("webdriver.http.factory", "jdk-http-client");
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\57901\\Desktop\\chromedriver\\chromedriver\\chromedriver.exe");
         WebDriver driver;
         ChromeOptions chromeOptions;
         chromeOptions = new ChromeOptions();
-      // chromeOptions.addArguments("--headless=new");
-      // chromeOptions.addArguments("--window-size=1920,1080");
+       // chromeOptions.addArguments("--headless=new");
+      //  chromeOptions.addArguments("--window-size=1920,1080");
         chromeOptions.setBinary("C:\\Users\\57901\\Desktop\\chrome-win64\\chrome-win64\\chrome.exe");
-        driver = new ChromeDriver(chromeOptions);*/
+        driver = new ChromeDriver(chromeOptions);
 
-        String projectRoot = System.getProperty("user.dir");
+   /*     String projectRoot = System.getProperty("user.dir");
 
         // ---------- Browser prefs ----------
         Map<String, Object> prefs = new HashMap<>();
@@ -78,7 +71,7 @@ public class DriverFactory {
 
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browser);
-        }
+        }*/
 
         return driver;
     }

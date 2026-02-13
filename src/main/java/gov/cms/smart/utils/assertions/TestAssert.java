@@ -3,8 +3,15 @@ package gov.cms.smart.utils.assertions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
+
+import java.time.Duration;
 
 public class TestAssert {
 
@@ -16,7 +23,6 @@ public class TestAssert {
     private TestAssert() {
         // prevent instantiation
     }
-
 
 
     public static void assertTrue(boolean condition, String message) {
@@ -33,6 +39,22 @@ public class TestAssert {
         logger.info("ASSERT EQUALS: " + message + "\nExpected: " + expected + " | Actual: " + actual);
         Assert.assertEquals(actual, expected, message);
     }
+
+    public static void assertEquals(WebDriver driver, By locator, String expected, String message) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            boolean textMatched = wait.until(ExpectedConditions.textToBe(locator, expected));
+            if (!textMatched) {
+                String actual = driver.findElement(locator).getText();
+                Assert.assertEquals(actual, expected, message);
+            }
+
+        } catch (TimeoutException e) {
+            String actual = driver.findElement(locator).getText();
+            Assert.fail(message + " | Expected: [" + expected + "] but found: [" + actual + "]");
+        }
+    }
+
 
     public static void assertNotEquals(Object actual, Object expected, String message) {
         logger.info("ASSERT NOT EQUALS: " + message + "\nExpected NOT: " + expected + " | Actual: " + actual);

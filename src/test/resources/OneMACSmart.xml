@@ -2,7 +2,7 @@
 <suite name="OneMACSmart">
     <test name="OneMacSmart UI Tests">
         <classes>
-            <class name="gov.cms.smart.tests.MedicaidSPATests"/>
+            <class name="gov.cms.smart.tests.MedicaidSPAValidationTests"/>
         </classes>
     </test>
     <listeners>

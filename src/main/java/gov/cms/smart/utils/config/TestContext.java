@@ -11,7 +11,8 @@ public final class TestContext {
         }
     }
 
-    private TestContext() {}
+    private TestContext() {
+    }
 
     public static String env() {
         return ENV;
@@ -27,8 +28,26 @@ public final class TestContext {
         return ConfigReader.get("osg." + env() + ".username");
     }
 
+    public static String srtUsername() {
+        return ConfigReader.get("srt." + env() + ".username");
+    }
+
     public static String osgSharedSecret() {
         return ConfigReader.get("osg." + env() + ".secret");
+
+    }
+
+    public static String srtSharedSecret() {
+        return ConfigReader.get("srt." + env() + ".secret");
+
+    }
+
+    public static String cpocUsername() {
+        return ConfigReader.get("cpoc." + env() + ".username");
+    }
+
+    public static String cpocSharedSecret() {
+        return ConfigReader.get("cpoc." + env() + ".secret");
 
     }
 
@@ -39,6 +58,10 @@ public final class TestContext {
     // ---------- FILES ----------
     public static String packagesFile() {
         return ConfigReader.get("packages." + env());
+    }
+
+    public static String getStateCountersFile() {
+        return ConfigReader.get("stateCounters." + env());
     }
 
     // ---------- BROWSER ----------

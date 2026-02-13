@@ -42,7 +42,7 @@ public class NewSPAPage {
         utils.javaScriptClicker(By.xpath(authorityXpath));
     }
 
-    public void createSPA(String state) {
+    public SpaPackage createSPA(String state) throws InterruptedException {
         SpaPackage spa = SpaGenerator.createSpa(state, "Medicaid SPA");
         selectAuthority(spa.getAuthority());
         clickNextButton();
@@ -52,7 +52,7 @@ public class NewSPAPage {
         utils.selectDropdownBy(COMBO_BOX_ITEMS, utils.getStateFullName(state));
         utils.clickElement(SAVE);
         utils.isVisible(SUCCESS_MESSAGE);
-        System.out.println(spa.getPackageId());
+        return spa;
     }
 
 
@@ -90,9 +90,9 @@ public class NewSPAPage {
         return utils.isVisible(STATE_FIELD_VALIDATION);
     }
 
-    /*public boolean isDateFormatErrorDisplayed() throws InterruptedException {
+    public boolean isDateFormatErrorDisplayed() throws InterruptedException {
         return utils.elementContainsText(driver, STATE_FIELD_VALIDATION_DIV, "Your entry does not match the allowed format 12/31/2024.");
 
-    }*/
+    }
 
 }

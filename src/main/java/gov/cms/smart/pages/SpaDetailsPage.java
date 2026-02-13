@@ -28,7 +28,7 @@ public class SpaDetailsPage {
         return info;
     }
 
-    public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, CodingAssessment codingAssessment) {
+    public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
         PriorityInfo priorityInfo = new PriorityInfo();
         priorityInfo.setPriorityComments("Test");
         utils.editByLabel("Priority Code");

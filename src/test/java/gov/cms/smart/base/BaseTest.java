@@ -1,15 +1,14 @@
 package gov.cms.smart.base;
 
 
+import gov.cms.smart.flows.CPOCUser;
 import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.utils.config.ConfigReader;
+import gov.cms.smart.flows.SRTUser;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.DriverFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 
 @Getter
 public class BaseTest {
@@ -19,10 +18,12 @@ public class BaseTest {
 
     protected UIElementUtils utils;
 
-    @BeforeMethod
+
+
+  /*  @BeforeMethod
     public void setUp() {
         createDriverSession();
-    }
+    }*/
 
     /**
      * Restart the WebDriver in the same thread
@@ -40,12 +41,12 @@ public class BaseTest {
     /**
      * Create a new WebDriver session
      */
-    private void createDriverSession() {
+    protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
         webDriver.get(TestContext.baseUrl());         // environment-aware URL
         webDriver.manage().window().maximize();
         driver.set(webDriver);
-        utils = new UIElementUtils(getDriver(), 10);
+        utils = new UIElementUtils(getDriver(), 15);
     }
 
     /**
@@ -69,12 +70,12 @@ public class BaseTest {
         return new OSGUser(getDriver(), getUtils());
     }
 
-    @AfterMethod(alwaysRun = true)
-    public void cleanUp() {
-        WebDriver d = driver.get();
-        if (d != null) {
-            d.quit();
-            driver.remove();
-        }
+    protected CPOCUser createNewCPOCUser() {
+        return new CPOCUser(getDriver(), getUtils());
     }
+
+    protected SRTUser createNewSRTUser() {
+        return new SRTUser(getDriver(), getUtils());
+    }
+
 }
