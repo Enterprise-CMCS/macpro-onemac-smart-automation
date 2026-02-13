@@ -166,13 +166,46 @@ jobs:
           password: ${{ secrets.APP_PASSWORD }}
           subject: "OneMAC SMART Automation - ${{ job.status }}"
           html_body: |
-            <div style="font-family:Arial, sans-serif; padding:20px; max-width:700px;">
-              <h2>OneMAC SMART Automation Report</h2>
-              <p>Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}</p>
-              <h3>Status: ${{ job.status }}</h3>
-              <p>Passed: ${{ env.PASSED }}</p>
-              <p>Failed: ${{ env.FAILED }}</p>
-              <p>Skipped: ${{ env.SKIPPED }}</p>
-            </div>
+            <table width="100%" cellpadding="0" cellspacing="0" 
+                   style="font-family: Arial, Helvetica, sans-serif; max-width:700px; margin:auto; border-collapse:collapse;">
+              <tr>
+                <td style="padding:20px;">
+            
+                  <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
+                  <p style="margin-top:0; color:#777;">
+                    Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
+                  </p>
+            
+                  <table width="100%" cellpadding="10" cellspacing="0" style="margin-top:15px; border-collapse:collapse;">
+                    <tr>
+                      <td align="center" bgcolor="#D5F5E3">
+                        <h2 style="margin:0;">${{ env.PASSED }}</h2>
+                        <p style="margin:0;">Passed</p>
+                      </td>
+                      <td align="center" bgcolor="#FADBD8">
+                        <h2 style="margin:0;">${{ env.FAILED }}</h2>
+                        <p style="margin:0;">Failed</p>
+                      </td>
+                      <td align="center" bgcolor="#FCF3CF">
+                        <h2 style="margin:0;">${{ env.SKIPPED }}</h2>
+                        <p style="margin:0;">Skipped</p>
+                      </td>
+                    </tr>
+                  </table>
+            
+                  <p style="margin-top:25px;">
+                    <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                       style="background:#2E86C1; color:#ffffff; padding:12px 20px; text-decoration:none;">
+                       View Full Report
+                    </a>
+                  </p>
+            
+                  <p style="margin-top:30px; font-size:12px; color:#999;">
+                    Generated automatically by GitHub Actions CI.
+                  </p>
+            
+                </td>
+              </tr>
+            </table>
           to: jad.ammar.co@gmail.com
           from: OneMAC-SMART CI
