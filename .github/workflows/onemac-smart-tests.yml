@@ -6,7 +6,6 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Prevent two workflows from modifying Excel at the same time
 concurrency:
   group: excel-sync
   cancel-in-progress: false
@@ -26,9 +25,6 @@ jobs:
       EMAIL: ${{ secrets.EMAIL }}
 
     steps:
-      ###############################################################
-      # Checkout latest main
-      ###############################################################
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -49,22 +45,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      ###############################################################
-      # Read browser/headless settings
-      ###############################################################
       - name: Set browser and headless from config
         shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
           $browser = (Select-String -Path $configPath -Pattern "browser\s*=").ToString().Split("=")[1].Trim()
           $headless = (Select-String -Path $configPath -Pattern "headless\s*=").ToString().Split("=")[1].Trim()
-          
+
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
-      ###############################################################
-      # Run Test Suite
-      ###############################################################
       - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true
@@ -72,17 +62,12 @@ jobs:
           $suiteFile = "src/test/resources/OneMACSmart.xml"
           Write-Output "Running E2E Suite with suite file: $suiteFile"
 
-          # Call Maven explicitly
           & mvn clean test `
             "-DsuiteXmlFile=$suiteFile" `
             "-Dtestng.parameters.browser=$env:BROWSER" `
             "-Dtestng.parameters.headless=$env:HEADLESS" `
             "-Duser.timezone=America/New_York"
-      
 
-      ###############################################################
-      # Upload reports
-      ###############################################################
       - name: Upload Extent Report & Screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -93,108 +78,63 @@ jobs:
             screenshots/**
           if-no-files-found: warn
 
-      ###############################################################
-      # Configure Git identity
-      ###############################################################
       - name: Configure Git Identity
         if: always()
         shell: pwsh
         run: |
           git config user.name "Amjad"
           git config user.email "jad.ammar.co@gmail.com"
-          Write-Output "Git identity configured."
-      
 
-      ###############################################################
-      # Stage updated Excel files (ENVIRONMENT AWARE)
-      ###############################################################
       - name: Stage environment files
         shell: pwsh
         run: |
           $configPath = "src/test/resources/config.properties"
-          
+
           if (!(Test-Path $configPath)) {
             Write-Output "config.properties not found!"
             exit 1
           }
-          
+
           $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
           $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
-          
+
           if (-not $runOn) {
             Write-Output "runOn not set in config.properties"
             exit 1
           }
-          
-          Write-Output "Detected environment: $runOn"
-          
+
           $counterFile = "src/test/resources/state_counters_$runOn.xlsx"
           $packagesFile = "src/test/resources/packages_$runOn.xlsx"
-          
+
           $updated = 0
-          
+
           if (Test-Path $counterFile) {
             git add $counterFile
-            Write-Output "Staged $counterFile"
             $updated = 1
           }
-          else {
-            Write-Output "$counterFile not found"
-          }
-          
+
           if (Test-Path $packagesFile) {
             git add $packagesFile
-            Write-Output "Staged $packagesFile"
             $updated = 1
           }
-          else {
-            Write-Output "$packagesFile not found"
-          }
-          
+
           Add-Content -Path $env:GITHUB_ENV -Value "UPDATED=$updated"
           Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
-          Write-Output "UPDATED=$updated"
-      
 
-      ###############################################################
-      # Commit + Push Excel Updates
-      ###############################################################
       - name: Commit & Push Excel Updates
         if: always()
         shell: pwsh
         run: |
-          Write-Output "=== Commit Stage Starting ==="
-          Write-Output "UPDATED=$env:UPDATED"
-          
           if ($env:UPDATED -eq "1") {
-          
-              if (-not (git diff --cached --quiet)) {
-          
-                  Write-Output "Committing Excel updates..."
-                  git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
-          
-                  Write-Output "Fetching latest main..."
-                  git fetch origin main
-          
-                  Write-Output "Rebasing onto latest main..."
-                  git pull origin main --rebase
-          
-                  Write-Output "Pushing Excel updates..."
-                  git push origin HEAD:main
-          
-                  Write-Output "Excel update push completed successfully."
-              }
-              else {
-                  Write-Output "No staged Excel changes - skipping commit."
-              }
-          }
-          else {
-              Write-Output "No Excel updates detected - nothing to push."
+            if (-not (git diff --cached --quiet)) {
+              git commit -m "CI: Update Excel counters for $env:RUNON_ENV environment"
+              git fetch origin main
+              git pull origin main --rebase
+              git push origin HEAD:main
+            }
           }
 
-      ###############################################################
-      # Extract Test Summary from Extent JSON
-      ###############################################################
+
       - name: Extract Test Summary
         if: always()
         shell: bash
@@ -202,11 +142,10 @@ jobs:
           FILE="extent-report/OneMACTestReport.json"
 
           if [ -f "$FILE" ]; then
-            PASSED=$(jq '.stats.pass' $FILE)
-            FAILED=$(jq '.stats.fail' $FILE)
-            SKIPPED=$(jq '.stats.skip' $FILE)
+            PASSED=$(jq '[.[] | select(.status == "PASS")] | length' "$FILE")
+            FAILED=$(jq '[.[] | select(.status == "FAIL")] | length' "$FILE")
+            SKIPPED=$(jq '[.[] | select(.status == "SKIP")] | length' "$FILE")
           else
-            echo "Extent JSON file not found!"
             PASSED=0
             FAILED=0
             SKIPPED=0
@@ -216,9 +155,6 @@ jobs:
           echo "FAILED=$FAILED" >> $GITHUB_ENV
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
 
-      ###############################################################
-      # Send Extent Report Email (Visual HTML)
-      ###############################################################
       - name: Send Extent Report Email
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -231,41 +167,12 @@ jobs:
           subject: "OneMAC SMART Automation - ${{ job.status }}"
           html_body: |
             <div style="font-family:Arial, sans-serif; padding:20px; max-width:700px;">
-              <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
-              <p style="margin-top:0; color:gray;">
-                Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
-              </p>
-              <div style="padding:15px; border-radius:6px; background-color:${{ job.status == 'success' && '#E8F6F3' || '#FDEDEC' }};">
-                <h3 style="margin:0; color:${{ job.status == 'success' && 'green' || 'red' }};">
-                  Status: ${{ job.status }}
-                </h3>
-              </div>
-              <br>
-              <table style="border-collapse: collapse; width:100%; text-align:center;">
-                <tr>
-                  <td style="padding:15px; background:#D5F5E3;">
-                    <h2 style="margin:0;">${{ env.PASSED }}</h2>
-                    <p style="margin:0;">✅ Passed</p>
-                  </td>
-                  <td style="padding:15px; background:#FADBD8;">
-                    <h2 style="margin:0;">${{ env.FAILED }}</h2>
-                    <p style="margin:0;">❌ Failed</p>
-                  </td>
-                  <td style="padding:15px; background:#FCF3CF;">
-                    <h2 style="margin:0;">${{ env.SKIPPED }}</h2>
-                    <p style="margin:0;">⚠ Skipped</p>
-                  </td>
-                </tr>
-              </table>
-              <br><br>
-              <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                 style="display:inline-block; background:#2E86C1; color:white; padding:12px 20px;
-                        text-decoration:none; border-radius:5px;">
-                  View Full Extent Report
-              </a>
-              <p style="margin-top:30px; font-size:12px; color:gray;">
-                Generated automatically by GitHub Actions CI.
-              </p>
+              <h2>OneMAC SMART Automation Report</h2>
+              <p>Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}</p>
+              <h3>Status: ${{ job.status }}</h3>
+              <p>Passed: ${{ env.PASSED }}</p>
+              <p>Failed: ${{ env.FAILED }}</p>
+              <p>Skipped: ${{ env.SKIPPED }}</p>
             </div>
           to: jad.ammar.co@gmail.com
           from: OneMAC-SMART CI
