@@ -15,7 +15,7 @@ public class ExtentReportManager {
             spark.config().setReportName("OneMAC SMART Automated Test Report");
             spark.config().setDocumentTitle("Test Results");
             // 2. Setup JSON Report
-            JsonFormatter json = new JsonFormatter("extent-report/OneMACTestReport.json");
+            JsonFormatter json = new JsonFormatter("extent-report/OneMAC-SMART-TestReport.json");
             // 3. Attach both reporters
             extent.attachReporter(spark, json);
         }

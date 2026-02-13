@@ -139,7 +139,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          FILE="extent-report/OneMACTestReport.json"
+          FILE="extent-report/OneMAC-SMART-TestReport.json"
 
           if [ -f "$FILE" ]; then
             PASSED=$(jq '[.[] | select(.status == "PASS")] | length' "$FILE")
@@ -207,5 +207,5 @@ jobs:
                 </td>
               </tr>
             </table>
-          to: nagaraju.krishna@icf.com
+          to: amjad.ammar@icf.com
           from: OneMAC-SMART CI
