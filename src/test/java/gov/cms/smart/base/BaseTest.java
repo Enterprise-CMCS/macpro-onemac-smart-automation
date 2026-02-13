@@ -44,7 +44,7 @@ public class BaseTest {
     protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
         webDriver.get(TestContext.baseUrl());         // environment-aware URL
-        webDriver.manage().window().maximize();
+      //  webDriver.manage().window().maximize();
         driver.set(webDriver);
         utils = new UIElementUtils(getDriver(), 15);
     }
