@@ -26,8 +26,12 @@ public class TestAssert {
 
 
     public static void assertTrue(boolean condition, String message) {
-        logger.info("ASSERT TRUE: " + message);
-        Assert.assertTrue(condition, message);
+        try {
+            Assert.assertTrue(condition, message);
+        } catch (AssertionError e) {
+            logger.info("ASSERT FAILED: " + message);  // only print if fails
+            throw e;  // rethrow so TestNG marks test as failed
+        }
     }
 
     public static void assertFalse(boolean condition, String message) {

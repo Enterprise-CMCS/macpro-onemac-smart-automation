@@ -1,7 +1,6 @@
 package gov.cms.smart.utils.ui;
 
 import gov.cms.smart.utils.config.ConfigReader;
-import org.apache.groovy.json.internal.Value;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -13,6 +12,7 @@ import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,6 +208,19 @@ public class UIElementUtils {
         selectDropdownBy(By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox//lightning-base-combobox-item/span/span"), value);
     }
 
+    public List<String> getValuesFromDropdownByLabel(String label) {
+        List<String> list = new ArrayList<>();
+        clickElement(By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox"));
+        By optionLocator = By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox//lightning-base-combobox-item/span/span");
+        List<WebElement> options = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(optionLocator));
+        for (WebElement option : options) {
+            String text = cleanString(option.getText());
+            list.add(text.trim());
+        }
+        return list;
+
+    }
+
     public void clearTextAreaByLabel(String label) {
         By locator = By.xpath("//label[text()=\"" + label + "\"]/following-sibling::div/textarea");
         waitForVisible(locator).clear();
@@ -356,6 +369,18 @@ public class UIElementUtils {
         clickElement(By.xpath("//span[text()=\"" + label + "\"]/../following-sibling::div//button"));
         isVisible(By.xpath("//button[text()=\"Save\"]"));
     }
+
+    // Helper method to clean a string
+    public static String cleanString(String str) {
+        if (str == null) return "";
+        return str.trim()
+                .replace('\u00A0', ' ') // non-breaking space → normal space
+                .replaceAll("[\\p{Cf}\\p{Zs}]+", " ")  // Remove all format chars and normalize spaces
+                .replaceAll("\\s+", " ")  // normalize multiple spaces
+                .trim();
+    }
+
+
 
     public boolean elementContainsText(WebDriver driver, By locator, String expectedText) {
         try {

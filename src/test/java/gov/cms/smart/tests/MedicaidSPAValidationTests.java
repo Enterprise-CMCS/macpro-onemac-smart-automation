@@ -14,7 +14,6 @@ import gov.cms.smart.utils.excel.ExcelPackageSelector;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -53,6 +52,7 @@ public class MedicaidSPAValidationTests extends BaseTest {
     @Test(dataProvider = "priorityLevels")
     public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
         osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        Thread.sleep(500);
         PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).
                 fillPriorityInfo(priorityCode, codingAssessment);
         PriorityInfo expected = PageFactory.
@@ -71,6 +71,52 @@ public class MedicaidSPAValidationTests extends BaseTest {
                 getSpaDetailsPage(getDriver(), getUtils()).
                 readPlanInfo();
         TestAssert.assertEquals(actual, expected, "Should save plan information");
+    }
+
+    @Test()
+    public void verifyThatPaymentTypeHasCorrectSubtypes() throws InterruptedException {
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        boolean arePaymentOptionsValid = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).validateSubtypes("Type", "Payment", "Subtype");
+        TestAssert.assertTrue(arePaymentOptionsValid, "Payment type subtypes are not correct");
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
+    }
+
+    @Test()
+    public void verifyThatEligibilityTypeHasCorrectSubtypes() throws InterruptedException {
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        boolean arePaymentOptionsValid = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).validateSubtypes("Type", "Eligibility", "Subtype");
+        TestAssert.assertTrue(arePaymentOptionsValid, "Eligibility type subtypes are not correct");
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
+    }
+
+    @Test()
+    public void verifyThatBenefitsTypeHasCorrectSubtypes() throws InterruptedException {
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        boolean arePaymentOptionsValid = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).validateSubtypes("Type", "Benefits", "Subtype");
+        TestAssert.assertTrue(arePaymentOptionsValid, "Eligibility type subtypes are not correct");
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
+    }
+
+    @Test()
+    public void verifyThatSubtypeIsDisabledWhenTypeIsAdmin() throws InterruptedException {
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        getUtils().editByLabel("Priority Code");
+        getUtils().selectFromComboBoxByLabel("Type", "Admin");
+        By subType = By.xpath(
+                "//label[text()=\"Subtype\"]/../following-sibling::div/lightning-base-combobox"
+        );
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        // Wait until 'invalid' attribute appears
+        wait.until(driver -> driver.findElement(subType).getAttribute("disabled") != null);
+
+        // Assert that the attribute is present
+        WebElement element = getDriver().findElement(subType);
+        boolean isDisabled = element.getAttribute("disabled") != null;
+        TestAssert.assertTrue(isDisabled, "combo box should be disabled");
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
+        //verify subtype dropdown is disabled
+
+
     }
 
     @Test()
@@ -282,7 +328,7 @@ public class MedicaidSPAValidationTests extends BaseTest {
         WebElement element = getDriver().findElement(priorityCodeCombobox);
         boolean isInvalid = element.getAttribute("invalid") != null;
         TestAssert.assertTrue(isInvalid, "Priority Code field should be invalid");
-        PageFactory.getSpaDetailsPage(getDriver(),getUtils()).clickCancel();
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
 
     }
 

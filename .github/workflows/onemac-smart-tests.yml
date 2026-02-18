@@ -151,9 +151,19 @@ jobs:
             SKIPPED=0
           fi
 
+          TOTAL=$((PASSED + FAILED + SKIPPED))
+
+          if [ "$TOTAL" -gt 0 ]; then
+            PASS_RATE=$((PASSED * 100 / TOTAL))
+          else
+            PASS_RATE=0
+          fi
+
           echo "PASSED=$PASSED" >> $GITHUB_ENV
           echo "FAILED=$FAILED" >> $GITHUB_ENV
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+          echo "TOTAL=$TOTAL" >> $GITHUB_ENV
+          echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
 
       - name: Send Extent Report Email
         if: always()
@@ -165,47 +175,92 @@ jobs:
           username: ${{ secrets.EMAIL }}
           password: ${{ secrets.APP_PASSWORD }}
           subject: "OneMAC SMART Automation Report"
-          html_body: |
-            <table width="100%" cellpadding="0" cellspacing="0" 
-                   style="font-family: Arial, Helvetica, sans-serif; max-width:700px; margin:auto; border-collapse:collapse;">
-              <tr>
-                <td style="padding:20px;">
-            
-                  <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
-                  <p style="margin-top:0; color:#777;">
-                    Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
-                  </p>
-            
-                  <table width="100%" cellpadding="10" cellspacing="0" style="margin-top:15px; border-collapse:collapse;">
-                    <tr>
-                      <td align="center" bgcolor="#D5F5E3">
-                        <h2 style="margin:0;">${{ env.PASSED }}</h2>
-                        <p style="margin:0;">Passed</p>
-                      </td>
-                      <td align="center" bgcolor="#FADBD8">
-                        <h2 style="margin:0;">${{ env.FAILED }}</h2>
-                        <p style="margin:0;">Failed</p>
-                      </td>
-                      <td align="center" bgcolor="#FCF3CF">
-                        <h2 style="margin:0;">${{ env.SKIPPED }}</h2>
-                        <p style="margin:0;">Skipped</p>
-                      </td>
-                    </tr>
-                  </table>
-            
-                  <p style="margin-top:25px;">
-                    <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                       style="background:#2E86C1; color:#ffffff; padding:12px 20px; text-decoration:none;">
-                       View Full Report
-                    </a>
-                  </p>
-            
-                  <p style="margin-top:30px; font-size:12px; color:#999;">
-                    Generated automatically by GitHub Actions CI.
-                  </p>
-            
-                </td>
-              </tr>
-            </table>
-          to: Amjad.Ammar@icf.com, Nagaraju.Krishna@icf.com
+          to: Amjad.Ammar@icf.com
           from: OneMAC-SMART CI
+          content_type: text/html
+          html_body: |
+            <div style="background:#f4f6f9; padding:30px; font-family: Arial, Helvetica, sans-serif;">
+              <table width="750" align="center" cellpadding="0" cellspacing="0" 
+                     style="background:#ffffff; border-radius:10px; padding:25px;">
+            
+                <tr>
+                  <td>
+                    <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
+                    <p style="margin-top:0; color:#777;">
+                      Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
+                    </p>
+                  </td>
+                </tr>
+            
+                <!-- Summary -->
+                <tr>
+                  <td>
+                    <table width="100%" cellpadding="10" cellspacing="10">
+                      <tr>
+            
+                        <td align="center" bgcolor="#eafaf1" style="border-radius:8px;">
+                          <h1 style="margin:0; color:#28b463;">${{ env.PASSED }}</h1>
+                          <p>Passed</p>
+                        </td>
+            
+                        <td align="center" bgcolor="#fdecea" style="border-radius:8px;">
+                          <h1 style="margin:0; color:#e74c3c;">${{ env.FAILED }}</h1>
+                          <p>Failed</p>
+                        </td>
+            
+                        <td align="center" bgcolor="#fef9e7" style="border-radius:8px;">
+                          <h1 style="margin:0; color:#f4d03f;">${{ env.SKIPPED }}</h1>
+                          <p>Skipped</p>
+                        </td>
+            
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+            
+                <!-- Pass Rate -->
+                <tr>
+                  <td>
+                    <table width="100%">
+                      <tr>
+                        <td><strong>Pass Rate</strong></td>
+                        <td align="right"><strong>${{ env.PASS_RATE }}%</strong></td>
+                      </tr>
+                    </table>
+            
+                    <table width="100%" style="background:#e5e7e9; height:12px; border-radius:6px;">
+                      <tr>
+                        <td width="${{ env.PASS_RATE }}%" bgcolor="#28b463"></td>
+                        <td></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+            
+                <!-- Details -->
+                <tr>
+                  <td style="padding-top:15px; font-size:14px; color:#555;">
+                    <p><strong>Total Tests:</strong> ${{ env.TOTAL }}</p>
+                    <p><strong>Triggered By:</strong> GitHub Actions CI</p>
+                  </td>
+                </tr>
+            
+                <!-- Button -->
+                <tr>
+                  <td align="center" style="padding-top:20px;">
+                    <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                       style="background:#2E86C1; color:#ffffff; padding:12px 25px; 
+                              text-decoration:none; border-radius:6px; font-weight:bold;">
+                      View Full Report
+                    </a>
+                  </td>
+                </tr>
+            
+                <tr>
+                  <td style="padding-top:20px; font-size:12px; color:#999; text-align:center;">
+                    Generated automatically by GitHub Actions CI.
+                  </td>
+                </tr>
+            
+              </table>
+            </div>

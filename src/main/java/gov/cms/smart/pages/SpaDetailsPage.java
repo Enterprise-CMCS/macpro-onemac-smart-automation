@@ -9,6 +9,11 @@ import gov.cms.smart.utils.ui.UIElementUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SpaDetailsPage {
 
     private final WebDriver driver;
@@ -37,6 +42,38 @@ public class SpaDetailsPage {
     public void clickCancel() {
         utils.clickElement(CANCEL);
     }
+
+    public void details() {
+        Map<String, List<String>> typeToSubtypes = new HashMap<>();
+        typeToSubtypes.put("Eligibility", Arrays.asList("eligibility process", "MAGI", "citizenship document"));
+        typeToSubtypes.put("Enrollment", Arrays.asList("open enrollment", "special enrollment"));
+        typeToSubtypes.put("Verification", Arrays.asList("income verification", "identity verification"));
+    }
+
+    public boolean validateSubtypes(String typeLabel, String typeValue, String subTypeLabel) throws InterruptedException {
+        // Select the type in the first dropdown
+        utils.editByLabel("Priority Code");
+        utils.selectFromComboBoxByLabel(typeLabel, typeValue);
+        // Get actual options from the second dropdown
+        List<String> actualOptions = utils.getValuesFromDropdownByLabel(subTypeLabel);
+        Map<String, List<String>> typeToSubtypes = new HashMap<>();
+        typeToSubtypes.put("Eligibility", Arrays.asList("--None--", "Eligibiity Process", "MAGI Eligibility & Methods", "Citizenship Documentation", "Medicaid Expansion", "Nonfinancial Eligibility", "Premiums", "Other"));
+        typeToSubtypes.put("Benefits", Arrays.asList("--None--", "Benchmark", "Change Benefit Limit", "New Benefit", "Provider Qualifications", "Other"));
+        typeToSubtypes.put("Payment", Arrays.asList("--None--", "Rate Change", "Process Change", "Other"));
+        // Get expected options from the map
+        List<String> expectedOptions = typeToSubtypes.get(typeValue);
+        // Compare
+        if (actualOptions.containsAll(expectedOptions) && actualOptions.size() == expectedOptions.size()) {
+            System.out.println("Validation passed for type: " + typeValue);
+            return true;
+        } else {
+            System.out.println("Validation failed for type: " + typeValue);
+            System.out.println("Expected: " + expectedOptions);
+            System.out.println("Actual: " + actualOptions);
+            return false;
+        }
+    }
+
 
     public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
         PriorityInfo priorityInfo = new PriorityInfo();
