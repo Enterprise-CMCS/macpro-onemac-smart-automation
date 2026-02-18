@@ -23,6 +23,8 @@ public class NewSPAPage {
     private static final By STATE_FIELD_VALIDATION = By.xpath("//div[@data-name=\"SMART_CMCS_Initial_Submission_Date__c\"]/span");
     private static final By STATE_FIELD_VALIDATION_DIV = By.xpath("//div[@data-name=\"SMART_CMCS_Initial_Submission_Date__c\"]");
     private static final By SUCCESS_MESSAGE = By.cssSelector("div[data-key=\"success\"]");
+    private static final By CANCEL = By.xpath("//button[text()='Cancel']");
+    private static final By CANCEL_CLOSE = By.cssSelector("button[title=\"Cancel and close\"]");
 
     public NewSPAPage(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
@@ -33,6 +35,14 @@ public class NewSPAPage {
         utils.clickElement(NEXT_BUTTON);
     }
 
+    public void clickCancelButton() {
+        utils.clickElement(CANCEL);
+    }
+
+    public void clickCancelAndClose() {
+        utils.clickElement(CANCEL_CLOSE);
+    }
+
     public void clickNewSubmission() {
         utils.clickElement(NEW_SUBMISSION);
     }
@@ -41,6 +51,7 @@ public class NewSPAPage {
         String authorityXpath = AUTHORITY.replace("placeholder", text);
         utils.javaScriptClicker(By.xpath(authorityXpath));
     }
+
 
     public SpaPackage createSPA(String state) throws InterruptedException {
         SpaPackage spa = SpaGenerator.createSpa(state, "Medicaid SPA");
@@ -68,10 +79,11 @@ public class NewSPAPage {
         utils.sendKeys(INITIAL_SUBMISSION_DATE, date);
     }
 
-    public void navigateToMedicaidSPAForm() {
+    public NewSPAPage navigateToMedicaidSPAForm() {
         clickNewSubmission();
         selectAuthority("Medicaid SPA");
         clickNextButton();
+        return this;
     }
 
     public void clickSave() {

@@ -32,6 +32,10 @@ public final class TestContext {
         return ConfigReader.get("srt." + env() + ".username");
     }
 
+    public static String srt2Username() {
+        return ConfigReader.get("srt2." + env() + ".username");
+    }
+
     public static String osgSharedSecret() {
         return ConfigReader.get("osg." + env() + ".secret");
 
@@ -39,6 +43,10 @@ public final class TestContext {
 
     public static String srtSharedSecret() {
         return ConfigReader.get("srt." + env() + ".secret");
+
+    }
+    public static String srt2SharedSecret() {
+        return ConfigReader.get("srt2." + env() + ".secret");
 
     }
 

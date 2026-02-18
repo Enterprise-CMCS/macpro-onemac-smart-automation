@@ -23,7 +23,7 @@ public class PageFactory {
         return new SpaDetailsPage(driver, ui);
     }
 
-    public static NewSPAPage getSPAPage(WebDriver driver, UIElementUtils ui) {
+    public static NewSPAPage getNewSPAPage(WebDriver driver, UIElementUtils ui) {
         return new NewSPAPage(driver, ui);
     }
 

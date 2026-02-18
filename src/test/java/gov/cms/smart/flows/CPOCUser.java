@@ -49,32 +49,32 @@ public class CPOCUser {
     }
 
     public void createSPA(String state) throws InterruptedException {
-        PageFactory.getSPAPage(driver, utils).createSPA(state);
+        PageFactory.getNewSPAPage(driver, utils).createSPA(state);
     }
 
 
     public void navigateToMedicaidSPAForm() {
-        PageFactory.getSPAPage(driver, utils).navigateToMedicaidSPAForm();
+        PageFactory.getNewSPAPage(driver, utils).navigateToMedicaidSPAForm();
     }
 
 
     public void enterInitialSubmissionDate(String date) {
-        PageFactory.getSPAPage(driver, utils).enterInitialSubmissionDate(date);
-        PageFactory.getSPAPage(driver, utils).clickSave();
+        PageFactory.getNewSPAPage(driver, utils).enterInitialSubmissionDate(date);
+        PageFactory.getNewSPAPage(driver, utils).clickSave();
     }
 
     public boolean isIDNumberErrorDisplayed() {
-        PageFactory.getSPAPage(driver, utils).clickSave();
-        return PageFactory.getSPAPage(driver, utils).isIDNumberErrorDisplayed();
+        PageFactory.getNewSPAPage(driver, utils).clickSave();
+        return PageFactory.getNewSPAPage(driver, utils).isIDNumberErrorDisplayed();
     }
 
     public boolean isInitialSubmissionDateErrorDisplayed() {
-        PageFactory.getSPAPage(driver, utils).clickSave();
-        return PageFactory.getSPAPage(driver, utils).isInitialSubmissionDateErrorDisplayed();
+        PageFactory.getNewSPAPage(driver, utils).clickSave();
+        return PageFactory.getNewSPAPage(driver, utils).isInitialSubmissionDateErrorDisplayed();
     }
 
     public boolean isStateErrorDisplayed() {
-        return PageFactory.getSPAPage(driver, utils).isStateErrorDisplayed();
+        return PageFactory.getNewSPAPage(driver, utils).isStateErrorDisplayed();
     }
 
     /*public boolean isDateFormatErrorDisplayed() throws InterruptedException {

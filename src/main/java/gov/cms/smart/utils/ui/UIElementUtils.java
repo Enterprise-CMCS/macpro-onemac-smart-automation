@@ -1,6 +1,7 @@
 package gov.cms.smart.utils.ui;
 
 import gov.cms.smart.utils.config.ConfigReader;
+import org.apache.groovy.json.internal.Value;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -30,6 +31,23 @@ public class UIElementUtils {
     }
 
     /* -------------------- WAIT HELPERS -------------------- */
+    public boolean isElementVisible(By locator) {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public boolean isElementInvisible(By locator) {
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
 
     private WebElement waitForVisible(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -57,10 +75,28 @@ public class UIElementUtils {
     }
 
     /* -------------------- CORE INTERACTIONS -------------------- */
+    private void waitForVisibleAndSize(WebElement element) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(driver -> element.isDisplayed() &&
+                element.getSize().getHeight() > 0 &&
+                element.getSize().getWidth() > 0);
+    }
 
     public void clickElement(By locator) {
         WebElement element = waitForClickable(locator);
         scrollIntoView(element);
+
+        // If this is a lightning combobox wrapper, find the internal button
+        if (element.getTagName().equals("lightning-base-combobox")) {
+            try {
+                WebElement button = element.findElement(By.xpath(".//button"));
+                waitForVisibleAndSize(button);
+                jsClick(button);
+                return;
+            } catch (Exception e) {
+                logger.warn("Lightning combobox button click failed, fallback to original element");
+            }
+        }
 
         try {
             element.click();
@@ -78,6 +114,7 @@ public class UIElementUtils {
 
         jsClick(element);
     }
+
 
     public void sendKeys(By locator, String text) {
         WebElement element = waitForVisible(locator);
@@ -168,7 +205,7 @@ public class UIElementUtils {
 
     public void selectFromComboBoxByLabel(String label, String value) throws InterruptedException {
         clickElement(By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox"));
-        selectDropdownBy(By.xpath("//lightning-base-combobox-item/span/span"), value);
+        selectDropdownBy(By.xpath("//label[text()=\"" + label + "\"]//../parent::div/child::div/lightning-base-combobox//lightning-base-combobox-item/span/span"), value);
     }
 
     public void clearTextAreaByLabel(String label) {
