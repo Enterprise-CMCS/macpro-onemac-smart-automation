@@ -177,90 +177,125 @@ jobs:
           subject: "OneMAC SMART Automation Report"
           to: Amjad.Ammar@icf.com
           from: OneMAC-SMART CI
-          content_type: text/html
           html_body: |
-            <div style="background:#f4f6f9; padding:30px; font-family: Arial, Helvetica, sans-serif;">
-              <table width="750" align="center" cellpadding="0" cellspacing="0" 
-                     style="background:#ffffff; border-radius:10px; padding:25px;">
+            <body style="margin:0; padding:0; font-family:Segoe UI, Arial; background:#f5f7fb;">
             
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fb; padding:20px;">
                 <tr>
-                  <td>
-                    <h2 style="margin-bottom:5px;">OneMAC SMART Automation Report</h2>
-                    <p style="margin-top:0; color:#777;">
-                      Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
-                    </p>
-                  </td>
-                </tr>
+                  <td align="center">
             
-                <!-- Summary -->
-                <tr>
-                  <td>
-                    <table width="100%" cellpadding="10" cellspacing="10">
+                    <table width="700" cellpadding="0" cellspacing="0" 
+                           style="background:#ffffff; border-radius:8px;">
+            
+                      <!-- HEADER -->
                       <tr>
-            
-                        <td align="center" bgcolor="#eafaf1" style="border-radius:8px;">
-                          <h1 style="margin:0; color:#28b463;">${{ env.PASSED }}</h1>
-                          <p>Passed</p>
+                        <td style="background:#1f3a5f; color:white; padding:20px; border-radius:8px 8px 0 0;">
+                          <h2 style="margin:0;">OneMAC SMART Automation</h2>
+                          <p style="margin:5px 0 0 0; font-size:13px;">
+                            Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
+                          </p>
                         </td>
-            
-                        <td align="center" bgcolor="#fdecea" style="border-radius:8px;">
-                          <h1 style="margin:0; color:#e74c3c;">${{ env.FAILED }}</h1>
-                          <p>Failed</p>
-                        </td>
-            
-                        <td align="center" bgcolor="#fef9e7" style="border-radius:8px;">
-                          <h1 style="margin:0; color:#f4d03f;">${{ env.SKIPPED }}</h1>
-                          <p>Skipped</p>
-                        </td>
-            
                       </tr>
-                    </table>
-                  </td>
-                </tr>
             
-                <!-- Pass Rate -->
-                <tr>
-                  <td>
-                    <table width="100%">
+                      <!-- SUMMARY -->
                       <tr>
-                        <td><strong>Pass Rate</strong></td>
-                        <td align="right"><strong>${{ env.PASS_RATE }}%</strong></td>
-                      </tr>
-                    </table>
+                        <td style="padding:20px;">
+                          <table width="100%" cellpadding="10" cellspacing="0">
+                            <tr>
             
-                    <table width="100%" style="background:#e5e7e9; height:12px; border-radius:6px;">
+                              <td align="center" style="background:#eafaf1; border-radius:6px;">
+                                <h2 style="color:#27ae60; margin:0;">${{ env.PASSED }}</h2>
+                                <p style="margin:0;">Passed</p>
+                              </td>
+            
+                              <td align="center" style="background:#fdecea; border-radius:6px;">
+                                <h2 style="color:#e74c3c; margin:0;">${{ env.FAILED }}</h2>
+                                <p style="margin:0;">Failed</p>
+                              </td>
+            
+                              <td align="center" style="background:#fff8e1; border-radius:6px;">
+                                <h2 style="color:#f39c12; margin:0;">${{ env.SKIPPED }}</h2>
+                                <p style="margin:0;">Skipped</p>
+                              </td>
+            
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+            
+                      <!-- PASS RATE -->
                       <tr>
-                        <td width="${{ env.PASS_RATE }}%" bgcolor="#28b463"></td>
-                        <td></td>
+                        <td style="padding:0 20px 20px 20px;">
+                          <table width="100%" cellpadding="15" cellspacing="0"
+                                 style="background:#f0f4ff; border-radius:6px;">
+                            <tr>
+                              <td align="center">
+                                <h1 style="margin:0; color:#2E86C1;">
+                                  ${{ env.PASS_RATE }}%
+                                </h1>
+                                <p style="margin:0;">Overall Pass Rate</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
                       </tr>
+            
+                      <!-- DETAILS -->
+                      <tr>
+                        <td style="padding:0 20px 20px 20px;">
+                          <table width="100%" cellpadding="8" cellspacing="0"
+                                 style="border:1px solid #e5e7eb; border-collapse:collapse;">
+                            <tr style="background:#f8fafc;">
+                              <th align="left" style="padding:8px;">Metric</th>
+                              <th align="left" style="padding:8px;">Value</th>
+                            </tr>
+            
+                            <tr>
+                              <td style="padding:8px;">Total Tests</td>
+                              <td style="padding:8px;">${{ env.TOTAL }}</td>
+                            </tr>
+            
+                            <tr>
+                              <td style="padding:8px;">Environment</td>
+                              <td style="padding:8px;">${{ env.RUNON_ENV }}</td>
+                            </tr>
+            
+                            <tr>
+                              <td style="padding:8px;">Repository</td>
+                              <td style="padding:8px;">${{ github.repository }}</td>
+                            </tr>
+            
+                            <tr>
+                              <td style="padding:8px;">Run ID</td>
+                              <td style="padding:8px;">${{ github.run_id }}</td>
+                            </tr>
+            
+                          </table>
+                        </td>
+                      </tr>
+            
+                      <!-- BUTTON -->
+                      <tr>
+                        <td align="center" style="padding:20px;">
+                          <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                             style="background:#2E86C1; color:white; padding:12px 25px; 
+                                    text-decoration:none; border-radius:5px;">
+                             View Full Report
+                          </a>
+                        </td>
+                      </tr>
+            
+                      <!-- FOOTER -->
+                      <tr>
+                        <td align="center" style="font-size:12px; color:#999; padding:15px;">
+                          Generated automatically by GitHub Actions CI.
+                        </td>
+                      </tr>
+            
                     </table>
+            
                   </td>
                 </tr>
-            
-                <!-- Details -->
-                <tr>
-                  <td style="padding-top:15px; font-size:14px; color:#555;">
-                    <p><strong>Total Tests:</strong> ${{ env.TOTAL }}</p>
-                    <p><strong>Triggered By:</strong> GitHub Actions CI</p>
-                  </td>
-                </tr>
-            
-                <!-- Button -->
-                <tr>
-                  <td align="center" style="padding-top:20px;">
-                    <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                       style="background:#2E86C1; color:#ffffff; padding:12px 25px; 
-                              text-decoration:none; border-radius:6px; font-weight:bold;">
-                      View Full Report
-                    </a>
-                  </td>
-                </tr>
-            
-                <tr>
-                  <td style="padding-top:20px; font-size:12px; color:#999; text-align:center;">
-                    Generated automatically by GitHub Actions CI.
-                  </td>
-                </tr>
-            
               </table>
-            </div>
+            
+            </body>
