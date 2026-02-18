@@ -191,9 +191,6 @@ jobs:
                       <tr>
                         <td style="background:#1f3a5f; color:white; padding:20px; border-radius:8px 8px 0 0;">
                           <h2 style="margin:0;">OneMAC SMART Automation</h2>
-                          <p style="margin:5px 0 0 0; font-size:13px;">
-                            Run #${{ github.run_number }} | Branch: ${{ github.ref_name }}
-                          </p>
                         </td>
                       </tr>
             
@@ -264,12 +261,6 @@ jobs:
                               <td style="padding:8px;">Repository</td>
                               <td style="padding:8px;">${{ github.repository }}</td>
                             </tr>
-            
-                            <tr>
-                              <td style="padding:8px;">Run ID</td>
-                              <td style="padding:8px;">${{ github.run_id }}</td>
-                            </tr>
-            
                           </table>
                         </td>
                       </tr>
