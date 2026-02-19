@@ -26,6 +26,8 @@ public class NewSPAPage {
     private static final By CANCEL = By.xpath("//button[text()='Cancel']");
     private static final By CANCEL_CLOSE = By.cssSelector("button[title=\"Cancel and close\"]");
 
+    private static final By MODAL = By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]");
+
     public NewSPAPage(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
@@ -37,10 +39,13 @@ public class NewSPAPage {
 
     public void clickCancelButton() {
         utils.clickElement(CANCEL);
+        utils.waitForInvisibility(MODAL);
+
     }
 
     public void clickCancelAndClose() {
         utils.clickElement(CANCEL_CLOSE);
+        utils.waitForInvisibility(MODAL);
     }
 
     public void clickNewSubmission() {

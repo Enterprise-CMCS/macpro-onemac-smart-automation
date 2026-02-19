@@ -96,7 +96,7 @@ jobs:
           }
 
           $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
-          $runOn = $runOnLine.ToString().Split("=")[1].Trim().ToLower()
+          $runOn = $runOnLine.ToString().Split("=")[1].Trim()
 
           if (-not $runOn) {
             Write-Output "runOn not set in config.properties"
@@ -242,23 +242,18 @@ jobs:
                         <td style="padding:0 20px 20px 20px;">
                           <table width="100%" cellpadding="8" cellspacing="0"
                                  style="border:1px solid #e5e7eb; border-collapse:collapse;">
-                            <tr style="background:#f8fafc;">
-                              <th align="left" style="padding:8px;">Metric</th>
-                              <th align="left" style="padding:8px;">Value</th>
-                            </tr>
-            
                             <tr>
-                              <td style="padding:8px;">Total Tests</td>
+                              <td style="padding:8px; font-weight:bold;">Total Tests:</td>
                               <td style="padding:8px;">${{ env.TOTAL }}</td>
                             </tr>
             
                             <tr>
-                              <td style="padding:8px;">Environment</td>
+                              <td style="padding:8px; font-weight:bold;">Environment:</td>
                               <td style="padding:8px;">${{ env.RUNON_ENV }}</td>
                             </tr>
             
                             <tr>
-                              <td style="padding:8px;">Repository</td>
+                              <td style="padding:8px; font-weight:bold;">Repository:</td>
                               <td style="padding:8px;">${{ github.repository }}</td>
                             </tr>
                           </table>

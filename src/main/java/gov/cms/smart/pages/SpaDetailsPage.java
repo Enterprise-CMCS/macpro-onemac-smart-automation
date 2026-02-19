@@ -41,6 +41,7 @@ public class SpaDetailsPage {
 
     public void clickCancel() {
         utils.clickElement(CANCEL);
+        utils.waitForInvisibility(CANCEL);
     }
 
     public void details() {

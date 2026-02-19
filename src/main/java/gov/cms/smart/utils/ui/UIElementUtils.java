@@ -381,7 +381,6 @@ public class UIElementUtils {
     }
 
 
-
     public boolean elementContainsText(WebDriver driver, By locator, String expectedText) {
         try {
             return driver.findElement(locator)
@@ -391,9 +390,81 @@ public class UIElementUtils {
             return false;
         }
     }
+    public void waitForPageLoad(WebDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState")
+                .equals("complete"));
+    }
+    public void waitForSalesforceLoading(WebDriver driver) {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+
+        // 1. Browser load
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState")
+                .equals("complete"));
+
+        // 2. Lightning overlay spinner
+        wait.ignoring(StaleElementReferenceException.class)
+                .until(driver1 -> {
+                    List<WebElement> overlays =
+                            driver1.findElements(By.cssSelector(".slds-spinner_container"));
+
+                    for (WebElement overlay : overlays) {
+                        if (overlay.isDisplayed()) {
+                            return false; // still loading
+                        }
+                    }
+                    return true;
+                });
+
+        // 3. Standard spinner (recommended to include)
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector(".slds-spinner")));
+    }
+
+
+    public void waitForSalesforcePageToFullyLoad(WebDriver driver) {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+
+        // 1. Wait for document ready
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState")
+                .equals("complete"));
+
+        // 2. Wait for Lightning spinners
+        wait.until(driver1 -> {
+            List<WebElement> spinners = driver1.findElements(By.cssSelector(".slds-spinner"));
+            return spinners.isEmpty() || spinners.stream().allMatch(e -> !e.isDisplayed());
+        });
+
+        // 3. Wait for Aura overlay
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector(".auraLoadingBox")));
+    }
+    public void waitForLightningApp(WebDriver driver) {
+        waitForPageLoad(driver);
+        waitForSalesforcePageToFullyLoad(driver);
+    }
+
+
+    public void waitForSalesforceSpinnerToDisappear(WebDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.cssSelector(".slds-spinner")));
+        } catch (TimeoutException e) {
+            System.out.println("Spinner not found or already disappeared.");
+        }
+    }
 
     public void openRecord(String recordId) {
         waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
-        driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]")).click();
+        clickElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]"));
+        // driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]")).click();
     }
 }

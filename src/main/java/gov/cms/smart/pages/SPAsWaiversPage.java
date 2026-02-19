@@ -26,12 +26,12 @@ public class SPAsWaiversPage {
     private static final By SRT_SAVE_ASSIGNMENT = By.xpath("//button[text()=\"Save Assignments\"]");
     private static final By SRT1_CELL = By.xpath("//span[@title=\"Submission Review Team Number\"]/ancestor::table//tbody/tr[1]//th/lightning-primitive-cell-factory");
     private static final By SRT2_CELL = By.xpath("//span[@title=\"Submission Review Team Number\"]/ancestor::table//tbody/tr[2]//th/lightning-primitive-cell-factory");
-
+    private static final By HOME_PAGE = By.xpath("//span[text()=\"Home\"]/parent::a");
     private static final By SAVE = By.xpath("//button[text()=\"Save\"]");
     private static final By CREATE_RAI = By.xpath("//button[@name=\"SMART_CMCS_SPA_Waiver__c.Create_RAI\"]");
     private static final By RAI_TEXT = By.xpath("//div[@role=\"textbox\"]/p");
     private static final By SAVE_RAI = By.xpath("//footer/button/span[text()=\"Save\"]");
-
+    private static final By ALERT = By.xpath("//strong[text()=\"ALERT!\"]");
 
     private final WebDriver driver;
     private final UIElementUtils utils;
@@ -41,12 +41,23 @@ public class SPAsWaiversPage {
         this.utils = utils;
     }
 
+
+    public HomePage goToHomePage() {
+        utils.clickElement(HOME_PAGE);
+        utils.waitForVisibility(ALERT);
+
+
+        return PageFactory.getHomePage(driver, utils);
+    }
+
     public NewSPAPage clickNew() {
         utils.clickElement(NEW_BUTTON);
         return PageFactory.getNewSPAPage(driver, utils);
     }
 
     public SpaDetailsPage openExistingRecord(SpaPackage spaPackage) {
+        driver.navigate().refresh();
+        utils.clearInput(SEARCH_INPUT);
         utils.sendKeys(SEARCH_INPUT, spaPackage.getPackageId());
         utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
         utils.openRecord(spaPackage.getPackageId());
