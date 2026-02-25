@@ -9,14 +9,14 @@ public class ExtentReportManager {
 
     public static ExtentReports getInstance() {
         if (extent == null) {
+            new java.io.File("extent-report").mkdirs();
+
             extent = new ExtentReports();
-            // 1. Setup HTML Report (Spark)
-            ExtentSparkReporter spark = new ExtentSparkReporter("extent-report/OneMAC-SMART-TestReport.html");
-            spark.config().setReportName("OneMAC SMART Automated Test Report");
-            spark.config().setDocumentTitle("Test Results");
-            // 2. Setup JSON Report
-            JsonFormatter json = new JsonFormatter("extent-report/OneMAC-SMART-TestReport.json");
-            // 3. Attach both reporters
+            ExtentSparkReporter spark =
+                    new ExtentSparkReporter("extent-report/OneMAC-SMART-TestReport.html");
+            JsonFormatter json =
+                    new JsonFormatter("extent-report/OneMAC-SMART-TestReport.json");
+
             extent.attachReporter(spark, json);
         }
         return extent;

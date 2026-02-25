@@ -49,7 +49,7 @@ public class CPOCUser {
     }
 
     public void createSPA(String state) throws InterruptedException {
-        PageFactory.getNewSPAPage(driver, utils).createSPA(state);
+        //PageFactory.getNewSPAPage(driver, utils).createSPA(state);
     }
 
 

@@ -49,6 +49,15 @@ public class UIElementUtils {
         }
     }
 
+    public void scrollToElement(By locator) {
+        WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(locator)
+        );
+
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+    }
+
     private WebElement waitForVisible(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
@@ -231,6 +240,10 @@ public class UIElementUtils {
         return getText(locator);
     }
 
+    public boolean waitForTextToBePresent(By locator, String expectedText) {
+        return wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, expectedText));
+    }
+
     /* -------------------- DROPDOWNS -------------------- */
 
     public void selectDropdownBy(By optionLocator, String value) throws InterruptedException {
@@ -390,6 +403,7 @@ public class UIElementUtils {
             return false;
         }
     }
+
     public void waitForPageLoad(WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
@@ -397,6 +411,7 @@ public class UIElementUtils {
                 .executeScript("return document.readyState")
                 .equals("complete"));
     }
+
     public void waitForSalesforceLoading(WebDriver driver) {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50));
@@ -445,6 +460,7 @@ public class UIElementUtils {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
                 By.cssSelector(".auraLoadingBox")));
     }
+
     public void waitForLightningApp(WebDriver driver) {
         waitForPageLoad(driver);
         waitForSalesforcePageToFullyLoad(driver);

@@ -3,6 +3,8 @@ package gov.cms.smart.pages;
 import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.utils.data.SpaGenerator;
 import gov.cms.smart.utils.ui.UIElementUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -27,6 +29,7 @@ public class NewSPAPage {
     private static final By CANCEL_CLOSE = By.cssSelector("button[title=\"Cancel and close\"]");
 
     private static final By MODAL = By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]");
+    private static final Logger logger = LogManager.getLogger();
 
     public NewSPAPage(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
@@ -57,18 +60,43 @@ public class NewSPAPage {
         utils.javaScriptClicker(By.xpath(authorityXpath));
     }
 
+    private SpaPackage createSpaInternal(String state, String authority)
+            throws InterruptedException {
 
-    public SpaPackage createSPA(String state) throws InterruptedException {
-        SpaPackage spa = SpaGenerator.createSpa(state, "Medicaid SPA");
+        logger.info("Creating {}...", authority);
+
+        SpaPackage spa = SpaGenerator.createSpa(state, authority);
+
         selectAuthority(spa.getAuthority());
         clickNextButton();
+
         utils.sendKeys(SPA_ID, spa.getPackageId());
-        utils.sendKeys(INITIAL_SUBMISSION_DATE, utils.getTodayDateFormatted());
         utils.clickElement(STATE_COMBO_BOX);
-        utils.selectDropdownBy(COMBO_BOX_ITEMS, utils.getStateFullName(state));
+        utils.selectDropdownBy(COMBO_BOX_ITEMS,
+                utils.getStateFullName(state));
+
+        utils.sendKeys(INITIAL_SUBMISSION_DATE,
+                utils.getTodayDateFormatted());
+
         utils.clickElement(SAVE);
+
         utils.isVisible(SUCCESS_MESSAGE);
+
+        logger.info("{} has been successfully created.", authority);
+
         return spa;
+    }
+    public boolean createSPA(String state, String authority)
+            throws InterruptedException {
+
+        createSpaInternal(state, authority);
+        return utils.isVisible(SUCCESS_MESSAGE);
+    }
+
+    public SpaPackage createSPARecord(String state, String authority)
+            throws InterruptedException {
+
+        return createSpaInternal(state, authority);
     }
 
 

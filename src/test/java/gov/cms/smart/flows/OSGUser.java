@@ -1,5 +1,6 @@
 package gov.cms.smart.flows;
 
+import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.pages.HomePage;
 import gov.cms.smart.pages.SPAsWaiversPage;
 import gov.cms.smart.pages.SpaDetailsPage;
@@ -28,6 +29,11 @@ public class OSGUser {
         return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret);
     }
 
+    public void verifyLogin() {
+
+    }
+
+
     public HomePage login() {
         return PageFactory.getLoginPage(driver, utils).login(TestContext.osgUsername());
     }
@@ -46,9 +52,9 @@ public class OSGUser {
         return PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
     }
 
-    public void createSPA(String state) throws InterruptedException {
-        PageFactory.getNewSPAPage(driver, utils).createSPA(state);
-    }
+    /*public SpaPackage createSPA(String state) throws InterruptedException {
+     // return   PageFactory.getNewSPAPage(driver, utils).createSPA(state);
+    }*/
 
     /*public void openExistingRecord(String state, String authority) {
         PageFactory.getSpaWaiversPage(driver, utils).openExistingRecord(state, authority);

@@ -20,23 +20,24 @@ public class SRTUser {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret(){
+    public HomePage loginWithSharedSecret() {
         String srtSharedSecret = TestContext.srtSharedSecret();
         String srtUsername = TestContext.srtUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername,srtSharedSecret);
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername, srtSharedSecret);
     }
-    public HomePage login(){
+
+    public HomePage login() {
         String srtUsername = TestContext.srtUsername();
         return PageFactory.getLoginPage(driver, utils).login(srtUsername);
     }
 
-    public HomePage loginWithSRT2SharedSecret(){
+    public HomePage loginWithSRT2SharedSecret() {
         String srtSharedSecret = TestContext.srt2SharedSecret();
         String srtUsername = TestContext.srtUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername,srtSharedSecret);
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername, srtSharedSecret);
     }
 
-    public HomePage loginAsSRT2(){
+    public HomePage loginAsSRT2() {
         return PageFactory.getLoginPage(driver, utils).login(TestContext.srt2Username());
     }
 
@@ -55,7 +56,11 @@ public class SRTUser {
     }
 
     public void createSPA(String state) throws InterruptedException {
-        PageFactory.getNewSPAPage(driver, utils).createSPA(state);
+        //PageFactory.getNewSPAPage(driver, utils).createSPA(state);
+    }
+
+    public boolean isNewButtonPresent() {
+        return PageFactory.getSpaWaiversPage(driver, utils).isNewButtonPresent();
     }
 
 

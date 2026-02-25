@@ -4,6 +4,7 @@ package gov.cms.smart.base;
 import gov.cms.smart.flows.CPOCUser;
 import gov.cms.smart.flows.OSGUser;
 import gov.cms.smart.flows.SRTUser;
+import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.DriverFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
@@ -13,6 +14,10 @@ import org.openqa.selenium.WebDriver;
 @Getter
 public class BaseTest {
 
+    public SpaPackage spaPackage;
+    public OSGUser osgUser;
+    public CPOCUser cpocUser;
+    public SRTUser srtUser;
     // ThreadLocal driver for parallel safety
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
@@ -44,9 +49,9 @@ public class BaseTest {
     protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
         webDriver.get(TestContext.baseUrl());         // environment-aware URL
-      //  webDriver.manage().window().maximize();
+        //  webDriver.manage().window().maximize();
         driver.set(webDriver);
-        utils = new UIElementUtils(getDriver(), 15);
+        utils = new UIElementUtils(getDriver(), 10);
     }
 
     /**

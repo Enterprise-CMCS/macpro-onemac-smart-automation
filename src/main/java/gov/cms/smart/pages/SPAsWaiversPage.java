@@ -55,6 +55,9 @@ public class SPAsWaiversPage {
         return PageFactory.getNewSPAPage(driver, utils);
     }
 
+    public boolean isNewButtonPresent(){
+        return utils.isVisible(NEW_BUTTON);
+    }
     public SpaDetailsPage openExistingRecord(SpaPackage spaPackage) {
         driver.navigate().refresh();
         utils.clearInput(SEARCH_INPUT);
@@ -65,15 +68,14 @@ public class SPAsWaiversPage {
     }
 
 
-    public SPAsWaiversPage openRecordFromAllRecordsView(SpaPackage spa) throws InterruptedException {
+    public SpaDetailsPage openRecordFromAllRecordsView(SpaPackage spa) throws InterruptedException {
         utils.clickElement(RECORDS_HEADER);
         utils.selectDropdownBy(HEADER_DROPDOWN, "All Records");
         utils.sendKeys(SEARCH_INPUT, spa.getPackageId());
         utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
         utils.openRecord(spa.getPackageId());
         logger.info("Opened SPA: {}", spa.getPackageId());
-
-        return this;
+        return PageFactory.getSpaDetailsPage(driver, utils);
     }
 
 

@@ -2,7 +2,14 @@
 <suite name="OneMACSmart">
     <test name="OneMacSmart UI Tests">
         <classes>
-            <class name="gov.cms.smart.tests.MedicaidSPAValidationTests"/>
+            <class name="gov.cms.smart.tests.AssignmentAndRouting"/>
+            <class name="gov.cms.smart.tests.RAIManagement"/>
+            <class name="gov.cms.smart.tests.RecordLifeCycleManagement"/>
+            <class name="gov.cms.smart.tests.SRTReviewWorkflow"/>
+            <class name="gov.cms.smart.tests.TimelineSLAManagement"/>
+            <class name="gov.cms.smart.tests.UserAccessPermissions"/>
+            <class name="gov.cms.smart.tests.ValidationsAndBusinessRules"/>
+            <class name="gov.cms.smart.tests.WorkflowStatusTransitions"/>
         </classes>
     </test>
     <listeners>
