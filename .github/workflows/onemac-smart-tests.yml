@@ -103,8 +103,7 @@ jobs:
           path: |
             extent-report/**
             screenshots/**
-            src/test/resources/TestCoverageDashboard*.xlsx
-            target/test-classes/TestCoverageDashboard*.xlsx
+            dashboard/TestCoverageDashboard/**
           if-no-files-found: warn
 
       - name: Configure Git Identity
