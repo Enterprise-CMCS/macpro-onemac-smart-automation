@@ -55,6 +55,22 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "BROWSER=$browser"
           Add-Content -Path $env:GITHUB_ENV -Value "HEADLESS=$headless"
 
+      - name: Set RUNON_ENV from config
+        shell: pwsh
+        run: |
+          $configPath = "src/test/resources/config.properties"
+
+          $runOnLine = Select-String -Path $configPath -Pattern "^runOn\s*="
+          $runOn = $runOnLine.ToString().Split("=")[1].Trim()
+
+          if (-not $runOn) {
+            Write-Output "runOn not set in config.properties"
+            exit 1
+          }
+
+          Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
+          Write-Output "RUNON_ENV set to $runOn"
+
       - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true
@@ -165,7 +181,7 @@ jobs:
           echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
           echo "TOTAL=$TOTAL" >> $GITHUB_ENV
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
-          
+
       - name: Send Slack Notification
         if: always()
         shell: bash
@@ -174,11 +190,11 @@ jobs:
         run: |
           # Decide overall status
           if [ "${{ env.FAILED }}" -gt 0 ]; then
-            STATUS="FAILED ❌"
+            STATUS="FAILED"
           elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
-            STATUS="PASSED WITH SKIPS ⚠️"
+            STATUS="PASSED WITH SKIPS"
           else
-            STATUS="PASSED ✅"
+            STATUS="PASSED"
           fi
 
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -227,7 +243,7 @@ jobs:
           curl -sS -X POST -H 'Content-type: application/json' \
             --data "$payload" \
             "$SLACK_WEBHOOK_URL"
-          
+
       - name: Send Extent Report Email
         if: always()
         uses: dawidd6/action-send-mail@v3
