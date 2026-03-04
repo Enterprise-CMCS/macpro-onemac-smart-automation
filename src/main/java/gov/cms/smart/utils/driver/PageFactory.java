@@ -19,9 +19,13 @@ public class PageFactory {
         return new SPAsWaiversPage(driver, ui);
     }
 
-    public static SpaDetailsPage getSpaDetailsPage(WebDriver driver, UIElementUtils ui) {
-        return new SpaDetailsPage(driver, ui);
+    public static DetailsTab getSpaDetailsPage(WebDriver driver, UIElementUtils ui) {
+        return new DetailsTab(driver, ui);
     }
+    public static ReviewTab getReviewTab(WebDriver driver, UIElementUtils ui) {
+        return new ReviewTab(driver, ui);
+    }
+
 
     public static NewSPAPage getNewSPAPage(WebDriver driver, UIElementUtils ui) {
         return new NewSPAPage(driver, ui);

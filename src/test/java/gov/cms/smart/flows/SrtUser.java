@@ -1,5 +1,6 @@
 package gov.cms.smart.flows;
 
+import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.pages.HomePage;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.PageFactory;
@@ -8,28 +9,54 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
-public class SRTUser {
+public class SrtUser {
 
     private static final Logger logger = LogManager.getLogger();
     private final WebDriver driver;
     private final UIElementUtils utils;
 
 
-    public SRTUser(WebDriver driver, UIElementUtils utils) {
+    public SrtUser(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret() {
-        String srtSharedSecret = TestContext.srtSharedSecret();
-        String srtUsername = TestContext.srtUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername, srtSharedSecret);
+    public void login() {
+        String sharedSecret = TestContext.srtSharedSecret();
+        String username = TestContext.srtUsername();
+        String password = TestContext.srtPassword();
+        PageFactory.
+                getLoginPage(driver, utils).
+                loginWithSharedSecret(username, sharedSecret, password);
     }
 
-    public HomePage login() {
+    public void goToSpasWaiversPage() {
+        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
+    }
+
+    public void openRecord(SpaPackage spaPackage) throws InterruptedException {
+        PageFactory.getSpaWaiversPage(driver, utils).openRecordFromAllRecords(spaPackage);
+    }
+
+    public void goToReviewTab(){
+        PageFactory.getSpaWaiversPage(driver, utils).goToReviewTab();
+    }
+
+/*
+    public ReviewTab goToReviewTab() {
+
+        return PageFactory.
+                getLoginPage(driver, utils).
+                loginWithSharedSecret(username, sharedSecret, password).
+                goToSpasWaiversPage().openRecordFromAllRecordsView()
+    }
+*/
+
+
+    /*public HomePage login() {
         String srtUsername = TestContext.srtUsername();
         return PageFactory.getLoginPage(driver, utils).login(srtUsername);
-    }
+    }*/
 
     public HomePage loginWithSRT2SharedSecret() {
         String srtSharedSecret = TestContext.srt2SharedSecret();

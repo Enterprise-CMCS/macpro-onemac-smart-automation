@@ -13,25 +13,26 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
 
-public class RecordLifeCycleManagement extends BaseTest {
+public class RecordLifecycleTests extends BaseTest {
 
-    @BeforeClass
+   /* @BeforeClass
     public void setup() {
-       /* createDriverSession();
+        createDriverSession();
         osgUser = createNewOSGUser();
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
-        osgUser.loginWithSharedSecret();*/
+        osgUser.loginWithSharedSecret();
     }
-  /*  @DataProvider
+
+    @DataProvider
     public Object[][] priorityLevels() {
         return new Object[][]{
                 {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
                 {PriorityCode.CUSTOMARY_REVIEW, CodingAssessment.UP_CODED},
                 {PriorityCode.EXPEDITED_REVIEW, CodingAssessment.DOWN_CODED}
         };
-    }*/
+    }
 
- /*   @Test(dataProvider = "priorityLevels",  groups = {"Record Lifecycle Management"})
+    @Test(dataProvider = "priorityLevels", groups = {"Record Lifecycle Management"})
     public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
         osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
         PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).
@@ -40,84 +41,82 @@ public class RecordLifeCycleManagement extends BaseTest {
                 getSpaDetailsPage(getDriver(), getUtils()).
                 readPriorityInfo();
         TestAssert.assertEquals(actual, expected, "");
-    }*/
+    }
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyThatCancelButtonIsFunctional() {
-     /*   osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelButton();
+        osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelButton();
         boolean isInvisible = getUtils().isElementInvisible(By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]"));
-        TestAssert.assertTrue(isInvisible, "Modal should not be present");*/
+        TestAssert.assertTrue(isInvisible, "Modal should not be present");
     }
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyThatCancelAndCloseButtonIsFunctional() {
-  /*      osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelAndClose();
+        osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelAndClose();
         boolean isInvisible = getUtils().isElementInvisible(By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]"));
-        TestAssert.assertTrue(isInvisible, "Modal should not be present");*/
+        TestAssert.assertTrue(isInvisible, "Modal should not be present");
 
     }
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyindentifyinginfomedicaidspa() {
-   /*     osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
         IdentifyingInfo actual = new IdentifyingInfo();
         actual.setAuthority(spaPackage.getAuthority());
         actual.setIdNumber(spaPackage.getPackageId());
         String state = getUtils().getStateFullName(spaPackage.getState());
         actual.setState(state);
         IdentifyingInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readIdentifyingInfo();
-        TestAssert.assertEquals(actual, expected, "Should save identifying information.");*/
+        TestAssert.assertEquals(actual, expected, "Should save identifying information.");
     }
 
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyPriorityInformationSectionIsVisible() throws InterruptedException {
-    /*    boolean isPrioritySectionVisible =
-                PageFactory.getHomePage(getDriver(), getUtils()).
-                        goToSpasWaiversPage().
-                        openRecordFromAllRecordsView(spaPackage).
-                        isPriorityInfoPresent();
+        PageFactory.getHomePage(getDriver(), getUtils()).
+                goToSpasWaiversPage().
+                openRecordFromAllRecords(spaPackage);
+        boolean isPrioritySectionVisible = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isPriorityInfoPresent();
         TestAssert.assertTrue(
                 isPrioritySectionVisible,
                 "Priority Information section is not visible on Medicaid SPA details page"
-        );*/
+        );
     }
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyPlanInformation() {
-/*        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
         PlanInfo actual = PageFactory.
                 getSpaDetailsPage(getDriver(), getUtils())
                 .fillPlanInfo("Test Subject", "Test Description");
         PlanInfo expected = PageFactory.
                 getSpaDetailsPage(getDriver(), getUtils()).
                 readPlanInfo();
-        TestAssert.assertEquals(actual, expected, "Should save plan information");*/
+        TestAssert.assertEquals(actual, expected, "Should save plan information");
     }
 
 
     @Test(groups = {"Record Lifecycle Management"})
     public void verifyPriorityFieldsAreGroupedUnderPriorityInformationSection() throws InterruptedException {
-    /*    boolean areFieldsGroupedCorrectly = PageFactory.getHomePage(getDriver(), getUtils()).
+        PageFactory.getHomePage(getDriver(), getUtils()).
                 goToSpasWaiversPage().
-                openRecordFromAllRecordsView(spaPackage).
-                areFieldsGroupedCorrectly();
+                openRecordFromAllRecords(spaPackage);
+        boolean areFieldsGroupedCorrectly = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).areFieldsGroupedCorrectly();
         TestAssert.assertTrue(
                 areFieldsGroupedCorrectly,
                 "Priority fields are not properly grouped within the Priority Information section"
-        );*/
+        );
     }
 
 
- /*   @AfterMethod
+    @AfterMethod
     public void goBackToHomePage() {
         PageFactory.
                 getSpaDetailsPage(getDriver(), getUtils()).
-                goToHomePage().
-                goToSpasWaiversPage();
-    }*/
+                goToHomePage();
+    }
 
-   /* @AfterClass(alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() throws InterruptedException {
         WebDriver d = getDriver();
         if (d != null) {

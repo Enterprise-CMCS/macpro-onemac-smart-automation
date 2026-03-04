@@ -13,6 +13,7 @@ public class HomePage {
     private final UIElementUtils utils;
     private static final By WAIVERS_SPA = By.xpath("//span[text()=\"SPAs or Waivers\"]/parent::a");
     private static final By RECENTLY_VIEWED = By.xpath("//span[text()=\"Recently Viewed\"]");
+    private static final By ALERT = By.xpath("//lightning-formatted-rich-text/span/p/strong[text()=\"ALERT!\"]");
     private static final Logger logger = LogManager.getLogger();
 
     public HomePage(WebDriver driver, UIElementUtils utils) {
@@ -21,8 +22,9 @@ public class HomePage {
     }
 
     public SPAsWaiversPage goToSpasWaiversPage() {
+      //  utils.waitForVisibility(ALERT);
         utils.clickElement(WAIVERS_SPA);
-        utils.waitForVisibility(RECENTLY_VIEWED);
+      //  utils.waitForVisibility(RECENTLY_VIEWED);
         logger.info("Navigated to SPAs & Waivers Page.");
         return PageFactory.getSpaWaiversPage(driver, utils);
     }

@@ -4,24 +4,22 @@ import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.utils.assertions.TestAssert;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.excel.ExcelPackageSelector;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class WorkflowStatusTransitions extends BaseTest {
+public class WorkflowStatusTransitionTests extends BaseTest {
 
-    /*@BeforeClass
+   /* @BeforeClass
     public void setup() {
         createDriverSession();
         osgUser = createNewOSGUser();
         osgUser.loginWithSharedSecret();
         spaPackage = ExcelPackageSelector.selectSpa("CO", "Medicaid SPA", "");
-    }*/
+    }
 
     @Test(groups = {"Workflow & Status Transitions"})
     public void verifyTypeAndSubtypeAreRemovedFromIdentifyingInformationSection() {
-       /* boolean isTypeVisible = PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().
+        boolean isTypeVisible = PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().
                 openExistingRecord(spaPackage).isTypeVisibleUnderIdentifyingInfo();
         boolean isSubtypeVisible = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isSubTypeVisibleUnderIdentifyingInfo();
 
@@ -32,18 +30,18 @@ public class WorkflowStatusTransitions extends BaseTest {
         TestAssert.assertFalse(
                 isSubtypeVisible,
                 "Subtype field should not be visible in Identifying Information section"
-        );*/
+        );
     }
 
     @Test(groups = {"Workflow & Status Transitions"})
     public void verifyTypeAndSubtypeAreDisplayedUnderSubmissionInformationSection() {
-    /*    boolean areFieldsDisplayedCorrectly = PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().
+    *//*    boolean areFieldsDisplayedCorrectly = PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().
                 openExistingRecord(spaPackage).isTypeAndSubTypeVisibleUnderSubmissionInfo();
-        TestAssert.assertTrue(areFieldsDisplayedCorrectly, "Type and Subtype fields are not displayed under Submission Information section");*/
+        TestAssert.assertTrue(areFieldsDisplayedCorrectly, "Type and Subtype fields are not displayed under Submission Information section");*//*
     }
 
     @Test(groups = {"Workflow & Status Transitions"})
-    public void verifySubStatusFieldIsPresentInCompletionStatusSection() {
+    public void verifySubStatusFieldIsPresentInCompletionStatusSection() {*/
      /*   boolean isSubStatusPresent = PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().
                 openExistingRecord(spaPackage).isSubStatusDisplayedUnderCompletionStatus();
         TestAssert.assertTrue(
@@ -62,4 +60,4 @@ public class WorkflowStatusTransitions extends BaseTest {
         }
     }*/
 
-}
+//}

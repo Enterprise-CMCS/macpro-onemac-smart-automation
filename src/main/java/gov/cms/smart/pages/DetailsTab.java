@@ -3,10 +3,13 @@ package gov.cms.smart.pages;
 import gov.cms.smart.models.IdentifyingInfo;
 import gov.cms.smart.models.PlanInfo;
 import gov.cms.smart.models.PriorityInfo;
+import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.models.enums.CodingAssessment;
 import gov.cms.smart.models.enums.PriorityCode;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -15,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpaDetailsPage {
+public class DetailsTab {
 
     private final WebDriver driver;
     private final UIElementUtils utils;
@@ -26,6 +29,7 @@ public class SpaDetailsPage {
     private static final By FINISH_BUTTON = By.xpath("//button[text()=\"Finish\"]");
     private static final By CPOC_TEXT_VAL = By.xpath("//span[text()=\"CMS Point of Contact (CPOC)\"]/../following-sibling::div//records-hoverable-link//span//span//span");
     private static final By CANCEL = By.xpath("//button[text()=\"Cancel\"]");
+    private static final By DISCARD_CHANGES = By.xpath("//button[text()=\"Discard Changes\"]");
     private static final By PRIORITY_INFO = By.xpath("//span[text()=\"Priority Information\"]");
     private static final By PRIORITY_CODE = By.xpath("//span[text()=\"Priority Information\"]/ancestor::flexipage-field-section2//span[text()=\"Priority Code\"]");
     private static final By CODING_ASSESSMENT = By.xpath("//span[text()=\"Priority Information\"]/ancestor::flexipage-field-section2//span[text()=\"Coding After Initial Assessment\"]");
@@ -38,11 +42,22 @@ public class SpaDetailsPage {
     public static final By MILESTONES_SECTION = By.xpath("//span[text()=\"Milestones\"]");
     private static final By SUB_STATUS = By.xpath("//span[text()=\"Completion Status\"]/ancestor::flexipage-field-section2//span[text()=\"Sub-Status\"]");
     private static final By HOME_PAGE = By.xpath("//span[text()=\"Home\"]/parent::a");
-    private static final By IDENTIFYING_INFORMATION = By.xpath("//span[text()=\"Identifying Information\"]");
+    public static final By IDENTIFYING_INFORMATION = By.xpath("//span[text()=\"Identifying Information\"]");
+    private static final By NEW = By.xpath("//button[text()=\"New\"]");
+    //private static final By SRT_SEARCH_INPUT = By.xpath("//input[@placeholder=\"Search Contacts...\"]");
+    private static final By SRT_SEARCH_INPUT = By.xpath("//input[@placeholder=\"Enter contact name or email...\"]");
+    private static final Logger logger = LogManager.getLogger();
 
-    public SpaDetailsPage(WebDriver driver, UIElementUtils utils) {
+    public DetailsTab(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
+    }
+
+    public void waitForPriorityInfoDataToSave(String priorityCode, String codingAssessment, String priorityComments, String dateOfCodingChange) {
+        utils.waitForFieldTextToBe("Priority Information", "Priority Code", priorityCode);
+        utils.waitForFieldTextToBe("Priority Information", "Coding After Initial Assessment", codingAssessment);
+        utils.waitForFieldTextToBe("Priority Information", "Priority Comments Memo", priorityComments);
+        utils.waitForFieldTextToBe("Priority Information", "Date Of Coding Change", dateOfCodingChange);
     }
 
     public boolean isTypeAndSubTypeVisibleUnderSubmissionInfo() {
@@ -90,11 +105,8 @@ public class SpaDetailsPage {
         utils.waitForInvisibility(CANCEL);
     }
 
-    public void details() {
-        Map<String, List<String>> typeToSubtypes = new HashMap<>();
-        typeToSubtypes.put("Eligibility", Arrays.asList("eligibility process", "MAGI", "citizenship document"));
-        typeToSubtypes.put("Enrollment", Arrays.asList("open enrollment", "special enrollment"));
-        typeToSubtypes.put("Verification", Arrays.asList("income verification", "identity verification"));
+    public void discardChanges() {
+        utils.clickElement(DISCARD_CHANGES);
     }
 
     public boolean validateSubtypes(String typeLabel, String typeValue, String subTypeLabel) throws InterruptedException {
@@ -121,6 +133,30 @@ public class SpaDetailsPage {
         }
     }
 
+    public boolean validateCompletionStatus(String typeLabel, String typeValue, String subTypeLabel) throws InterruptedException {
+        // Select the type in the first dropdown
+        utils.editByLabel("Priority Code");
+        utils.selectFromComboBoxByLabel(typeLabel, typeValue);
+        // Get actual options from the second dropdown
+        List<String> actualOptions = utils.getValuesFromDropdownByLabel(subTypeLabel);
+        Map<String, List<String>> typeToSubtypes = new HashMap<>();
+        typeToSubtypes.put("Closed", Arrays.asList("--None--", "Approved", "Disapproved", "Withdrawn"));
+        typeToSubtypes.put("First Clock - Under Review", Arrays.asList("--None--", "Intake Needed", "Pending Concurrence", "Pending Approval", "Pending Clearance"));
+        typeToSubtypes.put("Second Clock - Under Review", Arrays.asList("--None--", "Pending Concurrence", "Pending Approval", "Pending Clearance"));
+        typeToSubtypes.put("RAI", Arrays.asList("--None--", "RAI Issued", "RAI Withdraw Requested"));
+        // Get expected options from the map
+        List<String> expectedOptions = typeToSubtypes.get(typeValue);
+        // Compare
+        if (actualOptions.containsAll(expectedOptions) && actualOptions.size() == expectedOptions.size()) {
+            System.out.println("Validation passed for type: " + typeValue);
+            return true;
+        } else {
+            System.out.println("Validation failed for type: " + typeValue);
+            System.out.println("Expected: " + expectedOptions);
+            System.out.println("Actual: " + actualOptions);
+            return false;
+        }
+    }
 
     public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
         PriorityInfo priorityInfo = new PriorityInfo();
@@ -136,8 +172,8 @@ public class SpaDetailsPage {
         priorityInfo.setDateOfCodingChange(utils.getTodayDateFormatted());
         priorityInfo.setCodingAssessment(codingAssessment);
         utils.clickElement(SAVE);
-        Thread.sleep(1000);
-        utils.waitForInvisibility(SAVE);
+        waitForPriorityInfoDataToSave(priorityCode.getValue(), codingAssessment.getValue(), "Test", utils.getTodayDateFormatted());
+        //  utils.waitForInvisibility(SAVE);
         return priorityInfo;
     }
 
@@ -174,11 +210,32 @@ public class SpaDetailsPage {
         return planInfo;
     }
 
-    public By assignToMe() {
+    public boolean assignToMe(SpaPackage spaPackage) {
+        logger.info("Assigning SPA: {}...", spaPackage.getPackageId());
         utils.clickElement(ASSIGN_TO_ME);
         utils.waitForVisibility(ASSIGNMENT_SUCCESS);
         utils.clickElement(FINISH_BUTTON);
-        return CPOC_TEXT_VAL;
+        utils.waitForTextToBePresent(CPOC_TEXT_VAL, "CPOC4 AutomationCPOC");
+        logger.info("Successfully Assigned SPA: {} To CPOC4 AutomationCPOC", spaPackage.getPackageId());
+        return true;
+    }
+
+    public void srtAssignment() {
+       /* utils.clickElement(NEW);
+        utils.sendKeys(SRT_SEARCH_INPUT, "SRT Test Automation User");
+        By xpath = By.xpath("//ul[@aria-label=\"Search Results\"]/li/lightning-base-combobox-item//lightning-base-combobox-formatted-text[@title=\"SRT Test Automation User\"]/ancestor::li");
+        utils.clickElement(xpath);
+        utils.clickElement(SAVE);*/
+
+
+    /*    utils.waitForVisibility(By.xpath("//label[text()=\"Division\"]"));
+        utils.clickElement(SRT_SEARCH_BTN);
+        utils.clickElement(SRT_CHECKBOX);
+        utils.clickElement(SRT_ASSIGN_BTN);
+        utils.sendKeysToTextAreaByLabel("Assignment Notes", assignmentNotes);
+        utils.clickElement(SRT_SAVE_ASSIGNMENT);
+        logger.info("Successfully Assigned SRT.");*/
+
     }
 
     public void assignRecord() {

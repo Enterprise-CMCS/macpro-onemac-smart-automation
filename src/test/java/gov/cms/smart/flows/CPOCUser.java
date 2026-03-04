@@ -21,13 +21,14 @@ public class CPOCUser {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret(){
-        String cpocSharedSecret = TestContext.cpocSharedSecret();
+    public HomePage loginWithSharedSecret() {
         String cpocUsername = TestContext.cpocUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(cpocUsername,cpocSharedSecret);
+        String cpocSharedSecret = TestContext.cpocSharedSecret();
+        String password = TestContext.cpocPassword();
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(cpocUsername, cpocSharedSecret, password);
     }
 
-    public HomePage login(){
+    public HomePage login() {
         return PageFactory.getLoginPage(driver, utils).login(TestContext.cpocUsername());
     }
 
@@ -44,8 +45,9 @@ public class CPOCUser {
     public void goToSPAWaiversPage() {
         PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
     }
+
     public void openRecordFromAllRecordsView(SpaPackage spaPackage) throws InterruptedException {
-        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage().openRecordFromAllRecordsView(spaPackage);
+        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage().openRecordFromAllRecords(spaPackage);
     }
 
     public void createSPA(String state) throws InterruptedException {

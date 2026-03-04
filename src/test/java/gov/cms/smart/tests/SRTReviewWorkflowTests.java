@@ -2,7 +2,7 @@ package gov.cms.smart.tests;
 
 import org.testng.annotations.Test;
 
-public class SRTReviewWorkflow {
+public class SRTReviewWorkflowTests {
     @Test(groups = {"SRT Review Workflow"})
     public void testDashboard9() {
     }

@@ -4,6 +4,7 @@ import gov.cms.smart.utils.config.ConfigReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,10 +13,7 @@ import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UIElementUtils {
 
@@ -94,7 +92,6 @@ public class UIElementUtils {
     public void clickElement(By locator) {
         WebElement element = waitForClickable(locator);
         scrollIntoView(element);
-
         // If this is a lightning combobox wrapper, find the internal button
         if (element.getTagName().equals("lightning-base-combobox")) {
             try {
@@ -244,6 +241,10 @@ public class UIElementUtils {
         return wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, expectedText));
     }
 
+    public void waitForFieldTextToBe(String sectionName, String fieldName,String fieldTextValue) {
+        By field = By.xpath("//span[text()=\"" + sectionName + "\"]/ancestor::flexipage-field-section2//span[text()=\"" + fieldName+"\"]/../following-sibling::div//lightning-formatted-text");
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(field, fieldTextValue));
+    }
     /* -------------------- DROPDOWNS -------------------- */
 
     public void selectDropdownBy(By optionLocator, String value) throws InterruptedException {
@@ -285,6 +286,10 @@ public class UIElementUtils {
         wait.until(ExpectedConditions.numberOfElementsToBe(locator, num));
     }
 
+    public List<WebElement> waitForRecord(By locator) {
+        return wait.until(ExpectedConditions.numberOfElementsToBe(locator, 1));
+    }
+
     public void waitForNumberOfElementsToBe(By locator) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
@@ -302,6 +307,10 @@ public class UIElementUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate date = LocalDate.parse(dateString, formatter);
         return date.format(DateTimeFormatter.ofPattern("dd"));
+    }
+    public String getPastDate(int days) {
+        LocalDate date = LocalDate.now().minusDays(days);
+        return date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
     }
 
     /* -------------------- STATE HELPERS -------------------- */
@@ -479,7 +488,7 @@ public class UIElementUtils {
     }
 
     public void openRecord(String recordId) {
-        waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
+     //   waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
         clickElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]"));
         // driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]")).click();
     }

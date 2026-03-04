@@ -1,18 +1,6 @@
 package gov.cms.smart.tests;
 
 import gov.cms.smart.base.BaseTest;
-import gov.cms.smart.flows.CPOCUser;
-import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.flows.SRTUser;
-import gov.cms.smart.models.SpaPackage;
-import gov.cms.smart.utils.driver.PageFactory;
-import gov.cms.smart.utils.excel.ExcelPackageSelector;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
 
 public class MedicaidSPAFlowsTest extends BaseTest {
 
@@ -55,17 +43,7 @@ public class MedicaidSPAFlowsTest extends BaseTest {
         cpocUser.loginWithSharedSecret();
     }*/
 /*
-    @Test
-    public void verifySpaSRTAssignmentWorkflow() {
-        CPOCUser cpocUser = createNewCPOCUser();
-        cpocUser.login().goToSpasWaiversPage().openExistingRecord(ExcelPackageSelector.selectSpa("NY", "Medicaid SPA", ""));
-        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).assignSRT("SRT Test Automation User", "Test assignment");
-         goToSpasWaiversPage().assignToMe();
-        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).
-                openRecordFromAllRecordsView(ExcelPackageSelector.selectSpa("NY", "Medicaid SPA", "")).
-                assignSRT("Automation", "This is an automated test script for SRT assignment from CPOC");
 
-    }*/
 
 
   /*  @Test

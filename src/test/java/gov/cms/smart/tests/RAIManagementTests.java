@@ -2,7 +2,7 @@ package gov.cms.smart.tests;
 
 import org.testng.annotations.Test;
 
-public class RAIManagement {
+public class RAIManagementTests {
 
     @Test(groups = {"RAI Management"})
     public void testDashboard5() {

@@ -3,7 +3,7 @@ package gov.cms.smart.base;
 
 import gov.cms.smart.flows.CPOCUser;
 import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.flows.SRTUser;
+import gov.cms.smart.flows.SrtUser;
 import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.DriverFactory;
@@ -17,7 +17,7 @@ public class BaseTest {
     public SpaPackage spaPackage;
     public OSGUser osgUser;
     public CPOCUser cpocUser;
-    public SRTUser srtUser;
+    public SrtUser srtUser;
     // ThreadLocal driver for parallel safety
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
@@ -79,8 +79,8 @@ public class BaseTest {
         return new CPOCUser(getDriver(), getUtils());
     }
 
-    protected SRTUser createNewSRTUser() {
-        return new SRTUser(getDriver(), getUtils());
+    protected SrtUser createNewSRTUser() {
+        return new SrtUser(getDriver(), getUtils());
     }
 
 }

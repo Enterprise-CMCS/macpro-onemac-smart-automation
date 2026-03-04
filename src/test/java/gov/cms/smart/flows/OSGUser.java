@@ -1,9 +1,7 @@
 package gov.cms.smart.flows;
 
-import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.pages.HomePage;
 import gov.cms.smart.pages.SPAsWaiversPage;
-import gov.cms.smart.pages.SpaDetailsPage;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
@@ -26,7 +24,8 @@ public class OSGUser {
     public HomePage loginWithSharedSecret() {
         String osgSharedSecret = TestContext.osgSharedSecret();
         String osgUsername = TestContext.osgUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret);
+        String password = TestContext.osgPassword();
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret, password);
     }
 
     public void verifyLogin() {

@@ -2,7 +2,8 @@ package gov.cms.smart.tests;
 
 import org.testng.annotations.Test;
 
-public class TimelineSLAManagement {
+public class TimelineSLATests {
+
     @Test(groups = {"Timeline & SLA Management"})
     public void testDashboard13() {
     }

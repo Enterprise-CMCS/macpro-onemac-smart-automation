@@ -82,10 +82,11 @@ public class NewSPAPage {
 
         utils.isVisible(SUCCESS_MESSAGE);
 
-        logger.info("{} has been successfully created.", authority);
+        logger.info("{}: {} has been successfully created.", authority, spa.getPackageId());
 
         return spa;
     }
+
     public boolean createSPA(String state, String authority)
             throws InterruptedException {
 
@@ -95,7 +96,6 @@ public class NewSPAPage {
 
     public SpaPackage createSPARecord(String state, String authority)
             throws InterruptedException {
-
         return createSpaInternal(state, authority);
     }
 

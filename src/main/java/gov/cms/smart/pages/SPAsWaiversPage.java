@@ -7,9 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
+import java.time.Duration;
 
 public class SPAsWaiversPage {
 
@@ -32,7 +36,7 @@ public class SPAsWaiversPage {
     private static final By RAI_TEXT = By.xpath("//div[@role=\"textbox\"]/p");
     private static final By SAVE_RAI = By.xpath("//footer/button/span[text()=\"Save\"]");
     private static final By ALERT = By.xpath("//strong[text()=\"ALERT!\"]");
-
+    private static final By REVIEW_TAB = By.xpath("//a[text()=\"Review\"]/..");
     private final WebDriver driver;
     private final UIElementUtils utils;
 
@@ -41,6 +45,10 @@ public class SPAsWaiversPage {
         this.utils = utils;
     }
 
+    public ReviewTab goToReviewTab() {
+        utils.clickElement(REVIEW_TAB);
+        return PageFactory.getReviewTab(driver, utils);
+    }
 
     public HomePage goToHomePage() {
         utils.clickElement(HOME_PAGE);
@@ -55,10 +63,11 @@ public class SPAsWaiversPage {
         return PageFactory.getNewSPAPage(driver, utils);
     }
 
-    public boolean isNewButtonPresent(){
+    public boolean isNewButtonPresent() {
         return utils.isVisible(NEW_BUTTON);
     }
-    public SpaDetailsPage openExistingRecord(SpaPackage spaPackage) {
+
+    public DetailsTab openExistingRecord(SpaPackage spaPackage) {
         driver.navigate().refresh();
         utils.clearInput(SEARCH_INPUT);
         utils.sendKeys(SEARCH_INPUT, spaPackage.getPackageId());
@@ -68,19 +77,51 @@ public class SPAsWaiversPage {
     }
 
 
-    public SpaDetailsPage openRecordFromAllRecordsView(SpaPackage spa) throws InterruptedException {
+    public SPAsWaiversPage openRecordFromAllRecords(SpaPackage spa) throws InterruptedException {
         utils.clickElement(RECORDS_HEADER);
         utils.selectDropdownBy(HEADER_DROPDOWN, "All Records");
         utils.sendKeys(SEARCH_INPUT, spa.getPackageId());
         utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
         utils.openRecord(spa.getPackageId());
         logger.info("Opened SPA: {}", spa.getPackageId());
+        return this;
+    }
+
+    public DetailsTab cpocOpenRecordFromAll(SpaPackage spa) {
+        logger.info("Searching for SPA: {}", spa.getPackageId());
+        By recordLink = By.xpath(
+                "//lightning-datatable//a[@title='" + spa.getPackageId() + "']"
+        );
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        boolean recordFound = wait.until(driver -> {
+            driver.navigate().refresh();
+            utils.clickElement(RECORDS_HEADER);
+            try {
+                utils.selectDropdownBy(HEADER_DROPDOWN, "All Records");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            utils.clearInput(SEARCH_INPUT);
+            utils.sendKeys(SEARCH_INPUT, spa.getPackageId());
+            utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
+            return !driver.findElements(recordLink).isEmpty();
+        });
+        if (!recordFound) {
+            throw new TimeoutException("SPA record not found within 30 seconds: "
+                    + spa.getPackageId());
+        }
+        logger.info("Found SPA: {}", spa.getPackageId());
+
+        wait.until(ExpectedConditions.elementToBeClickable(recordLink));
+        utils.clickElement(recordLink);
+
+        logger.info("Opened SPA: {}", spa.getPackageId());
         return PageFactory.getSpaDetailsPage(driver, utils);
     }
 
 
     public void assignSRT(String srtName, String assignmentNotes) {
-        utils.clickElement(SRT_TAB);
+        //  utils.clickElement(SRT_TAB);
         utils.sendKeys(SRT_SEARCH_INPUT, srtName);
         utils.waitForVisibility(By.xpath("//label[text()=\"Division\"]"));
         utils.clickElement(SRT_SEARCH_BTN);

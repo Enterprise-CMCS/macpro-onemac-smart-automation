@@ -1,19 +1,9 @@
 package gov.cms.smart.tests;
 
 import gov.cms.smart.base.BaseTest;
-import gov.cms.smart.flows.CPOCUser;
-import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.flows.SRTUser;
-import gov.cms.smart.models.SpaPackage;
-import gov.cms.smart.utils.assertions.TestAssert;
-import gov.cms.smart.utils.excel.ExcelPackageSelector;
-import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class UserAccessPermissions extends BaseTest {
+public class UserAccessPermissionTests extends BaseTest {
 
 /*
     @BeforeMethod
@@ -22,34 +12,34 @@ public class UserAccessPermissions extends BaseTest {
     }
 */
 
-    @Test(testName = "UAP-001",
+   /* @Test(testName = "UAP-001",
             groups = {"User Access & Permissions"},
             description = "Verify that OSG user can create a Medicaid SPA record when all mandatory fields are provided")
     public void verifyOSGUserCanCreateMedicaidSPARecord() throws InterruptedException {
-     /*   osgUser = createNewOSGUser();
+     *//*   osgUser = createNewOSGUser();
         boolean isSPACreated = osgUser.loginWithSharedSecret().
                 goToSpasWaiversPage().
                 clickNew().
                 createSPA("CO", "Medicaid SPA");
-        TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");*/
+        TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");*//*
     }
 
     @Test(testName = "UAP-002",
             groups = {"User Access & Permissions"},
             description = "Verify that CPOC user can create a Medicaid SPA record when all mandatory fields are provided and record is saved successfully")
     public void verifyCPOCUserCanCreateMedicaidSPARecord() throws InterruptedException {
-       /* cpocUser = createNewCPOCUser();
+       *//* cpocUser = createNewCPOCUser();
         boolean isSPACreated = cpocUser.loginWithSharedSecret().
                 goToSpasWaiversPage().
                 clickNew().
                 createSPA("CO", "Medicaid SPA");
-        TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");*/
+        TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");*//*
     }
 
     @Test(testName = "UAP-003",
             groups = {"User Access & Permissions"},
             description = "Verify that users without OSG or CPOC role cannot create a Medicaid SPA record")
-    public void verifyNonOSGOrCPOCUserCannotCreateMedicaidSPARecord() {
+    public void verifyNonOSGOrCPOCUserCannotCreateMedicaidSPARecord() {*/
    /*     srtUser = createNewSRTUser();
         srtUser.loginWithSharedSecret();
         srtUser.goToSPAWaiversPage();
@@ -66,4 +56,4 @@ public class UserAccessPermissions extends BaseTest {
             d.quit();
         }
     }*/
-}
+//}

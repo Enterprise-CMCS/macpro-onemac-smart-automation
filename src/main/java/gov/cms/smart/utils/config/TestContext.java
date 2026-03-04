@@ -58,6 +58,20 @@ public final class TestContext {
         return ConfigReader.get("cpoc." + env() + ".secret");
 
     }
+    public static String osgPassword() {
+        return ConfigReader.get("osg." + env() + ".password");
+
+    }
+
+    public static String cpocPassword() {
+        return ConfigReader.get("cpoc." + env() + ".password");
+
+    }
+
+    public static String srtPassword() {
+        return ConfigReader.get("srt." + env() + ".password");
+
+    }
 
     public static String password() {
         return ConfigReader.get("password");
