@@ -209,3 +209,67 @@ jobs:
           echo "TOTAL=$TOTAL" >> $GITHUB_ENV
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
 
+      - name: Send Slack Notification
+        if: always()
+        shell: bash
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          # Decide overall status
+          if [ "${{ env.FAILED }}" -gt 0 ]; then
+            STATUS="FAILED"
+          elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
+            STATUS="PASSED WITH SKIPS"
+          else
+            STATUS="PASSED"
+          fi
+
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ARTIFACTS_URL="${RUN_URL}#artifacts"
+
+          payload=$(jq -n \
+            --arg title "*OneMAC SMART Automation Run* - $STATUS" \
+            --arg env "${{ env.RUNON_ENV }}" \
+            --arg passed "${{ env.PASSED }}" \
+            --arg failed "${{ env.FAILED }}" \
+            --arg skipped "${{ env.SKIPPED }}" \
+            --arg passrate "${{ env.PASS_RATE }}%" \
+            --arg runurl "$RUN_URL" \
+            --arg artifactsurl "$ARTIFACTS_URL" \
+            '{
+              "blocks": [
+                { "type": "section", "text": { "type": "mrkdwn", "text": $title } },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": ("*Environment:*\n" + $env) },
+                    { "type": "mrkdwn", "text": ("*Pass Rate:*\n" + $passrate) },
+                    { "type": "mrkdwn", "text": ("*Passed:*\n" + $passed) },
+                    { "type": "mrkdwn", "text": ("*Failed:*\n" + $failed) },
+                    { "type": "mrkdwn", "text": ("*Skipped:*\n" + $skipped) }
+                  ]
+                },
+                { "type": "context", "elements": [ { "type": "mrkdwn", "text": ("*Artifacts (Excel + reports):* " + $artifactsurl) } ] },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View GitHub Run" },
+                      "url": $runurl
+                    },
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "Open Artifacts" },
+                      "url": $artifactsurl
+                    }
+                  ]
+                }
+              ]
+            }')
+
+          curl -sS -X POST -H 'Content-type: application/json' \
+            --data "$payload" \
+            "$SLACK_WEBHOOK_URL"
+          
+      
