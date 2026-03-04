@@ -84,6 +84,17 @@ jobs:
             "-Dtestng.parameters.headless=$env:HEADLESS" `
             "-Duser.timezone=America/New_York"
 
+      - name: Verify dashboard exists (CI)
+        if: always()
+        shell: bash
+        run: |
+          echo "Looking for dashboards..."
+          find . -maxdepth 7 -type f -name "TestCoverageDashboard*.xlsx" -print || true
+          echo "Listing src/test/resources..."
+          ls -la src/test/resources || true
+          echo "Listing target/test-classes..."
+          ls -la target/test-classes || true
+
       - name: Upload Extent Report & Screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -182,189 +193,3 @@ jobs:
           echo "TOTAL=$TOTAL" >> $GITHUB_ENV
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
 
-      - name: Send Slack Notification
-        if: always()
-        shell: bash
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          # Decide overall status
-          if [ "${{ env.FAILED }}" -gt 0 ]; then
-            STATUS="FAILED"
-          elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
-            STATUS="PASSED WITH SKIPS"
-          else
-            STATUS="PASSED"
-          fi
-
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          ARTIFACTS_URL="${RUN_URL}#artifacts"
-
-          payload=$(jq -n \
-            --arg title "*OneMAC SMART Automation Run* - $STATUS" \
-            --arg env "${{ env.RUNON_ENV }}" \
-            --arg passed "${{ env.PASSED }}" \
-            --arg failed "${{ env.FAILED }}" \
-            --arg skipped "${{ env.SKIPPED }}" \
-            --arg passrate "${{ env.PASS_RATE }}%" \
-            --arg runurl "$RUN_URL" \
-            --arg artifactsurl "$ARTIFACTS_URL" \
-            '{
-              "blocks": [
-                { "type": "section", "text": { "type": "mrkdwn", "text": $title } },
-                {
-                  "type": "section",
-                  "fields": [
-                    { "type": "mrkdwn", "text": ("*Environment:*\n" + $env) },
-                    { "type": "mrkdwn", "text": ("*Pass Rate:*\n" + $passrate) },
-                    { "type": "mrkdwn", "text": ("*Passed:*\n" + $passed) },
-                    { "type": "mrkdwn", "text": ("*Failed:*\n" + $failed) },
-                    { "type": "mrkdwn", "text": ("*Skipped:*\n" + $skipped) }
-                  ]
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "View GitHub Run" },
-                      "url": $runurl
-                    },
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "Download Excel Dashboard" },
-                      "url": $artifactsurl
-                    }
-                  ]
-                }
-              ]
-            }')
-
-          curl -sS -X POST -H 'Content-type: application/json' \
-            --data "$payload" \
-            "$SLACK_WEBHOOK_URL"
-
-      - name: Send Extent Report Email
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL }}
-          password: ${{ secrets.APP_PASSWORD }}
-          subject: "OneMAC SMART Automation Report"
-          to: Amjad.Ammar@icf.com
-          from: OneMAC-SMART CI
-
-          attachments: |
-            src/test/resources/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx
-
-          html_body: |
-            <body style="margin:0; padding:0; font-family:Segoe UI, Arial; background:#f5f7fb;">
-            
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fb; padding:20px;">
-                <tr>
-                  <td align="center">
-            
-                    <table width="700" cellpadding="0" cellspacing="0" 
-                           style="background:#ffffff; border-radius:8px;">
-            
-                      <!-- HEADER -->
-                      <tr>
-                        <td style="background:#1f3a5f; color:white; padding:20px; border-radius:8px 8px 0 0;">
-                          <h2 style="margin:0;">OneMAC SMART Automation</h2>
-                        </td>
-                      </tr>
-            
-                      <!-- SUMMARY -->
-                      <tr>
-                        <td style="padding:20px;">
-                          <table width="100%" cellpadding="10" cellspacing="0">
-                            <tr>
-            
-                              <td align="center" style="background:#eafaf1; border-radius:6px;">
-                                <h2 style="color:#27ae60; margin:0;">${{ env.PASSED }}</h2>
-                                <p style="margin:0;">Passed</p>
-                              </td>
-            
-                              <td align="center" style="background:#fdecea; border-radius:6px;">
-                                <h2 style="color:#e74c3c; margin:0;">${{ env.FAILED }}</h2>
-                                <p style="margin:0;">Failed</p>
-                              </td>
-            
-                              <td align="center" style="background:#fff8e1; border-radius:6px;">
-                                <h2 style="color:#f39c12; margin:0;">${{ env.SKIPPED }}</h2>
-                                <p style="margin:0;">Skipped</p>
-                              </td>
-            
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-            
-                      <!-- PASS RATE -->
-                      <tr>
-                        <td style="padding:0 20px 20px 20px;">
-                          <table width="100%" cellpadding="15" cellspacing="0"
-                                 style="background:#f0f4ff; border-radius:6px;">
-                            <tr>
-                              <td align="center">
-                                <h1 style="margin:0; color:#2E86C1;">
-                                  ${{ env.PASS_RATE }}%
-                                </h1>
-                                <p style="margin:0;">Overall Pass Rate</p>
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-            
-                      <!-- DETAILS -->
-                      <tr>
-                        <td style="padding:0 20px 20px 20px;">
-                          <table width="100%" cellpadding="8" cellspacing="0"
-                                 style="border:1px solid #e5e7eb; border-collapse:collapse;">
-                            <tr>
-                              <td style="padding:8px; font-weight:bold;">Total Tests:</td>
-                              <td style="padding:8px;">${{ env.TOTAL }}</td>
-                            </tr>
-            
-                            <tr>
-                              <td style="padding:8px; font-weight:bold;">Environment:</td>
-                              <td style="padding:8px;">${{ env.RUNON_ENV }}</td>
-                            </tr>
-            
-                            <tr>
-                              <td style="padding:8px; font-weight:bold;">Repository:</td>
-                              <td style="padding:8px;">${{ github.repository }}</td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-            
-                      <!-- BUTTON -->
-                      <tr>
-                        <td align="center" style="padding:20px;">
-                          <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                             style="background:#2E86C1; color:white; padding:12px 25px; 
-                                    text-decoration:none; border-radius:5px;">
-                             View Full Report
-                          </a>
-                        </td>
-                      </tr>
-            
-                      <!-- FOOTER -->
-                      <tr>
-                        <td align="center" style="font-size:12px; color:#999; padding:15px;">
-                          Generated automatically by GitHub Actions CI.
-                        </td>
-                      </tr>
-            
-                    </table>
-            
-                  </td>
-                </tr>
-              </table>
-            
-            </body>
