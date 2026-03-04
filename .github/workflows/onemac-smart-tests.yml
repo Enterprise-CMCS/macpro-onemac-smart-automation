@@ -217,11 +217,11 @@ jobs:
         run: |
           # Decide overall status
           if [ "${{ env.FAILED }}" -gt 0 ]; then
-            STATUS="FAILED ❌"
+            STATUS="FAILED"
           elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
-            STATUS="PASSED WITH SKIPS ⚠️"
+            STATUS="PASSED WITH SKIPS"
           else
-            STATUS="PASSED ✅"
+            STATUS="PASSED"
           fi
 
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -234,7 +234,6 @@ jobs:
             --arg failed "${{ env.FAILED }}" \
             --arg skipped "${{ env.SKIPPED }}" \
             --arg passrate "${{ env.PASS_RATE }}%" \
-            --arg runurl "$RUN_URL" \
             --arg artifactsurl "$ARTIFACTS_URL" \
             '{
               "blocks": [
@@ -256,7 +255,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*GitHub Run:* \($runurl)\n\n*Detailed Report:* Visit the link below and download *OneMAC-SMART-Report* to view the full automation report and dashboard.\n\($artifactsurl)"
+                    "text": "*Detailed Report:* Visit the link below and download *OneMAC-SMART-Report* to view the full automation report and dashboard.\n\($artifactsurl)"
                   }
                 }
               ]
