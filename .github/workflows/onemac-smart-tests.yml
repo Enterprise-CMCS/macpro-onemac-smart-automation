@@ -217,11 +217,11 @@ jobs:
         run: |
           # Decide overall status
           if [ "${{ env.FAILED }}" -gt 0 ]; then
-            STATUS="FAILED"
+            STATUS="FAILED ❌"
           elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
-            STATUS="PASSED WITH SKIPS"
+            STATUS="PASSED WITH SKIPS ⚠️"
           else
-            STATUS="PASSED"
+            STATUS="PASSED ✅"
           fi
 
           RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -238,7 +238,10 @@ jobs:
             --arg artifactsurl "$ARTIFACTS_URL" \
             '{
               "blocks": [
-                { "type": "section", "text": { "type": "mrkdwn", "text": $title } },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": $title }
+                },
                 {
                   "type": "section",
                   "fields": [
@@ -249,26 +252,17 @@ jobs:
                     { "type": "mrkdwn", "text": ("*Skipped:*\n" + $skipped) }
                   ]
                 },
-                { "type": "context", "elements": [ { "type": "mrkdwn", "text": ("*Artifacts (Excel + reports):* " + $artifactsurl) } ] },
                 {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "View GitHub Run" },
-                      "url": $runurl
-                    },
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "Open Artifacts" },
-                      "url": $artifactsurl
-                    }
-                  ]
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*GitHub Run:* \($runurl)\n\n*Detailed Report:* Visit the link below and download *OneMAC-SMART-Report* to view the full automation report and dashboard.\n\($artifactsurl)"
+                  }
                 }
               ]
             }')
 
-          curl -sS -X POST -H 'Content-type: application/json' \
+          curl -sS -X POST -H "Content-type: application/json" \
             --data "$payload" \
             "$SLACK_WEBHOOK_URL"
           
