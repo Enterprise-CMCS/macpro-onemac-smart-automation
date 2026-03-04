@@ -95,7 +95,7 @@ jobs:
           echo "Listing target/test-classes..."
           ls -la target/test-classes || true
 
-      - name: Upload Extent Report & Screenshots
+      - name: Upload Extent Report, Screenshots & Excel Dashboard
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -103,7 +103,8 @@ jobs:
           path: |
             extent-report/**
             screenshots/**
-            src/test/resources/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx
+            src/test/resources/TestCoverageDashboard*.xlsx
+            target/test-classes/TestCoverageDashboard*.xlsx
           if-no-files-found: warn
 
       - name: Configure Git Identity
