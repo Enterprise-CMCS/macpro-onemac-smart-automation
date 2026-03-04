@@ -95,7 +95,23 @@ jobs:
           echo "Listing target/test-classes..."
           ls -la target/test-classes || true
 
-      - name: Upload Extent Report, Screenshots & Excel Dashboard
+      - name: Stage Excel Dashboard into artifact folder
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p dashboard/TestCoverageDashboard
+
+          # Prefer src/test/resources; fall back to target/test-classes
+          if [ -f "src/test/resources/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx" ]; then
+            cp "src/test/resources/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx" "dashboard/TestCoverageDashboard/"
+          elif [ -f "target/test-classes/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx" ]; then
+            cp "target/test-classes/TestCoverageDashboard_${{ env.RUNON_ENV }}.xlsx" "dashboard/TestCoverageDashboard/"
+          else
+            echo "Dashboard Excel file not found for env=${{ env.RUNON_ENV }}"
+            find . -maxdepth 6 -name "TestCoverageDashboard*.xlsx" -print || true
+          fi
+
+      - name: Upload Extent Report & Screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -103,7 +119,7 @@ jobs:
           path: |
             extent-report/**
             screenshots/**
-            dashboard/TestCoverageDashboard/**
+            dashboard/**
           if-no-files-found: warn
 
       - name: Configure Git Identity
