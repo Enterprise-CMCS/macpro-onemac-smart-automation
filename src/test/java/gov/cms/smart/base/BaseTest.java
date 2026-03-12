@@ -13,6 +13,9 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
 import org.testng.annotations.AfterMethod;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+
 @Getter
 public class BaseTest implements ITest {
 
@@ -83,7 +86,10 @@ public class BaseTest implements ITest {
      */
     protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
-        webDriver.get(TestContext.baseUrl());         // environment-aware URL
+        webDriver.get(TestContext.baseUrl());
+        System.out.println("Current URL: " + webDriver.getCurrentUrl());
+        System.out.println("Page title: " + webDriver.getTitle());
+        // environment-aware URL
         //  webDriver.manage().window().maximize();
         driver.set(webDriver);
         utils = new UIElementUtils(getDriver(), 10);
