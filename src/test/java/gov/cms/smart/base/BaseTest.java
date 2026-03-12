@@ -9,6 +9,8 @@ import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.DriverFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
 import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
 import org.testng.annotations.AfterMethod;
@@ -23,6 +25,8 @@ public class BaseTest implements ITest {
     public OSGUser osgUser;
     public CPOCUser cpocUser;
     public SrtUser srtUser;
+
+    private static final Logger logger = LogManager.getLogger();
     // ThreadLocal driver for parallel safety
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
@@ -87,8 +91,8 @@ public class BaseTest implements ITest {
     protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
         webDriver.get(TestContext.baseUrl());
-        System.out.println("Current URL: " + webDriver.getCurrentUrl());
-        System.out.println("Page title: " + webDriver.getTitle());
+        logger.info("Current URL: " + webDriver.getCurrentUrl());
+        logger.info("Page title: " + webDriver.getTitle());
         // environment-aware URL
         //  webDriver.manage().window().maximize();
         driver.set(webDriver);
