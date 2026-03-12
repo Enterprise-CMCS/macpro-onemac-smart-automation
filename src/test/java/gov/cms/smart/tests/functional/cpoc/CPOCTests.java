@@ -1,37 +1,36 @@
 package gov.cms.smart.tests.functional.cpoc;
 
 import gov.cms.smart.base.BaseTest;
-import gov.cms.smart.dataproviders.ValidationDataProviders;
+import gov.cms.smart.dataproviders.DataProviders;
 import gov.cms.smart.utils.assertions.TestAssert;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.excel.ExcelPackageSelector;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeGroups;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static gov.cms.smart.dataproviders.ValidationDataProviders.GROUP_TO_DIVISIONS;
+import static gov.cms.smart.dataproviders.DataProviders.GROUP_TO_DIVISIONS;
 
-public class CPOCSPADetailsTests extends BaseTest {
-/*
+public class CPOCTests extends BaseTest {
+
     @BeforeClass
-    public void setSPAPackage() throws InterruptedException {
-        spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
+    public void setup() {
         createDriverSession();
         cpocUser = createNewCPOCUser();
-        cpocUser.loginWithSharedSecret().
-                goToSpasWaiversPage().
-                openRecordFromAllRecords(spaPackage).
-                goToReviewTab();
+        cpocUser.loginWithSharedSecret();
     }
 
+    @BeforeGroups(groups = "groupDivisionValidation")
+    public void NavigateToReviewTab() throws InterruptedException {
+        spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
+        PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().openExistingRecord(spaPackage).goToReviewTab();
+    }
 
-    @Test(groups = {"Validations & Business Rules"}, dataProvider = "groupDivisionData", dataProviderClass = ValidationDataProviders.class)
+    @Test(groups = {"Validations & Business Rules", "groupDivisionValidation"}, dataProvider = "groupDivisionData", dataProviderClass = DataProviders.class)
     public void verifyDivisionListFiltersCorrectlyForEachGroup(String group) throws InterruptedException {
+        setTestName("group", group);
         utils.selectFromComboBoxByLabel("Group", group);
         List<String> actualOptions =
                 utils.getValuesFromDropdownByLabel("Division");
@@ -52,11 +51,25 @@ public class CPOCSPADetailsTests extends BaseTest {
                         "\nExtra: " + extra
         );
     }
+
+    @AfterGroups(groups = "groupDivisionValidation")
+    public void navigateBack() {
+        PageFactory.getHomePage(getDriver(), getUtils());
+    }
+
+   /* @Test(groups = {"User Access & Permissions"})
+    public void verifyCPOCUserCanCreateMedicaidSPARecord() throws InterruptedException {
+        boolean isSPACreated = PageFactory.
+                getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().clickNew().
+                createSPA("CO", "Medicaid SPA");
+        TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
+    }*/
+
     @AfterClass(alwaysRun = true)
     public void cleanUp() {
         WebDriver d = getDriver();
         if (d != null) {
             d.quit();
         }
-    }*/
+    }
 }

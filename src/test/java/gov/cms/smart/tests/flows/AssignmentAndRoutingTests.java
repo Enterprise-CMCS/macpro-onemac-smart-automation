@@ -1,31 +1,29 @@
-package gov.cms.smart.tests;
+package gov.cms.smart.tests.flows;
 
 import gov.cms.smart.base.BaseTest;
-import gov.cms.smart.flows.CPOCUser;
-import gov.cms.smart.flows.OSGUser;
-import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.utils.assertions.TestAssert;
-import gov.cms.smart.utils.driver.PageFactory;
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class AssignmentAndRoutingTests extends BaseTest {
 
-   /* @BeforeMethod
+    @BeforeMethod
     public void setup() {
         createDriverSession();
     }
 
     @Test(groups = {"Assignment & Routing"})
     public void verifySpaCpocAssignmentWorkflow() throws InterruptedException {
-        OSGUser osgUser = createNewOSGUser();
+        osgUser = createNewOSGUser();
         spaPackage = osgUser.
                 loginWithSharedSecret().
                 goToSpasWaiversPage().
                 clickNew().
                 createSPARecord("CO", "Medicaid SPA");
         restartDriver();
-        CPOCUser cpocUser = createNewCPOCUser();
+        cpocUser = createNewCPOCUser();
         boolean isAssigned = cpocUser.
                 loginWithSharedSecret().
                 goToSpasWaiversPage().
@@ -35,30 +33,30 @@ public class AssignmentAndRoutingTests extends BaseTest {
 
     }
 
-    @Test
+  /*  @Test
     public void VerifyCPOCusercanreviewthesubmissiondetailsfromSRTAndCreateRAI() throws InterruptedException {
         spaPackage = new SpaPackage();
         spaPackage.setPackageId("CO-25-9063");
         cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret().
                 goToSpasWaiversPage().openRecordFromAllRecords(spaPackage).goToReviewTab().assignSRT();
-      *//*            clickNew().
+                  clickNew().
                 createSPARecord("CO", "Medicaid SPA");
         PageFactory.
                 getSpaWaiversPage(getDriver(), getUtils()).
                 cpocOpenRecordFromAll(spaPackage);
 
-        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).goToReviewTab();*//*
-       *//* srtUser = createNewSRTUser();
+        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).goToReviewTab();
+        srtUser = createNewSRTUser();
 
         srtUser.login();
         srtUser.goToSPAWaiversPage();
-        srtUser.openRecord(spaPackage);*//*
+        srtUser.openRecord(spaPackage);
 
 
-    }
+    }*/
 
-    @Test(groups = {"Assignment & Routing"})
+    /*@Test(groups = {"Assignment & Routing"})
     public void verifySpaSRTAssignmentWorkflow() throws InterruptedException {
         CPOCUser cpocUser = createNewCPOCUser();
         spaPackage = new SpaPackage();
@@ -66,10 +64,10 @@ public class AssignmentAndRoutingTests extends BaseTest {
         cpocUser.loginWithSharedSecret().goToSpasWaiversPage().openRecordFromAllRecords(spaPackage);
         PageFactory.getSpaWaiversPage(getDriver(), getUtils()).goToReviewTab().assignSRT();
         // PageFactory.getSpaWaiversPage(getDriver(), getUtils()).assignSRT("SRT Test Automation User", "Test assignment");
-       *//* goToSpasWaiversPage().assignToMe();
+        goToSpasWaiversPage().assignToMe();
         PageFactory.getSpaWaiversPage(getDriver(), getUtils()).
                 openRecordFromAllRecordsView(ExcelPackageSelector.selectSpa("NY", "Medicaid SPA", "")).
-                assignSRT("Automation", "This is an automated test script for SRT assignment from CPOC");*//*
+                assignSRT("Automation", "This is an automated verifyDateOnActiveClockUpdateAutomatically script for SRT assignment from CPOC");
 
     }*/
 
@@ -92,12 +90,12 @@ public class AssignmentAndRoutingTests extends BaseTest {
 
 
 
-   /* @AfterClass(alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void cleanUp() throws InterruptedException {
         WebDriver d = getDriver();
         if (d != null) {
             Thread.sleep(5000);
             d.quit();
         }
-    }*/
+    }
 }

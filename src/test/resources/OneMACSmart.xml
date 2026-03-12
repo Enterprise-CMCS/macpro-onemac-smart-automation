@@ -1,17 +1,19 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="OneMACSmart">
     <test name="OneMacSmart UI Tests">
+
         <classes>
-            <class name="gov.cms.smart.tests.AssignmentAndRoutingTests"/>
-            <class name="gov.cms.smart.tests.RAIManagementTests"/>
-            <class name="gov.cms.smart.tests.RecordLifecycleTests"/>
-            <class name="gov.cms.smart.tests.SRTReviewWorkflowTests"/>
-            <class name="gov.cms.smart.tests.TimelineSLATests"/>
-            <class name="gov.cms.smart.tests.UserAccessPermissionTests"/>
-            <class name="gov.cms.smart.tests.functional.osg.ValidationAndBusinessRuleTests"/>
-            <class name="gov.cms.smart.tests.WorkflowStatusTransitionTests"/>
+            <class name="gov.cms.smart.tests.functional.osg.OSGTests"/>
+            <class name="gov.cms.smart.tests.flows.WorkflowStatusTransitionTests"/>
+            <class name="gov.cms.smart.tests.functional.osg.TimeLineSLAManagementTests"/>
+            <class name="gov.cms.smart.tests.functional.osg.RecordLifecycleManagementTests"/>
+            <class name="gov.cms.smart.tests.functional.osg.NewSPAFormTests"/>
+            <class name="gov.cms.smart.tests.functional.srt.SRTTests"/>
+            <class name="gov.cms.smart.tests.functional.cpoc.CPOCTests"/>
         </classes>
+
     </test>
+
     <listeners>
         <listener class-name="gov.cms.smart.listeners.TestListener"/>
     </listeners>

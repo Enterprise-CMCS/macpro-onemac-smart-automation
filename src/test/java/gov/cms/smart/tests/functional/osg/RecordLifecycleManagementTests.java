@@ -1,6 +1,7 @@
-package gov.cms.smart.tests;
+package gov.cms.smart.tests.functional.osg;
 
 import gov.cms.smart.base.BaseTest;
+import gov.cms.smart.dataproviders.DataProviders;
 import gov.cms.smart.models.IdentifyingInfo;
 import gov.cms.smart.models.PlanInfo;
 import gov.cms.smart.models.PriorityInfo;
@@ -11,56 +12,65 @@ import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.excel.ExcelPackageSelector;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
-public class RecordLifecycleTests extends BaseTest {
+import static gov.cms.smart.pages.AdjudicationTab.DOCUMENTS_POSTED_TO_MEDICAID_GOV_LABEL;
 
-   /* @BeforeClass
+
+public class RecordLifecycleManagementTests extends BaseTest {
+
+    @BeforeClass()
     public void setup() {
+        spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         createDriverSession();
         osgUser = createNewOSGUser();
-        spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         osgUser.loginWithSharedSecret();
     }
 
-    @DataProvider
-    public Object[][] priorityLevels() {
-        return new Object[][]{
-                {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
-                {PriorityCode.CUSTOMARY_REVIEW, CodingAssessment.UP_CODED},
-                {PriorityCode.EXPEDITED_REVIEW, CodingAssessment.DOWN_CODED}
-        };
+    @BeforeGroups(groups = "RecordManagementDetailsPage")
+    public void searchSPA() throws InterruptedException {
+        osgUser.goToSPAWaiversPage().searchSPA(spaPackage);
     }
 
-    @Test(dataProvider = "priorityLevels", groups = {"Record Lifecycle Management"})
+    @BeforeMethod(onlyForGroups = "RecordManagementDetailsPage")
+    public void openSPA() {
+        utils.openRecord(spaPackage.getPackageId());
+    }
+
+    @Test(dataProvider = "priorityLevels", groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"}, dataProviderClass = DataProviders.class)
     public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
-        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+        setTestName("priorityCode", priorityCode,"codingAssessment",codingAssessment);
         PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).
                 fillPriorityInfo(priorityCode, codingAssessment);
         PriorityInfo expected = PageFactory.
                 getSpaDetailsPage(getDriver(), getUtils()).
                 readPriorityInfo();
-        TestAssert.assertEquals(actual, expected, "");
+        TestAssert.assertEquals(actual, expected, "Priority Info should persist correctly after save");
+    }
+
+    @AfterMethod(onlyForGroups = "RecordManagementDetailsPage")
+    public void navigateToRecentlyViewed() throws InterruptedException {
+        PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
     }
 
     @Test(groups = {"Record Lifecycle Management"})
-    public void verifyThatCancelButtonIsFunctional() {
+    public void verifyThatCancelButtonIsFunctional() throws InterruptedException {
         osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelButton();
         boolean isInvisible = getUtils().isElementInvisible(By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]"));
         TestAssert.assertTrue(isInvisible, "Modal should not be present");
     }
 
     @Test(groups = {"Record Lifecycle Management"})
-    public void verifyThatCancelAndCloseButtonIsFunctional() {
+    public void verifyThatCancelAndCloseButtonIsFunctional() throws InterruptedException {
         osgUser.goToSPAWaiversPage().clickNew().navigateToMedicaidSPAForm().clickCancelAndClose();
         boolean isInvisible = getUtils().isElementInvisible(By.cssSelector("div[class=\"isModal inlinePanel oneRecordActionWrapper\"]"));
         TestAssert.assertTrue(isInvisible, "Modal should not be present");
 
     }
 
-    @Test(groups = {"Record Lifecycle Management"})
-    public void verifyindentifyinginfomedicaidspa() {
-        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
+    public void verifyidentifyinginfomedicaidspa() {
         IdentifyingInfo actual = new IdentifyingInfo();
         actual.setAuthority(spaPackage.getAuthority());
         actual.setIdNumber(spaPackage.getPackageId());
@@ -71,11 +81,8 @@ public class RecordLifecycleTests extends BaseTest {
     }
 
 
-    @Test(groups = {"Record Lifecycle Management"})
-    public void verifyPriorityInformationSectionIsVisible() throws InterruptedException {
-        PageFactory.getHomePage(getDriver(), getUtils()).
-                goToSpasWaiversPage().
-                openRecordFromAllRecords(spaPackage);
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
+    public void verifyPriorityInformationSectionIsVisible() {
         boolean isPrioritySectionVisible = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isPriorityInfoPresent();
         TestAssert.assertTrue(
                 isPrioritySectionVisible,
@@ -83,9 +90,8 @@ public class RecordLifecycleTests extends BaseTest {
         );
     }
 
-    @Test(groups = {"Record Lifecycle Management"})
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
     public void verifyPlanInformation() {
-        osgUser.goToSPAWaiversPage().openExistingRecord(spaPackage);
         PlanInfo actual = PageFactory.
                 getSpaDetailsPage(getDriver(), getUtils())
                 .fillPlanInfo("Test Subject", "Test Description");
@@ -96,11 +102,8 @@ public class RecordLifecycleTests extends BaseTest {
     }
 
 
-    @Test(groups = {"Record Lifecycle Management"})
-    public void verifyPriorityFieldsAreGroupedUnderPriorityInformationSection() throws InterruptedException {
-        PageFactory.getHomePage(getDriver(), getUtils()).
-                goToSpasWaiversPage().
-                openRecordFromAllRecords(spaPackage);
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
+    public void verifyPriorityFieldsAreGroupedUnderPriorityInformationSection() {
         boolean areFieldsGroupedCorrectly = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).areFieldsGroupedCorrectly();
         TestAssert.assertTrue(
                 areFieldsGroupedCorrectly,
@@ -108,20 +111,30 @@ public class RecordLifecycleTests extends BaseTest {
         );
     }
 
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
+    public void verifySubmissionVerifiedCompleteFieldAutoPopulates() throws InterruptedException {
+        utils.editByLabel("Priority Code");
+        utils.selectFromComboBoxByLabel("Initial Submission Complete", "Yes");
+        PageFactory.getSpaDetailsPage(getDriver(), getUtils()).save();
+        utils.waitForFieldTextToBe("Submission Information", "Submission Verified Complete", utils.getTodayDateFormatted());
+        Assert.assertEquals(utils.getFieldTextByLabel("Submission Verified Complete"), utils.getTodayDateFormatted());
+    }
 
-    @AfterMethod
-    public void goBackToHomePage() {
-        PageFactory.
-                getSpaDetailsPage(getDriver(), getUtils()).
-                goToHomePage();
+    @Test(groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"})
+    public void verifyDocumentsPostedToMedicaidGovLabelDisplayedInsteadOfApprovalDocsReceived() {
+        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).goToAdjudicationTab();
+        TestAssert.assertTrue(
+                utils.isElementVisible(DOCUMENTS_POSTED_TO_MEDICAID_GOV_LABEL),
+                "Label 'Documents posted to Medicaid.gov' should be displayed."
+        );
+
     }
 
     @AfterClass(alwaysRun = true)
-    public void cleanUp() throws InterruptedException {
+    public void cleanUp() {
         WebDriver d = getDriver();
         if (d != null) {
-            Thread.sleep(5000);
             d.quit();
         }
-    }*/
+    }
 }

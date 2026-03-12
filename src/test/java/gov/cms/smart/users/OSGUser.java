@@ -1,7 +1,7 @@
-package gov.cms.smart.flows;
+package gov.cms.smart.users;
 
-import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.pages.HomePage;
+import gov.cms.smart.pages.SPAsWaiversPage;
 import gov.cms.smart.utils.config.TestContext;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
@@ -9,27 +9,32 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
-public class CPOCUser {
+public class OSGUser {
 
     private static final Logger logger = LogManager.getLogger();
     private final WebDriver driver;
     private final UIElementUtils utils;
 
 
-    public CPOCUser(WebDriver driver, UIElementUtils utils) {
+    public OSGUser(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
     }
 
     public HomePage loginWithSharedSecret() {
-        String cpocUsername = TestContext.cpocUsername();
-        String cpocSharedSecret = TestContext.cpocSharedSecret();
-        String password = TestContext.cpocPassword();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(cpocUsername, cpocSharedSecret, password);
+        String osgSharedSecret = TestContext.osgSharedSecret();
+        String osgUsername = TestContext.osgUsername();
+        String password = TestContext.osgPassword();
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret, password);
     }
 
+    public void verifyLogin() {
+
+    }
+
+
     public HomePage login() {
-        return PageFactory.getLoginPage(driver, utils).login(TestContext.cpocUsername());
+        return PageFactory.getLoginPage(driver, utils).login(TestContext.osgUsername());
     }
 
  /*   public LoginPage navigateToSalesForce() {
@@ -42,18 +47,17 @@ public class CPOCUser {
         PageFactory.getSpaWaiversPage(driver, utils).clickNew();
     }
 
-    public void goToSPAWaiversPage() {
-        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
+    public SPAsWaiversPage goToSPAWaiversPage() throws InterruptedException {
+        return PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
     }
 
-    public void openRecordFromAllRecordsView(SpaPackage spaPackage) throws InterruptedException {
-        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage().openRecordFromAllRecords(spaPackage);
-    }
+    /*public SpaPackage createSPA(String state) throws InterruptedException {
+     // return   PageFactory.getNewSPAPage(driver, utils).createSPA(state);
+    }*/
 
-    public void createSPA(String state) throws InterruptedException {
-        //PageFactory.getNewSPAPage(driver, utils).createSPA(state);
-    }
-
+    /*public void openExistingRecord(String state, String authority) {
+        PageFactory.getSpaWaiversPage(driver, utils).openExistingRecord(state, authority);
+    }*/
 
     public void navigateToMedicaidSPAForm() {
         PageFactory.getNewSPAPage(driver, utils).navigateToMedicaidSPAForm();
@@ -79,8 +83,8 @@ public class CPOCUser {
         return PageFactory.getNewSPAPage(driver, utils).isStateErrorDisplayed();
     }
 
-    /*public boolean isDateFormatErrorDisplayed() throws InterruptedException {
-        return PageFactory.getSPAPage(driver, utils).isDateFormatErrorDisplayed();
-    }*/
+    public boolean isDateFormatErrorDisplayed() throws InterruptedException {
+        return PageFactory.getNewSPAPage(driver, utils).isDateFormatErrorDisplayed();
+    }
 
 }

@@ -5,15 +5,13 @@ import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 public class SPAsWaiversPage {
 
@@ -37,6 +35,7 @@ public class SPAsWaiversPage {
     private static final By SAVE_RAI = By.xpath("//footer/button/span[text()=\"Save\"]");
     private static final By ALERT = By.xpath("//strong[text()=\"ALERT!\"]");
     private static final By REVIEW_TAB = By.xpath("//a[text()=\"Review\"]/..");
+    private static final By ADJUDICATION_TAB = By.xpath("//a[text()=\"Adjudication\"]/..");
     private final WebDriver driver;
     private final UIElementUtils utils;
 
@@ -48,6 +47,11 @@ public class SPAsWaiversPage {
     public ReviewTab goToReviewTab() {
         utils.clickElement(REVIEW_TAB);
         return PageFactory.getReviewTab(driver, utils);
+    }
+
+    public AdjudicationTab goToAdjudicationTab() {
+        utils.clickElement(ADJUDICATION_TAB);
+        return PageFactory.getAdjudicationTab(driver, utils);
     }
 
     public HomePage goToHomePage() {
@@ -67,15 +71,39 @@ public class SPAsWaiversPage {
         return utils.isVisible(NEW_BUTTON);
     }
 
-    public DetailsTab openExistingRecord(SpaPackage spaPackage) {
+    public SPAsWaiversPage openExistingRecord(SpaPackage spaPackage) {
         driver.navigate().refresh();
         utils.clearInput(SEARCH_INPUT);
         utils.sendKeys(SEARCH_INPUT, spaPackage.getPackageId());
         utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
         utils.openRecord(spaPackage.getPackageId());
-        return PageFactory.getSpaDetailsPage(driver, utils);
+        return PageFactory.getSpaWaiversPage(driver, utils);
     }
+    public void waitUntilLoaded() {
+        utils.waitForClickable(SEARCH_INPUT);
+    }
+    public SPAsWaiversPage searchSPA(SpaPackage spaPackage) {
+        try {
+            List<WebElement> spinners = driver.findElements(By.tagName("lightning-spinner"));
+            for (WebElement spinner : spinners) {
+                try {
+                    if (spinner.isDisplayed()) {
+                        driver.navigate().refresh();
+                        utils.waitForSalesforceLoading(driver);
+                        break;
+                    }
+                } catch (StaleElementReferenceException ignored) {
+                }
+            }
+        } catch (Exception ignored) {
+        }
 
+        utils.clearInput(SEARCH_INPUT);
+        utils.sendKeys(SEARCH_INPUT, spaPackage.getPackageId());
+        utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
+
+        return PageFactory.getSpaWaiversPage(driver, utils);
+    }
 
     public SPAsWaiversPage openRecordFromAllRecords(SpaPackage spa) throws InterruptedException {
         utils.clickElement(RECORDS_HEADER);
@@ -89,31 +117,54 @@ public class SPAsWaiversPage {
 
     public DetailsTab cpocOpenRecordFromAll(SpaPackage spa) {
         logger.info("Searching for SPA: {}", spa.getPackageId());
-        By recordLink = By.xpath(
-                "//lightning-datatable//a[@title='" + spa.getPackageId() + "']"
-        );
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        boolean recordFound = wait.until(driver -> {
+        By recordLink = By.xpath("//lightning-datatable//a[@title='" + spa.getPackageId() + "']");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        long end = System.currentTimeMillis() + 50_000; // total timeout
+        boolean found = false;
+
+        while (System.currentTimeMillis() < end) {
             driver.navigate().refresh();
+            // wait for page to settle if you have a spinner wait
+            // utils.waitForSalesforceLoading(driver);
             utils.clickElement(RECORDS_HEADER);
             try {
                 utils.selectDropdownBy(HEADER_DROPDOWN, "All Records");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
             utils.clearInput(SEARCH_INPUT);
             utils.sendKeys(SEARCH_INPUT, spa.getPackageId());
             utils.sendKeys(SEARCH_INPUT, Keys.ENTER);
-            return !driver.findElements(recordLink).isEmpty();
-        });
-        if (!recordFound) {
-            throw new TimeoutException("SPA record not found within 30 seconds: "
-                    + spa.getPackageId());
+
+            // Give Lightning a moment to render results
+            try {
+                Thread.sleep(1200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (!driver.findElements(recordLink).isEmpty()) {
+                found = true;
+                break; // IMPORTANT: stop refreshing once found
+            }
         }
+
+        if (!found) {
+            throw new TimeoutException("SPA record not found within 40 seconds: " + spa.getPackageId());
+        }
+
         logger.info("Found SPA: {}", spa.getPackageId());
 
-        wait.until(ExpectedConditions.elementToBeClickable(recordLink));
-        utils.clickElement(recordLink);
+        // Now wait + click
+        WebElement link = wait.until(ExpectedConditions.elementToBeClickable(recordLink));
+        try {
+            link.click();
+        } catch (ElementClickInterceptedException e) {
+            // fallback for Salesforce overlays
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", link);
+        }
 
         logger.info("Opened SPA: {}", spa.getPackageId());
         return PageFactory.getSpaDetailsPage(driver, utils);

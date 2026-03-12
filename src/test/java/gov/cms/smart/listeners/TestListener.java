@@ -41,11 +41,30 @@ public class TestListener  implements ITestListener, ISuiteListener {
     private static Counts countsFor(ITestResult result) {
         return AREA_COUNTS.computeIfAbsent(getFunctionalArea(result), k -> new Counts());
     }
+    private String resolveTestName(ITestResult result) {
+        String methodName = result.getMethod().getMethodName();
+        Object[] params = result.getParameters();
 
+        if (params == null || params.length == 0) {
+            return methodName;
+        }
+
+        StringBuilder sb = new StringBuilder(methodName).append(" [");
+
+        for (int i = 0; i < params.length; i++) {
+            if (i > 0) {
+                sb.append(" | ");
+            }
+            sb.append(String.valueOf(params[i]));
+        }
+
+        sb.append("]");
+        return sb.toString();
+    }
     @Override
     public void onTestStart(ITestResult result) {
         try {
-            ExtentTest extentTest = extent.createTest(result.getMethod().getMethodName());
+            ExtentTest extentTest = extent.createTest(resolveTestName(result));
             test.set(extentTest);
         } catch (Exception ignored) {
             // never let reporting break execution

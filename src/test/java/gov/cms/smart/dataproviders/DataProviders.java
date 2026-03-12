@@ -1,11 +1,13 @@
 package gov.cms.smart.dataproviders;
 
+import gov.cms.smart.models.enums.CodingAssessment;
+import gov.cms.smart.models.enums.PriorityCode;
 import org.testng.annotations.DataProvider;
 
 import java.util.List;
 import java.util.Map;
 
-public class ValidationDataProviders {
+public class DataProviders {
 
     public static final Map<String, List<String>> GROUP_TO_DIVISIONS = Map.of(
             "CAHPG", List.of("--None--", "DEPO", "DMEP", "DQHO", "DSCP", "DTA", "CAHPG - Office of Group Director"),
@@ -62,6 +64,15 @@ public class ValidationDataProviders {
             i++;
         }
         return data;
+    }
+
+    @DataProvider(name = "priorityLevels")
+    public Object[][] priorityLevels() {
+        return new Object[][]{
+                {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
+                {PriorityCode.CUSTOMARY_REVIEW, CodingAssessment.UP_CODED},
+                {PriorityCode.EXPEDITED_REVIEW, CodingAssessment.DOWN_CODED}
+        };
     }
 
 }

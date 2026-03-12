@@ -1,4 +1,4 @@
-package gov.cms.smart.flows;
+package gov.cms.smart.users;
 
 import gov.cms.smart.models.SpaPackage;
 import gov.cms.smart.pages.HomePage;
@@ -9,63 +9,27 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
-public class SrtUser {
+public class CPOCUser {
 
     private static final Logger logger = LogManager.getLogger();
     private final WebDriver driver;
     private final UIElementUtils utils;
 
 
-    public SrtUser(WebDriver driver, UIElementUtils utils) {
+    public CPOCUser(WebDriver driver, UIElementUtils utils) {
         this.driver = driver;
         this.utils = utils;
     }
 
-    public void login() {
-        String sharedSecret = TestContext.srtSharedSecret();
-        String username = TestContext.srtUsername();
-        String password = TestContext.srtPassword();
-        PageFactory.
-                getLoginPage(driver, utils).
-                loginWithSharedSecret(username, sharedSecret, password);
+    public HomePage loginWithSharedSecret() {
+        String cpocUsername = TestContext.cpocUsername();
+        String cpocSharedSecret = TestContext.cpocSharedSecret();
+        String password = TestContext.cpocPassword();
+        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(cpocUsername, cpocSharedSecret, password);
     }
 
-    public void goToSpasWaiversPage() {
-        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
-    }
-
-    public void openRecord(SpaPackage spaPackage) throws InterruptedException {
-        PageFactory.getSpaWaiversPage(driver, utils).openRecordFromAllRecords(spaPackage);
-    }
-
-    public void goToReviewTab(){
-        PageFactory.getSpaWaiversPage(driver, utils).goToReviewTab();
-    }
-
-/*
-    public ReviewTab goToReviewTab() {
-
-        return PageFactory.
-                getLoginPage(driver, utils).
-                loginWithSharedSecret(username, sharedSecret, password).
-                goToSpasWaiversPage().openRecordFromAllRecordsView()
-    }
-*/
-
-
-    /*public HomePage login() {
-        String srtUsername = TestContext.srtUsername();
-        return PageFactory.getLoginPage(driver, utils).login(srtUsername);
-    }*/
-
-    public HomePage loginWithSRT2SharedSecret() {
-        String srtSharedSecret = TestContext.srt2SharedSecret();
-        String srtUsername = TestContext.srtUsername();
-        return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(srtUsername, srtSharedSecret);
-    }
-
-    public HomePage loginAsSRT2() {
-        return PageFactory.getLoginPage(driver, utils).login(TestContext.srt2Username());
+    public HomePage login() {
+        return PageFactory.getLoginPage(driver, utils).login(TestContext.cpocUsername());
     }
 
  /*   public LoginPage navigateToSalesForce() {
@@ -78,16 +42,16 @@ public class SrtUser {
         PageFactory.getSpaWaiversPage(driver, utils).clickNew();
     }
 
-    public void goToSPAWaiversPage() {
+    public void goToSPAWaiversPage() throws InterruptedException {
         PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
+    }
+
+    public void openRecordFromAllRecordsView(SpaPackage spaPackage) throws InterruptedException {
+        PageFactory.getHomePage(driver, utils).goToSpasWaiversPage().openRecordFromAllRecords(spaPackage);
     }
 
     public void createSPA(String state) throws InterruptedException {
         //PageFactory.getNewSPAPage(driver, utils).createSPA(state);
-    }
-
-    public boolean isNewButtonPresent() {
-        return PageFactory.getSpaWaiversPage(driver, utils).isNewButtonPresent();
     }
 
 

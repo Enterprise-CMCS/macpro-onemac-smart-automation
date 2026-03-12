@@ -4,7 +4,6 @@ import gov.cms.smart.utils.config.ConfigReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -13,7 +12,11 @@ import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UIElementUtils {
 
@@ -26,6 +29,19 @@ public class UIElementUtils {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
         this.wait.ignoring(StaleElementReferenceException.class);
+    }
+
+    private final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("M/d/yyyy");
+
+    public String calculateDaysFromToday(String givenDate) {
+
+        LocalDate inputDate = LocalDate.parse(givenDate, FORMATTER);
+        LocalDate today = LocalDate.now();
+
+        long days = ChronoUnit.DAYS.between(inputDate, today);
+
+        return String.valueOf(days);
     }
 
     /* -------------------- WAIT HELPERS -------------------- */
@@ -60,11 +76,11 @@ public class UIElementUtils {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    private WebElement waitForClickable(By locator) {
+    public WebElement waitForClickable(By locator) {
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
-    private WebElement waitForPresence(By locator) {
+    public WebElement waitForPresence(By locator) {
         return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     }
 
@@ -72,7 +88,8 @@ public class UIElementUtils {
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
     }
 
-    private void scrollIntoView(WebElement element) {
+
+    public void scrollIntoView(WebElement element) {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView({block:'center', inline:'nearest'});", element);
     }
@@ -89,11 +106,40 @@ public class UIElementUtils {
                 element.getSize().getWidth() > 0);
     }
 
+
+    public void waitUntilTopNavAnchorReady(By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+        wait.until(d -> {
+            try {
+                WebElement el = d.findElement(locator);
+
+                if (!el.isDisplayed() || !el.isEnabled()) {
+                    return false;
+                }
+
+                JavascriptExecutor js = (JavascriptExecutor) d;
+
+                return Boolean.TRUE.equals(js.executeScript(
+                        "const el = arguments[0];" +
+                                "const r = el.getBoundingClientRect();" +
+                                "if (r.width === 0 || r.height === 0) return false;" +
+                                "const x = r.left + r.width / 2;" +
+                                "const y = r.top + r.height / 2;" +
+                                "const topEl = document.elementFromPoint(x, y);" +
+                                "return topEl === el || el.contains(topEl);",
+                        el
+                ));
+            } catch (Exception e) {
+                return false;
+            }
+        });
+    }
     public void clickElement(By locator) {
         WebElement element = waitForClickable(locator);
         scrollIntoView(element);
-        // If this is a lightning combobox wrapper, find the internal button
-        if (element.getTagName().equals("lightning-base-combobox")) {
+
+        if ("lightning-base-combobox".equalsIgnoreCase(element.getTagName())) {
             try {
                 WebElement button = element.findElement(By.xpath(".//button"));
                 waitForVisibleAndSize(button);
@@ -112,12 +158,16 @@ public class UIElementUtils {
         }
 
         try {
+            element = waitForClickable(locator); // re-find
+            scrollIntoView(element);
             new Actions(driver).moveToElement(element).pause(Duration.ofMillis(200)).click().perform();
             return;
         } catch (Exception e) {
             logger.warn("Actions click failed, using JS click");
         }
 
+        element = waitForClickable(locator); // re-find again
+        scrollIntoView(element);
         jsClick(element);
     }
 
@@ -233,7 +283,7 @@ public class UIElementUtils {
     }
 
     public String getFieldTextByLabel(String label) {
-        By locator = By.xpath("//span[contains(text(),\"" + label + "\")]/parent::div/following-sibling::div//lightning-formatted-text");
+        By locator = By.xpath("//span[text()=\"" + label + "\"]/parent::div/following-sibling::div//lightning-formatted-text");
         return getText(locator);
     }
 
@@ -241,8 +291,8 @@ public class UIElementUtils {
         return wait.until(ExpectedConditions.textToBePresentInElementLocated(locator, expectedText));
     }
 
-    public void waitForFieldTextToBe(String sectionName, String fieldName,String fieldTextValue) {
-        By field = By.xpath("//span[text()=\"" + sectionName + "\"]/ancestor::flexipage-field-section2//span[text()=\"" + fieldName+"\"]/../following-sibling::div//lightning-formatted-text");
+    public void waitForFieldTextToBe(String sectionName, String fieldName, String fieldTextValue) {
+        By field = By.xpath("//span[text()=\"" + sectionName + "\"]/ancestor::flexipage-field-section2//span[text()=\"" + fieldName + "\"]/../following-sibling::div//lightning-formatted-text");
         wait.until(ExpectedConditions.textToBePresentInElementLocated(field, fieldTextValue));
     }
     /* -------------------- DROPDOWNS -------------------- */
@@ -293,10 +343,27 @@ public class UIElementUtils {
     public void waitForNumberOfElementsToBe(By locator) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
+
     /* -------------------- DATE UTILITIES (UNCHANGED LOGIC) -------------------- */
+
+    public String calculateDate(String initialSubmissionDate, int days) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+        LocalDate date = LocalDate.parse(initialSubmissionDate, dateTimeFormatter);
+        LocalDate newDate = date.plusDays(days);
+        return newDate.format(dateTimeFormatter);
+    }
 
     public String getTodayDateFormatted() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+    }
+
+    public String calculateDaysRemaining(String daysOnActiveClock) {
+
+        int activeDays = Integer.parseInt(daysOnActiveClock.trim());
+
+        int daysRemaining = 90 - activeDays;
+
+        return String.valueOf(daysRemaining);
     }
 
     public static String getFutureDateByDays(int days, String pattern) {
@@ -308,9 +375,10 @@ public class UIElementUtils {
         LocalDate date = LocalDate.parse(dateString, formatter);
         return date.format(DateTimeFormatter.ofPattern("dd"));
     }
+
     public String getPastDate(int days) {
         LocalDate date = LocalDate.now().minusDays(days);
-        return date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        return date.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
     }
 
     /* -------------------- STATE HELPERS -------------------- */
@@ -488,7 +556,7 @@ public class UIElementUtils {
     }
 
     public void openRecord(String recordId) {
-     //   waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
+        //   waitForNumberOfElementsToBe(By.xpath("//lightning-datatable//tbody/tr"), 1);
         clickElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]"));
         // driver.findElement(By.xpath("//lightning-datatable//tbody/tr/td[2]/ancestor::tr/th//a[@title=\"" + recordId + "\"]")).click();
     }

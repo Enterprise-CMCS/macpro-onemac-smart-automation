@@ -1,9 +1,11 @@
 package gov.cms.smart.utils.excel;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class ExcelDashboardWriter {
@@ -17,6 +19,7 @@ public class ExcelDashboardWriter {
      * E: Blocked
      *
      * Leaves % columns untouched (they should be formulas).
+     * Also updates the execution timestamp at the top of the sheet.
      */
     public static void updateTestCoverageDashboard(
             String filePath,
@@ -37,9 +40,11 @@ public class ExcelDashboardWriter {
                 throw new IllegalArgumentException("Sheet not found: " + sheetName);
             }
 
-            // Your table starts at row 2 in Excel UI => index 1 (0-based)
-            // Column A => index 0
-            int startRowIndex = 1;
+            // Top banner row
+            updateExecutionDateTime(sheet, wb, LocalDateTime.now());
+
+            // Header is now on Excel row 2, data starts on Excel row 3 => index 2
+            int startRowIndex = 2;
             int areaCol = 0;
 
             for (Map.Entry<String, ? extends CountsView> entry : areaCounts.entrySet()) {
@@ -48,7 +53,6 @@ public class ExcelDashboardWriter {
 
                 Row row = findRowByArea(sheet, startRowIndex, areaCol, area);
                 if (row == null) {
-                    // If not found, skip (or you can insert new rows if you want)
                     continue;
                 }
 
@@ -62,16 +66,44 @@ public class ExcelDashboardWriter {
                 setInt(row, 3, failed);  // D
                 setInt(row, 4, blocked); // E
 
-                // Do NOT overwrite F/G/H (percent formulas)
+                // Leave F/G/H formulas untouched
             }
 
-            // Optional: evaluate formulas so the file opens already updated
             wb.getCreationHelper().createFormulaEvaluator().evaluateAll();
 
             try (FileOutputStream fos = new FileOutputStream(file)) {
                 wb.write(fos);
             }
         }
+    }
+
+    /**
+     * Writes the execution date/time to the top row.
+     *
+     * Expected layout:
+     * A1 = "Execution Date & Time:"
+     * C1:D1 merged (optional) = timestamp value
+     */
+    private static void updateExecutionDateTime(Sheet sheet, Workbook wb, LocalDateTime dateTime) {
+        Row row = getOrCreateRow(sheet, 0); // Excel row 1
+
+        // A1 label
+        Cell labelCell = getOrCreateCell(row, 0);
+        labelCell.setCellValue("Execution Date & Time:");
+
+        // Write datetime into C1 (column index 2)
+        Cell valueCell = getOrCreateCell(row, 2);
+        valueCell.setCellValue(java.sql.Timestamp.valueOf(dateTime));
+
+        CellStyle dateTimeStyle = wb.createCellStyle();
+        short format = wb.getCreationHelper()
+                .createDataFormat()
+                .getFormat("m/d/yyyy h:mm:ss AM/PM");
+        dateTimeStyle.setDataFormat(format);
+        valueCell.setCellStyle(dateTimeStyle);
+
+        // Optional: merge C1:D1
+        mergeIfNeeded(sheet, 0, 0, 2, 3);
     }
 
     private static Row findRowByArea(Sheet sheet, int startRowIndex, int areaCol, String area) {
@@ -98,9 +130,29 @@ public class ExcelDashboardWriter {
         cell.setCellValue(value);
     }
 
-    /**
-     * Small interface so your listener can pass counts without exposing internals.
-     */
+    private static Row getOrCreateRow(Sheet sheet, int rowIndex) {
+        Row row = sheet.getRow(rowIndex);
+        return row != null ? row : sheet.createRow(rowIndex);
+    }
+
+    private static Cell getOrCreateCell(Row row, int colIndex) {
+        Cell cell = row.getCell(colIndex);
+        return cell != null ? cell : row.createCell(colIndex);
+    }
+
+    private static void mergeIfNeeded(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
+        for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+            CellRangeAddress region = sheet.getMergedRegion(i);
+            if (region.getFirstRow() == firstRow
+                    && region.getLastRow() == lastRow
+                    && region.getFirstColumn() == firstCol
+                    && region.getLastColumn() == lastCol) {
+                return;
+            }
+        }
+        sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+    }
+
     public interface CountsView {
         int getPassed();
         int getFailed();

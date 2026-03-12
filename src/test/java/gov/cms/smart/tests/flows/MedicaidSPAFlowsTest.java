@@ -1,4 +1,4 @@
-package gov.cms.smart.tests;
+package gov.cms.smart.tests.flows;
 
 import gov.cms.smart.base.BaseTest;
 
@@ -8,8 +8,6 @@ public class MedicaidSPAFlowsTest extends BaseTest {
     public void setup() {
         createDriverSession();
     }*/
-
-
 
   /*  //SPA Flows
     @Test
@@ -33,12 +31,12 @@ public class MedicaidSPAFlowsTest extends BaseTest {
                 goToSpasWaiversPage().
                 openExistingRecord(spa);
         PageFactory.getSpaDetailsPage(getDriver(), getUtils()).assignToMe();*//*
-        //PageFactory.getSpaWaiversPage(getDriver(),getUtils()).assignSRT("SRT4 AutomationSRT","this is an automated test script to test cpoc");
+        //PageFactory.getSpaWaiversPage(getDriver(),getUtils()).assignSRT("SRT4 AutomationSRT","this is an automated verifyDateOnActiveClockUpdateAutomatically script to verifyDateOnActiveClockUpdateAutomatically cpoc");
         //TestAssert.assertEquals(getDriver(), actual, "CPOC4 AutomationCPOC", "CPOC record name should display correctly after assignment to me");
     }*/
 
  /*   @Test
-    public void test(){
+    public void verifyDateOnActiveClockUpdateAutomatically(){
         CPOCUser cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret();
     }*/
@@ -68,7 +66,7 @@ public class MedicaidSPAFlowsTest extends BaseTest {
         CPOCUser cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret().
                 goToSpasWaiversPage().openExistingRecord(ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", ""));
-        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).assignSRT("SRT Test Automation User", "This is an automated test script to validate SRT Test Automation User assignment");
+        PageFactory.getSpaWaiversPage(getDriver(), getUtils()).assignSRT("SRT Test Automation User", "This is an automated verifyDateOnActiveClockUpdateAutomatically script to validate SRT Test Automation User assignment");
         SRTUser srtUser = createNewSRTUser();
         srtUser.loginAsSRT2();
         //  By salesforceMenu = By.xpath("//one-app-launcher-header/..");

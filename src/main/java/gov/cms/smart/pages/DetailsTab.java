@@ -40,10 +40,17 @@ public class DetailsTab {
     public static final By SUB_TYPE_SI = By.xpath("//span[text()=\"Submission Information\"]/ancestor::flexipage-field-section2//span[text()=\"Subtype\"]");
     private static final By TYPE_SI = By.xpath("//span[text()=\"Submission Information\"]/ancestor::flexipage-field-section2//span[text()=\"Type\"]");
     public static final By MILESTONES_SECTION = By.xpath("//span[text()=\"Milestones\"]");
+    public static final By SUBMISSION_INFORMATION_SECTION = By.xpath("//span[text()=\"Submission Information\"]");
     private static final By SUB_STATUS = By.xpath("//span[text()=\"Completion Status\"]/ancestor::flexipage-field-section2//span[text()=\"Sub-Status\"]");
     private static final By HOME_PAGE = By.xpath("//span[text()=\"Home\"]/parent::a");
     public static final By IDENTIFYING_INFORMATION = By.xpath("//span[text()=\"Identifying Information\"]");
     private static final By NEW = By.xpath("//button[text()=\"New\"]");
+    public static final By WARNING_BANNER = By.xpath("//c-smart-notification-utility/div//h2[text()=\"WARNING: COMPLETION REVIEW DATE SHOULD BE ENTERED WITHIN 5 DAYS OF INITIAL SUBMISSION DATE\"]");
+    public static final By DAYS_ON_ACTIVE_CLOCK_HEADER = By.xpath("//span[normalize-space()='Days on Active Clock']/ancestor::record_flexipage-record-field");
+    public static final By DAYS_ON_ACTIVE_CLOCK_VALUE = By.xpath("//span[normalize-space()='Days on Active Clock']/ancestor::record_flexipage-record-field//lightning-formatted-number");
+    public static final By REMAINING_DAYS = By.xpath("//span[normalize-space()='Days Remaining']/ancestor::record_flexipage-record-field//lightning-formatted-number");
+    public static final By FIELD = By.xpath("//span[text()=\"Authority\"]/ancestor::flexipage-field[@slot=\"secondaryFields\"]//div[text()=\"This field is calculated upon save\"]");
+
     //private static final By SRT_SEARCH_INPUT = By.xpath("//input[@placeholder=\"Search Contacts...\"]");
     private static final By SRT_SEARCH_INPUT = By.xpath("//input[@placeholder=\"Enter contact name or email...\"]");
     private static final Logger logger = LogManager.getLogger();
