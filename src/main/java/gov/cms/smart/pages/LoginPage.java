@@ -28,8 +28,8 @@ public class LoginPage {
     public HomePage loginWithSharedSecret(String username, String sharedSecret, String password) {
         logger.info("Signing in to Salesforce as: {}", username);
         utils.sendKeys(USERNAME, username);
-        utils.sendKeys(PASSWORD, password);
-        utils.clickElement(LOGIN_BUTTON);
+        utils.sendKeys(USERNAME, password);
+        //utils.clickElement(LOGIN_BUTTON);
         if(utils.isVisible(VERIFICATION_INPUT)){
             // Wait for MFA input to appear
             utils.waitForVisibility(VERIFICATION_INPUT); // 10 sec timeout
