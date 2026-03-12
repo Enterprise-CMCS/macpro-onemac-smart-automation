@@ -30,13 +30,16 @@ public class LoginPage {
         utils.sendKeys(USERNAME, username);
         utils.sendKeys(PASSWORD, password);
         utils.clickElement(LOGIN_BUTTON);
-        // Wait for MFA input to appear
-        utils.waitForVisibility(VERIFICATION_INPUT); // 10 sec timeout
-        // Generate TOTP code **after MFA input is ready**
-        Totp totp = new Totp(sharedSecret);
-        String mfaCode = totp.now();
-        utils.sendKeys(VERIFICATION_INPUT, mfaCode);
-        utils.clickElement(VERIFY);
+        if(utils.isVisible(VERIFICATION_INPUT)){
+            // Wait for MFA input to appear
+            utils.waitForVisibility(VERIFICATION_INPUT); // 10 sec timeout
+            // Generate TOTP code **after MFA input is ready**
+            Totp totp = new Totp(sharedSecret);
+            String mfaCode = totp.now();
+            utils.sendKeys(VERIFICATION_INPUT, mfaCode);
+            utils.clickElement(VERIFY);
+        }
+
         logger.info("Signing in to Salesforce as: {} user was successful.", username);
         return PageFactory.getHomePage(driver, utils);
     }
