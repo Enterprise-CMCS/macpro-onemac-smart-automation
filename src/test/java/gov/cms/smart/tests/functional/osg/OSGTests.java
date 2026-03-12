@@ -1,7 +1,10 @@
 package gov.cms.smart.tests.functional.osg;
 
 import gov.cms.smart.base.BaseTest;
+import gov.cms.smart.utils.assertions.TestAssert;
+import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.excel.ExcelPackageSelector;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
@@ -20,6 +23,8 @@ public class OSGTests extends BaseTest {
         createDriverSession();
         osgUser = createNewOSGUser();
         osgUser.loginWithSharedSecret();
+        boolean isDisplayed = PageFactory.getHomePage(getDriver(),getUtils()).isSPATabDisplayed();
+        TestAssert.assertTrue(isDisplayed,"");
     }
  /*   @Test(groups = {})
     public void testSkip() {

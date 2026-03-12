@@ -28,6 +28,10 @@ public class HomePage {
         this.utils = utils;
     }
 
+    public boolean isSPATabDisplayed() {
+        return utils.isVisible(WAIVERS_SPA);
+    }
+
     public SPAsWaiversPage goToSpasWaiversPage() {
         logger.info("Navigating to SPAs & Waivers page...");
 
@@ -53,7 +57,8 @@ public class HomePage {
 
                 try {
                     Thread.sleep(500); // small stabilization pause
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
         }
 
