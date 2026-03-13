@@ -1,37 +1,41 @@
 package gov.cms.smart.tests.functional.osg;
 
 import gov.cms.smart.base.BaseTest;
+import gov.cms.smart.dataproviders.DataProviders;
 import gov.cms.smart.utils.assertions.TestAssert;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.excel.ExcelPackageSelector;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.*;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static gov.cms.smart.dataproviders.DataProviders.STATUS_TO_SUBSTATUS;
+import static gov.cms.smart.dataproviders.DataProviders.TYPE_TO_SUBTYPE;
+import static gov.cms.smart.pages.DetailsTab.*;
 
 
 public class OSGTests extends BaseTest {
 
-    /*   @BeforeClass()
+       @BeforeClass()
        public void setup() {
            spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
            createDriverSession();
            osgUser = createNewOSGUser();
            osgUser.loginWithSharedSecret();
-       }*/
-    @Test
-    public void loginTest() {
-        spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
-        createDriverSession();
-        osgUser = createNewOSGUser();
-        osgUser.loginWithSharedSecret();
-        boolean isDisplayed = PageFactory.getHomePage(getDriver(),getUtils()).isSPATabDisplayed();
-        TestAssert.assertTrue(isDisplayed,"");
-    }
+       }
+
  /*   @Test(groups = {})
     public void testSkip() {
         throw new SkipException("BLOCKED: Feature disabled / data not available / env issue");
     }*/
 
-   /* @BeforeGroups(groups = {"EditRecord"})
+    @BeforeGroups(groups = {"EditRecord"})
     public void searchForRecord() throws InterruptedException {
         osgUser.goToSPAWaiversPage().searchSPA(spaPackage);
     }
@@ -158,5 +162,5 @@ public class OSGTests extends BaseTest {
         if (d != null) {
             d.quit();
         }
-    }*/
+    }
 }

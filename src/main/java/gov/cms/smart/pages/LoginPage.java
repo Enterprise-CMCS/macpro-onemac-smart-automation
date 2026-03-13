@@ -32,7 +32,7 @@ public class LoginPage {
         utils.sendKeys(PASSWORD, password);
         utils.clickElement(LOGIN_BUTTON);
         // Wait for MFA input to appear
-        utils.waitForVisibility(VERIFICATION_INPUT); // 10 sec timeout
+        utils.waitForVisibility(VERIFICATION_INPUT);
         // Generate TOTP code **after MFA input is ready**
         Totp totp = new Totp(sharedSecret);
         String mfaCode = totp.now();

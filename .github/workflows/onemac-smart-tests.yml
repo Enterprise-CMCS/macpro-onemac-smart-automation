@@ -18,11 +18,17 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      EMAIL: ${{ secrets.EMAIL }
+      APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
       OSG_QA_PASSWORD: ${{ secrets.OSG_QA_PASSWORD }}
-      APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-      OSG_QA_SECRET: ${{ secrets.OSG_QA_SECRET }}
-      EMAIL: ${{ secrets.EMAIL }}
+      OSG_QA_SECRET: ${{ secrets.OSG_QA_SECRET }}}
+      CPOC_QA_USERNAME: ${{ secrets.CPOC_QA_USERNAME }}
+      CPOC_QA_PASSWORD: ${{ secrets.CPOC_QA_PASSWORD }}
+      CPOC_QA_SECRET: ${{ secrets.CPOC_QA_SECRET }}}
+      SRT_QA_USERNAME: ${{ secrets.SRT_QA_USERNAME }}
+      SRT_QA_PASSWORD: ${{ secrets.SRT_QA_PASSWORD }}
+      SRT_QA_SECRET: ${{ secrets.SRT_QA_SECRET }}}
 
     steps:
       - name: Checkout repository
