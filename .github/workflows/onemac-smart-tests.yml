@@ -14,8 +14,8 @@ permissions:
   contents: write
 
 jobs:
-  run-tests:
-    runs-on: mdp-arm-runner
+  test:
+    runs-on: ubuntu-latest
 
     env:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
@@ -71,23 +71,6 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value "RUNON_ENV=$runOn"
           Write-Output "RUNON_ENV set to $runOn"
 
-      - name: Debug browser setup
-        run: |
-          uname -a
-          arch || true
-          java -version || true
-
-          which google-chrome || true
-          google-chrome --version || true
-
-          which chromium-browser || true
-          chromium-browser --version || true
-
-          which chromium || true
-          chromium --version || true
-
-          which chromedriver || true
-          chromedriver --version || true
       - name: Run OneMAC Smart Suite
         shell: pwsh
         continue-on-error: true
