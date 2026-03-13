@@ -19,7 +19,7 @@ jobs:
 
     env:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
-      PASSWORD: ${{ secrets.PASSWORD }}
+      OSG_QA_PASSWORD: ${{ secrets.OSG_QA_PASSWORD }}
       APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
       OSG_QA_SECRET: ${{ secrets.OSG_QA_SECRET }}
       EMAIL: ${{ secrets.EMAIL }}
