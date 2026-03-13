@@ -14,8 +14,8 @@ permissions:
   contents: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  run-tests:
+    runs-on: mdp-arm-runner
 
     env:
       OSG_QA_USERNAME: ${{ secrets.OSG_QA_USERNAME }}
@@ -209,58 +209,4 @@ jobs:
           echo "TOTAL=$TOTAL" >> $GITHUB_ENV
           echo "PASS_RATE=$PASS_RATE" >> $GITHUB_ENV
 
-      - name: Send Slack Notification
-        if: always()
-        shell: bash
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          # Decide overall status
-          if [ "${{ env.FAILED }}" -gt 0 ]; then
-            STATUS="FAILED"
-          elif [ "${{ env.SKIPPED }}" -gt 0 ]; then
-            STATUS="PASSED WITH SKIPS"
-          else
-            STATUS="PASSED"
-          fi
 
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          ARTIFACTS_URL="${RUN_URL}#artifacts"
-
-          payload=$(jq -n \
-            --arg title "*OneMAC SMART Automation Run* - $STATUS" \
-            --arg env "${{ env.RUNON_ENV }}" \
-            --arg passed "${{ env.PASSED }}" \
-            --arg failed "${{ env.FAILED }}" \
-            --arg skipped "${{ env.SKIPPED }}" \
-            --arg passrate "${{ env.PASS_RATE }}%" \
-            --arg artifactsurl "$ARTIFACTS_URL" \
-            '{
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": { "type": "mrkdwn", "text": $title }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    { "type": "mrkdwn", "text": ("*Environment:*\n" + $env) },
-                    { "type": "mrkdwn", "text": ("*Pass Rate:*\n" + $passrate) },
-                    { "type": "mrkdwn", "text": ("*Passed:*\n" + $passed) },
-                    { "type": "mrkdwn", "text": ("*Failed:*\n" + $failed) },
-                    { "type": "mrkdwn", "text": ("*Skipped:*\n" + $skipped) }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Detailed Report:* Visit the link below and download *OneMAC-SMART-Report* to view the full automation report and dashboard.\n\($artifactsurl)"
-                  }
-                }
-              ]
-            }')
-
-          curl -sS -X POST -H "Content-type: application/json" \
-            --data "$payload" \
-            "$SLACK_WEBHOOK_URL"
