@@ -31,19 +31,29 @@ jobs:
           fetch-depth: 0
           ref: main
 
-      - name: Check Salesforce Connectivity
+      - name: Preflight Salesforce Connectivity
         run: |
-          echo "Testing connectivity to Salesforce..."
+          echo "Runner IP:"
+          curl -s https://api.ipify.org
+          echo ""
           
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://cmsapps5--cmcsmcqa.sandbox.my.salesforce.com)
+          URLS=(
+            "https://cmsapps5--cmcsmcqa.sandbox.my.salesforce.com"
+            "https://c.salesforce.com"
+            "https://login.salesforce.com"
+          )
           
-          echo "HTTP Status: $STATUS"
+          for URL in "${URLS[@]}"
+          do
+            echo "Checking $URL"
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+            echo "HTTP Status: $STATUS"
           
-          if [ "$STATUS" -ge 400 ]; then
-            echo "❌ Runner cannot access Salesforce (blocked or denied)"
-            exit 1
-          else
-            echo "✅ Salesforce reachable"
-          fi
-
+            if [ "$STATUS" -ge 400 ]; then
+              echo "❌ Cannot access $URL"
+              exit 1
+            fi
+          done
+          
+          echo "✅ Salesforce domains reachable"
 
