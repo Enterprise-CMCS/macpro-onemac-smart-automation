@@ -1,4 +1,4 @@
-package gov.cms.smart.tests.flows;
+package gov.cms.smart.tests.functional;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.utils.assertions.TestAssert;
@@ -52,8 +52,48 @@ public class WorkflowStatusTransitionTests extends BaseTest {
         );
     }
 
+
+    @Test(groups = {"Workflow & Status Transitions"})
+    public void VerifyStatusChangesWhenPackageIsApproved() {
+        boolean isSubStatusPresent = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isSubStatusDisplayedUnderCompletionStatus();
+        TestAssert.assertTrue(
+                isSubStatusPresent,
+                "Sub-Status field is not present under Completion Status section"
+        );
+    }
+
+    @Test(groups = {"Workflow & Status Transitions"})
+    public void VerifyStatusChangesWhenAPackageIsWithdrawn() {
+        boolean isSubStatusPresent = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isSubStatusDisplayedUnderCompletionStatus();
+        TestAssert.assertTrue(
+                isSubStatusPresent,
+                "Sub-Status field is not present under Completion Status section"
+        );
+    }
+
+    @Test(groups = {"Workflow & Status Transitions"})
+    public void VerifyStatusChangeWhenPackageIsDisapproved() {
+        boolean isSubStatusPresent = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isSubStatusDisplayedUnderCompletionStatus();
+        TestAssert.assertTrue(
+                isSubStatusPresent,
+                "Sub-Status field is not present under Completion Status section"
+        );
+    }
+
+    @Test(groups = {"Workflow & Status Transitions"})
+    public void VerifyStatusChangesWhenPackageIsTerminated() {
+        boolean isSubStatusPresent = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).isSubStatusDisplayedUnderCompletionStatus();
+        TestAssert.assertTrue(
+                isSubStatusPresent,
+                "Sub-Status field is not present under Completion Status section"
+        );
+    }
+
+
+
+
     @AfterMethod()
-    public void navigateToRecentlyViewed() throws InterruptedException {
+    public void navigateToRecentlyViewed() {
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
     }
 

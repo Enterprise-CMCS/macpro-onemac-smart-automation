@@ -1,23 +1,20 @@
-package gov.cms.smart.tests;
+package gov.cms.smart.tests.functional;
 
 import org.testng.annotations.Test;
 
 public class RAIManagementTests {
 
     @Test(groups = {"RAI Management"})
-    public void testDashboard5() {
+    public void createRAI() {
     }
 
     @Test(groups = {"RAI Management"})
-    public void testDashboard6() {
+    public void respondToRAI() {
     }
 
     @Test(groups = {"RAI Management"})
-    public void testDashboard7() {
+    public void withdrawRAI() {
     }
 
-    @Test(groups = {"RAI Management"})
-    public void testDashboard8() {
-    }
 
 }

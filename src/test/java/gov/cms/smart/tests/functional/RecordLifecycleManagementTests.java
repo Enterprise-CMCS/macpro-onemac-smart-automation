@@ -1,4 +1,4 @@
-package gov.cms.smart.tests.functional.osg;
+package gov.cms.smart.tests.functional;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.dataproviders.DataProviders;

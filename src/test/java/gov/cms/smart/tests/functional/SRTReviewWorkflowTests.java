@@ -1,4 +1,4 @@
-package gov.cms.smart.tests;
+package gov.cms.smart.tests.functional;
 
 import org.testng.annotations.Test;
 

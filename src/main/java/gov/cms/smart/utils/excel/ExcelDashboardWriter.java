@@ -46,11 +46,10 @@ public class ExcelDashboardWriter {
             // Header is now on Excel row 2, data starts on Excel row 3 => index 2
             int startRowIndex = 2;
             int areaCol = 0;
-
+            System.out.println("==== AREA COUNTS BEING WRITTEN TO EXCEL ====");
             for (Map.Entry<String, ? extends CountsView> entry : areaCounts.entrySet()) {
                 String area = entry.getKey();
                 CountsView c = entry.getValue();
-
                 Row row = findRowByArea(sheet, startRowIndex, areaCol, area);
                 if (row == null) {
                     continue;
@@ -102,8 +101,8 @@ public class ExcelDashboardWriter {
         dateTimeStyle.setDataFormat(format);
         valueCell.setCellStyle(dateTimeStyle);
 
-        // Optional: merge C1:D1
-        mergeIfNeeded(sheet, 0, 0, 2, 3);
+      /*  // Optional: merge C1:D1
+        mergeIfNeeded(sheet, 0, 0, 2, 3);*/
     }
 
     private static Row findRowByArea(Sheet sheet, int startRowIndex, int areaCol, String area) {

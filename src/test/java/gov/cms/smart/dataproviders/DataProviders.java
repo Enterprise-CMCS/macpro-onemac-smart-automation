@@ -68,11 +68,21 @@ public class DataProviders {
 
     @DataProvider(name = "priorityLevels")
     public Object[][] priorityLevels() {
-        return new Object[][]{
-                {PriorityCode.ESCALATED_REVIEW, CodingAssessment.SAME},
-                {PriorityCode.CUSTOMARY_REVIEW, CodingAssessment.UP_CODED},
-                {PriorityCode.EXPEDITED_REVIEW, CodingAssessment.DOWN_CODED}
-        };
+
+        PriorityCode[] priorityCodes = PriorityCode.values();
+        CodingAssessment[] codingAssessments = CodingAssessment.values();
+
+        Object[][] data = new Object[priorityCodes.length * codingAssessments.length][2];
+
+        int index = 0;
+
+        for (PriorityCode priority : priorityCodes) {
+            for (CodingAssessment assessment : codingAssessments) {
+                data[index++] = new Object[]{priority, assessment};
+            }
+        }
+
+        return data;
     }
 
 }

@@ -11,10 +11,13 @@ import gov.cms.smart.utils.ui.UIElementUtils;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITest;
 import org.testng.annotations.AfterMethod;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
@@ -27,6 +30,7 @@ public class BaseTest implements ITest {
     public SrtUser srtUser;
 
     private static final Logger logger = LogManager.getLogger();
+
     // ThreadLocal driver for parallel safety
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
@@ -34,6 +38,7 @@ public class BaseTest implements ITest {
     protected UIElementUtils utils;
 
     private static final ThreadLocal<String> testName = new ThreadLocal<>();
+
 
     protected void setTestName(Object... keyValues) {
 
@@ -90,11 +95,9 @@ public class BaseTest implements ITest {
      */
     protected void createDriverSession() {
         WebDriver webDriver = DriverFactory.createDriver(); // uses TestContext internally
-        webDriver.get(TestContext.baseUrl());
-        logger.info("Current URL: " + webDriver.getCurrentUrl());
-        logger.info("Page title: " + webDriver.getTitle());
         // environment-aware URL
-        //  webDriver.manage().window().maximize();
+        webDriver.get(TestContext.baseUrl());
+      //  webDriver.manage().window().maximize();
         driver.set(webDriver);
         utils = new UIElementUtils(getDriver(), 10);
     }

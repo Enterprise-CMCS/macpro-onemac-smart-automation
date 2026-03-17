@@ -3,13 +3,13 @@
     <test name="OneMacSmart UI Tests">
 
         <classes>
-            <class name="gov.cms.smart.tests.functional.osg.OSGTests"/>
-            <class name="gov.cms.smart.tests.flows.WorkflowStatusTransitionTests"/>
-            <class name="gov.cms.smart.tests.functional.osg.TimeLineSLAManagementTests"/>
-            <class name="gov.cms.smart.tests.functional.osg.RecordLifecycleManagementTests"/>
-            <class name="gov.cms.smart.tests.functional.osg.NewSPAFormTests"/>
-            <class name="gov.cms.smart.tests.functional.srt.SRTTests"/>
-            <class name="gov.cms.smart.tests.functional.cpoc.CPOCTests"/>
+            <class name="gov.cms.smart.tests.functional.AssignmentAndRoutingTests"/>
+            <class name="gov.cms.smart.tests.functional.WorkflowStatusTransitionTests"/>
+            <class name="gov.cms.smart.tests.functional.TimeLineSLAManagementTests"/>
+            <class name="gov.cms.smart.tests.functional.RecordLifecycleManagementTests"/>
+            <class name="gov.cms.smart.tests.functional.ValidationAndBusinessRulesTests"/>
+            <class name="gov.cms.smart.tests.functional.RAIManagementTests"/>
+            <class name="gov.cms.smart.tests.functional.UserAccessPermissionsTests"/>
         </classes>
 
     </test>

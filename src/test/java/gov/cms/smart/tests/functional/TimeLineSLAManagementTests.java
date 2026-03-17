@@ -1,4 +1,4 @@
-package gov.cms.smart.tests.functional.osg;
+package gov.cms.smart.tests.functional;
 
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.pages.DetailsTab;
@@ -13,7 +13,7 @@ import static gov.cms.smart.pages.DetailsTab.*;
 public class TimeLineSLAManagementTests extends BaseTest {
 
     @BeforeClass()
-    public void setup() throws InterruptedException {
+    public void setup() {
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         createDriverSession();
         osgUser = createNewOSGUser();
@@ -157,7 +157,7 @@ public class TimeLineSLAManagementTests extends BaseTest {
     }
 
     @AfterMethod()
-    public void navigateToRecentlyViewed() throws InterruptedException {
+    public void navigateToRecentlyViewed() {
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
     }
 

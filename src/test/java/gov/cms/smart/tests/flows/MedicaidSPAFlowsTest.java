@@ -52,7 +52,6 @@ public class MedicaidSPAFlowsTest extends BaseTest {
 
     }*/
 /*
-    @Test
     public void verifyCPOCReviewRequestRAI() {
         *//* CPOCUser cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret().goToSpasWaiversPage().openExistingRecord("AL", "Medicaid SPA");

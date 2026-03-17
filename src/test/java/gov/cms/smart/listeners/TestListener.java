@@ -32,9 +32,34 @@ public class TestListener  implements ITestListener, ISuiteListener {
         @Override public int getBlocked() { return blocked.get(); }
     }
 
+    private static final java.util.Set<String> DASHBOARD_AREAS = java.util.Set.of(
+            "Validations & Business Rules",
+            "RAI Management",
+            "SRT Review Workflow",
+            "Workflow & Status Transitions",
+            "Record Lifecycle Management",
+            "User Access & Permissions",
+            "Assignment & Routing",
+            "API End To End",
+            "Search & Filters",
+            "Reporting & Data Export",
+            "Accessibility (Section 508 Compliance)",
+            "Email Notifications & Alerts",
+            "Timeline & SLA Management",
+            "Document Management"
+    );
+
     private static String getFunctionalArea(ITestResult result) {
         String[] groups = result.getMethod().getGroups();
-        if (groups != null && groups.length > 0) return groups[0];
+
+        if (groups != null) {
+            for (String group : groups) {
+                if (DASHBOARD_AREAS.contains(group)) {
+                    return group;
+                }
+            }
+        }
+
         return "Uncategorized";
     }
 

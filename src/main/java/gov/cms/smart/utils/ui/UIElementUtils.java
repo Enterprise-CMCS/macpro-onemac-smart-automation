@@ -31,6 +31,27 @@ public class UIElementUtils {
         this.wait.ignoring(StaleElementReferenceException.class);
     }
 
+    public String takeScreenshot(String prefix) {
+        try {
+            String timestamp = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+
+            File dir = new File("target/screenshots");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String path = "target/screenshots/" + prefix + "_" + timestamp + ".png";
+            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            File dest = new File(path);
+            org.openqa.selenium.io.FileHandler.copy(src, dest);
+
+            return dest.getAbsolutePath();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("M/d/yyyy");
 
@@ -135,6 +156,7 @@ public class UIElementUtils {
             }
         });
     }
+
     public void clickElement(By locator) {
         WebElement element = waitForClickable(locator);
         scrollIntoView(element);
