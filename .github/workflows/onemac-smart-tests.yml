@@ -3,7 +3,7 @@ run-name: "OneMAC SMART Tests"
 
 on:
   schedule:
-    - cron: '25 19 * * 2'   # Tuesday 3:25 PM ET (DST)
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
