@@ -203,7 +203,7 @@ jobs:
           TOTAL=$((PASSED + FAILED + SKIPPED))
 
           if [ "$TOTAL" -gt 0 ]; then
-            PASS_RATE=$((PASSED * 100 / TOTAL))
+            PASS_RATE=$(( (PASSED * 100 + TOTAL / 2) / TOTAL ))
           else
             PASS_RATE=0
           fi
