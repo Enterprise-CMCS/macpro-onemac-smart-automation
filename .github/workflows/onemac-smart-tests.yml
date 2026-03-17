@@ -3,8 +3,8 @@ run-name: "OneMAC SMART Tests"
 
 on:
   schedule:
-    - cron: '15 20 * * 2'   # Tuesday ~3:15 PM ET
-  workflow_dispatch:        # optional manual run
+    - cron: '25 19 * * 2'   # Tuesday 3:25 PM ET (DST)
+  workflow_dispatch:
 
 concurrency:
   group: excel-sync
