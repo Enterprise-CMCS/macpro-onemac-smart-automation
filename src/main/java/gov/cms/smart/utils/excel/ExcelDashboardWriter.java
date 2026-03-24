@@ -46,7 +46,6 @@ public class ExcelDashboardWriter {
             // Header is now on Excel row 2, data starts on Excel row 3 => index 2
             int startRowIndex = 2;
             int areaCol = 0;
-            System.out.println("==== AREA COUNTS BEING WRITTEN TO EXCEL ====");
             for (Map.Entry<String, ? extends CountsView> entry : areaCounts.entrySet()) {
                 String area = entry.getKey();
                 CountsView c = entry.getValue();

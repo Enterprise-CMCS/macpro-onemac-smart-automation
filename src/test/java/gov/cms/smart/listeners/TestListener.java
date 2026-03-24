@@ -10,6 +10,7 @@ import gov.cms.smart.utils.reporting.ScreenshotUtil;
 import org.testng.*;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,7 +33,7 @@ public class TestListener  implements ITestListener, ISuiteListener {
         @Override public int getBlocked() { return blocked.get(); }
     }
 
-    private static final java.util.Set<String> DASHBOARD_AREAS = java.util.Set.of(
+    private static final Set<String> DASHBOARD_AREAS = java.util.Set.of(
             "Validations & Business Rules",
             "RAI Management",
             "SRT Review Workflow",

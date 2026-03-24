@@ -160,7 +160,6 @@ public class UIElementUtils {
     public void clickElement(By locator) {
         WebElement element = waitForClickable(locator);
         scrollIntoView(element);
-
         if ("lightning-base-combobox".equalsIgnoreCase(element.getTagName())) {
             try {
                 WebElement button = element.findElement(By.xpath(".//button"));

@@ -33,6 +33,7 @@ public class TimeLineSLAManagementTests extends BaseTest {
     public void verifyWarningBannerAppearsWhenSubmissionVerifiedCompleteIsBlankAndMoreThan5DaysPassed() throws InterruptedException {
         utils.sendKeysToInputByLabel("Initial Submission Date", utils.getPastDate(6));
         utils.selectFromComboBoxByLabel("Initial Submission Complete", "No");
+        utils.sendKeysToTextAreaByLabel("Missing Information","Test");
         utils.clearInputByLabel("Submission Verified Complete");
         PageFactory.getSpaDetailsPage(getDriver(), getUtils()).save();
         getDriver().navigate().refresh();

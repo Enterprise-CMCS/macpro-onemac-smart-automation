@@ -80,9 +80,6 @@ public class SrtUser {
         PageFactory.getHomePage(driver, utils).goToSpasWaiversPage();
     }
 
-    public void createSPA(String state) throws InterruptedException {
-        //PageFactory.getNewSPAPage(driver, utils).createSPA(state);
-    }
 
     public boolean isNewButtonPresent() {
         return PageFactory.getSpaWaiversPage(driver, utils).isNewButtonPresent();

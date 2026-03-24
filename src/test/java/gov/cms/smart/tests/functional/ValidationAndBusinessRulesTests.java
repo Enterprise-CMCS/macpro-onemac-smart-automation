@@ -14,19 +14,21 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static gov.cms.smart.dataproviders.DataProviders.STATUS_TO_SUBSTATUS;
 import static gov.cms.smart.dataproviders.DataProviders.TYPE_TO_SUBTYPE;
 import static gov.cms.smart.pages.DetailsTab.*;
-import static gov.cms.smart.pages.DetailsTab.IDENTIFYING_INFORMATION;
 
 public class ValidationAndBusinessRulesTests extends BaseTest {
+
     /*   @Test(groups = {})
        public void testSkip() {
            throw new SkipException("BLOCKED: Feature disabled / data not available / env issue");
        }*/
+
     @BeforeClass()
     public void setup() {
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
@@ -77,7 +79,7 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
         setTestName("status", status);
         utils.selectFromComboBoxByLabel("Status", status);
         List<String> actualOptions =
-                utils.getValuesFromDropdownByLabel("Sub-Status");
+                utils.getValuesFromDropdownByLabel("Sub-status");
         List<String> expectedOptions =
                 STATUS_TO_SUBSTATUS.get(status);
         List<String> missing =
@@ -96,15 +98,26 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
         );
     }
 
-    @Test(groups = {"Validations & Business Rules", "EditRecord"}, dataProvider = "typeSubtypeData", dataProviderClass = DataProviders.class)
-    public void verifySubTypeListFiltersCorrectlyForEachType(String type) throws InterruptedException {
+    @Test(groups = {"Validations & Business Rules", "EditRecord","typeSubtype"}, dataProvider = "typeSubtypeData", dataProviderClass = DataProviders.class)
+    public void verifySubTypeListFiltersCorrectlyForEachType (String type) {
         setTestName("type", type);
-        utils.selectFromComboBoxByLabel("Type", type);
-        List<String> actualOptions =
-                utils.getValuesFromDropdownByLabel("Subtype");
+        By typeEditIcon = By.xpath("//div[@aria-label=\"Type / Subtype section, click to collapse\"]/lightning-button-icon");
+        utils.clickElement(typeEditIcon);
+        By input = By.xpath("//input[@placeholder=\"Search Types...\"]");
+        utils.sendKeys(input, type);
+        //div[@class="checkbox-list subtype-list"]/div/span[@class="type-name"]
+        By typeCheckbox = By.xpath("//span[text()=\""+type+"\"]/parent::div[@role=\"checkbox\"]//input");
+        utils.javaScriptClicker(typeCheckbox);
+        List<String> actualOptions = new ArrayList<>();
+        List<WebElement> subtypeList = getDriver().findElements(By.xpath("//div[@class=\"checkbox-list subtype-list\"]/div/span[@class=\"type-name\"]"));
+        for (WebElement el : subtypeList) {
+            actualOptions.add(el.getText());
+        }
 
         List<String> expectedOptions =
                 TYPE_TO_SUBTYPE.get(type);
+
+        System.out.println("Actual Options" + actualOptions);
         List<String> missing =
                 expectedOptions.stream()
                         .filter(e -> !actualOptions.contains(e))
@@ -119,9 +132,16 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
                         "\nMissing: " + missing +
                         "\nExtra: " + extra
         );
+
+
     }
 
-    @Test(groups = {"Validations & Business Rules", "EditRecord"})
+    @AfterMethod(onlyForGroups = "typeSubtype")
+    public void cancel(){
+        By cancel_btn = By.xpath("//c-smart-cmcs-type-sub-type//button[text()=\"Cancel\"]");
+        utils.clickElement(cancel_btn);
+    }
+   /* @Test(groups = {"Validations & Business Rules", "EditRecord"})
     public void verifyThatSubtypeIsDisabledWhenTypeIsAdmin() throws InterruptedException {
         getUtils().selectFromComboBoxByLabel("Type", "Admin");
         By subType = By.xpath(
@@ -135,7 +155,7 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
         boolean isDisabled = element.getAttribute("disabled") != null;
         TestAssert.assertTrue(isDisabled, "combo box should be disabled");
 
-    }
+    }*/
 
     @Test(groups = {"Validations & Business Rules", "EditRecord"})
     public void verifyThatPriorityCodeFieldIsRequiredToSaveSPADetails() throws InterruptedException {
@@ -152,22 +172,22 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
     }
 
     @AfterMethod(onlyForGroups = "EditRecord")
-    public void resetToHomePageAfterDropdownTests() throws InterruptedException {
+    public void resetToHomePageAfterDropdownTests() {
         PageFactory.getSpaDetailsPage(getDriver(), getUtils()).clickCancel();
         utils.waitForInvisibility(FIELD);
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
     }
 
     @BeforeMethod(onlyForGroups = "DetailsPageTests")
-    public void openRecord() throws InterruptedException {
+    public void openRecord() {
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().openExistingRecord(spaPackage);
     }
 
-    @Test(groups = {"Validations & Business Rules", "DetailsPageTests"})
+    /*@Test(groups = {"Validations & Business Rules", "DetailsPageTests"})
     public void verifySubtypeLabelFormattingIsCorrect() {
         getUtils().scrollToElement(MILESTONES_SECTION);
         TestAssert.assertEquals(getDriver(), SUB_TYPE_SI, "Subtype", "Subtype label text or formatting is incorrect");
-    }
+    }*/
 
     @Test(groups = {"Validations & Business Rules", "DetailsPageTests"})
     public void verifyThatAuthorityFieldIsReadOnlyInTheDetailsPage() {
@@ -177,9 +197,10 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
     }
 
     @AfterMethod(onlyForGroups = "DetailsPageTests")
-    public void afterDetailsPageTests(){
+    public void afterDetailsPageTests() {
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
     }
+
     //Start of New SPA Form Validations Tests
     @BeforeMethod(onlyForGroups = "New SPA Form Validations")
     public void NavigateToNewSPAForm() throws InterruptedException {

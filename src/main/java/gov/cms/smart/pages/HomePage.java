@@ -18,7 +18,7 @@ public class HomePage {
 
     private final WebDriver driver;
     private final UIElementUtils utils;
-    private static final By WAIVERS_SPA = By.xpath("//span[text()=\"SPAs or Waivers\"]/ancestor::a/..");
+    private static final By WAIVERS_SPA = By.xpath("//span[text()=\"SPAs or Waivers\"]/ancestor::a");
     private static final By ALERT = By.xpath("//lightning-formatted-rich-text/span/p/strong[text()=\"ALERT!\"]");
     private static final Logger logger = LogManager.getLogger();
     private static final By SEARCH_INPUT = By.xpath("//lst-list-view-manager-settings-menu/parent::div/..//force-list-view-manager-search-bar//input");

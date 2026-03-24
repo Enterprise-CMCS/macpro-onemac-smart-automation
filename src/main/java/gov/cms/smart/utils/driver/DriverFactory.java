@@ -15,13 +15,13 @@ public class DriverFactory {
 
     public static WebDriver createDriver() {
         // Read system properties first (from GitHub Actions), fallback to ConfigReader
-      /*  System.setProperty("webdriver.http.factory", "jdk-http-client");
+     /*   System.setProperty("webdriver.http.factory", "jdk-http-client");
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\57901\\Desktop\\chromedriver\\chromedriver\\chromedriver.exe");
         WebDriver driver;
         ChromeOptions chromeOptions;
         chromeOptions = new ChromeOptions();
-       // chromeOptions.addArguments("--headless=new");
-      //  chromeOptions.addArguments("--window-size=1920,1080");
+        chromeOptions.addArguments("--headless=new");
+        chromeOptions.addArguments("--window-size=1920,1080");
         chromeOptions.setBinary("C:\\Users\\57901\\Desktop\\chrome-win64\\chrome-win64\\chrome.exe");
         driver = new ChromeDriver(chromeOptions);*/
 

@@ -41,7 +41,7 @@ public class DetailsTab {
     private static final By TYPE_SI = By.xpath("//span[text()=\"Submission Information\"]/ancestor::flexipage-field-section2//span[text()=\"Type\"]");
     public static final By MILESTONES_SECTION = By.xpath("//span[text()=\"Milestones\"]");
     public static final By SUBMISSION_INFORMATION_SECTION = By.xpath("//span[text()=\"Submission Information\"]");
-    private static final By SUB_STATUS = By.xpath("//span[text()=\"Completion Status\"]/ancestor::flexipage-field-section2//span[text()=\"Sub-Status\"]");
+    private static final By SUB_STATUS = By.xpath("//span[text()=\"Completion Status\"]/ancestor::flexipage-field-section2//span[text()=\"Sub-status\"]");
     private static final By HOME_PAGE = By.xpath("//span[text()=\"Home\"]/parent::a");
     public static final By IDENTIFYING_INFORMATION = By.xpath("//span[text()=\"Identifying Information\"]");
     private static final By NEW = By.xpath("//button[text()=\"New\"]");

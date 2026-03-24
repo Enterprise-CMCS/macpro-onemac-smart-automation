@@ -32,6 +32,14 @@ public class ReviewTab {
     private static final By SAVE_RAI = By.xpath("//footer/button/span[text()=\"Save\"]");
     private static final By ALERT = By.xpath("//strong[text()=\"ALERT!\"]");
     private static final By REVIEW_TAB = By.xpath("//a[text()=\"Review\"]/..");
+    public static final By RAI_INFO_SECTION = By.xpath("//strong[text()=\"RAI Information\"]");
+    public static final By SRT_QUESTIONS_ARROW = By.xpath("//th[@aria-label=\"RAI Needed\"]/ancestor::table//tbody/tr/td[5]//button");
+    public static final By DELETE_RAI_QUESTION = By.cssSelector("a[title=\"Delete\"]");
+    public static final By EDIT_RAI_QUESTION = By.cssSelector("a[title=\"Edit\"]");
+    public static final By CONFIRM_SRT_DELETION = By.cssSelector("button[title=\"Delete\"]");
+    public static final By SRT_DELETED_MESSAGE = By.xpath("//span[contains(text(),'Submission Review Team was deleted.')]");
+    public static final By RAI_QUESTIONS_SAVED = By.xpath("//span[contains(.,\"Submission Review Team\") and contains(.,\"was saved.\")]");
+    public static final By SAVE_BUTTON = By.xpath("//button[text()=\"Save\"]");
 
     private final WebDriver driver;
     private final UIElementUtils utils;
@@ -40,18 +48,19 @@ public class ReviewTab {
         this.driver = driver;
         this.utils = utils;
     }
+
     public boolean validateGroupAndDivisions(String groupLabel, String groupValue, String divisionLabel) throws InterruptedException {
         // Select the type in the first dropdown
-      //  utils.editByLabel("Priority Code");
+        //  utils.editByLabel("Priority Code");
         utils.selectFromComboBoxByLabel(groupLabel, groupValue);
         // Get actual options from the second dropdown
         List<String> actualOptions = utils.getValuesFromDropdownByLabel(divisionLabel);
         System.out.println(actualOptions);
         Map<String, List<String>> groupToDivision = new HashMap<>();
-        groupToDivision.put("CAHPG", Arrays.asList("--None--","DEPO", "DMEP", "DQHO", "DSCP","DTA","CAHPG - Office of Group Director"));
+        groupToDivision.put("CAHPG", Arrays.asList("--None--", "DEPO", "DMEP", "DQHO", "DSCP", "DTA", "CAHPG - Office of Group Director"));
         //typeToSubtypes.put("First Clock - Under Review", Arrays.asList("--None--", "Intake Needed", "Pending Concurrence", "Pending Approval", "Pending Clearance"));
-       //typeToSubtypes.put("Second Clock - Under Review", Arrays.asList("--None--", "Pending Concurrence", "Pending Approval", "Pending Clearance"));
-       // typeToSubtypes.put("RAI", Arrays.asList("--None--", "RAI Issued", "RAI Withdraw Requested"));
+        //typeToSubtypes.put("Second Clock - Under Review", Arrays.asList("--None--", "Pending Concurrence", "Pending Approval", "Pending Clearance"));
+        // typeToSubtypes.put("RAI", Arrays.asList("--None--", "RAI Issued", "RAI Withdraw Requested"));
         // Get expected options from the map
         List<String> expectedOptions = groupToDivision.get("CAHPG");
         System.out.println(expectedOptions);
@@ -67,13 +76,13 @@ public class ReviewTab {
         }
     }
 
-    public void assignSRT(){
+    public void assignSRT() {
         utils.sendKeys(SRT_SEARCH_INPUT, "SRT Test Automation User");
         utils.waitForVisibility(By.xpath("//label[text()=\"Division\"]"));
         utils.clickElement(SRT_SEARCH_BTN);
         utils.clickElement(SRT_CHECKBOX);
         utils.clickElement(SRT_ASSIGN_BTN);
-        utils.sendKeysToTextAreaByLabel("Review Assignment","This is an automation test script to assign SRT.");
+        utils.sendKeysToTextAreaByLabel("Review Assignment", "This is an automation test script to assign SRT.");
         //utils.sendKeysToTextAreaByLabel("Assignment Notes", assignmentNotes);
         utils.clickElement(SRT_SAVE_ASSIGNMENT);
         logger.info("Successfully Assigned SRT.");

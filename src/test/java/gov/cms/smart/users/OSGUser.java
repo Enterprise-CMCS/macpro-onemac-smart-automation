@@ -28,10 +28,6 @@ public class OSGUser {
         return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret, password);
     }
 
-    public void verifyLogin() {
-
-    }
-
 
     public HomePage login() {
         return PageFactory.getLoginPage(driver, utils).login(TestContext.osgUsername());

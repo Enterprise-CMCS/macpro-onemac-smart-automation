@@ -16,6 +16,7 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import static gov.cms.smart.pages.AdjudicationTab.DOCUMENTS_POSTED_TO_MEDICAID_GOV_LABEL;
+import static gov.cms.smart.pages.DetailsTab.SUBMISSION_INFORMATION_SECTION;
 
 
 public class RecordLifecycleManagementTests extends BaseTest {
@@ -116,6 +117,7 @@ public class RecordLifecycleManagementTests extends BaseTest {
         utils.editByLabel("Priority Code");
         utils.selectFromComboBoxByLabel("Initial Submission Complete", "Yes");
         PageFactory.getSpaDetailsPage(getDriver(), getUtils()).save();
+        utils.scrollToElement(SUBMISSION_INFORMATION_SECTION);
         utils.waitForFieldTextToBe("Submission Information", "Submission Verified Complete", utils.getTodayDateFormatted());
         Assert.assertEquals(utils.getFieldTextByLabel("Submission Verified Complete"), utils.getTodayDateFormatted());
     }
