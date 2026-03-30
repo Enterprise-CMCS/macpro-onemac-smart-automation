@@ -16,7 +16,7 @@ import java.util.List;
 public class SPAsWaiversPage {
 
     private static final Logger logger = LogManager.getLogger();
-    private static final By NEW_BUTTON = By.xpath("//div[contains(@class,\"actionsWrapper\")]");
+    public static final By NEW_BUTTON = By.xpath("//div[contains(@class,\"actionsWrapper\")]");
     private static final By SEARCH_INPUT = By.xpath("//lst-list-view-manager-settings-menu/parent::div/..//force-list-view-manager-search-bar//input");
     private static final By RECORDS_HEADER = By.xpath("//h1[@class=\"slds-page-header__name-title slds-var-p-right_xx-small\"]/..");
     private static final By HEADER_DROPDOWN = By.xpath("//lightning-base-combobox-item/span/span");

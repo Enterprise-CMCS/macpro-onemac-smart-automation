@@ -49,8 +49,9 @@ public class DataProviders {
         return data;
     }
 
-    public static final Map<String, List<String>> TYPE_TO_SUBTYPE = Map.of(
-            "Eligibility", List.of(
+    public static final Map<String, List<String>> TYPE_TO_SUBTYPE = Map.ofEntries(
+
+            Map.entry("Eligibility", List.of(
                     "Aged/Blind/Disabled Eligibility",
                     "Application",
                     "Asset Verification System",
@@ -85,39 +86,33 @@ public class DataProviders {
                     "ARP 9817",
                     "Extended Postpartum",
                     "PHE Related"
-            ), "Recovery Audit Contractor", List.of("RAC", "ARP 9817", "PHE Related"), "Disaster Relief", List.of(
-                    "COVID",
-                    "Flood",
-                    "Hurricane",
-                    "Other Pandemic",
-                    "Tropical Storms",
-                    "Viral Outbreak",
-                    "Wild Fire",
-                    "Other",
-                    "ARP 9817",
-                    "PHE Related",
-                    "Unwinding",
-                    "Cyberattack"
-            ), "Administrative", List.of(
-                    "Authority Change",
-                    "Electronic Claims",
-                    "Fair Hearings and Appeals",
-                    "Policy Update",
-                    "Provider Appeal Timeframe",
-                    "Provider sanctions",
-                    "Remove Obsolete Pages",
-                    "Remove Svc Category",
-                    "Single State Agency",
-                    "State Review Designation",
-                    "Table of Contents Update",
-                    "Utilization review Administration",
-                    "ARP 9817",
-                    "PHE Related"
-            ), "Estate Recovery", List.of(
-                    "Policy",
-                    "ARP 9817",
-                    "PHE Related"
-            ), "Reimbursement – Non-Institutional", List.of(
+            )),
+
+            Map.entry("Recovery Audit Contractor", List.of(
+                    "RAC", "ARP 9817", "PHE Related"
+            )),
+
+            Map.entry("Disaster Relief", List.of(
+                    "COVID", "Flood", "Hurricane", "Other Pandemic",
+                    "Tropical Storms", "Viral Outbreak", "Wild Fire",
+                    "Other", "ARP 9817", "PHE Related",
+                    "Unwinding", "Cyberattack"
+            )),
+
+            Map.entry("Administrative", List.of(
+                    "Authority Change", "Electronic Claims",
+                    "Fair Hearings and Appeals", "Policy Update",
+                    "Provider Appeal Timeframe", "Provider sanctions",
+                    "Remove Obsolete Pages", "Remove Svc Category",
+                    "Single State Agency", "State Review Designation",
+                    "Table of Contents Update", "Utilization review Administration",
+                    "ARP 9817", "PHE Related"
+            )),
+
+            Map.entry("Estate Recovery", List.of(
+                    "Policy", "ARP 9817", "PHE Related"
+            )),
+            Map.entry("Reimbursement – Non-Institutional", List.of(
                     "1931 Parents/Caretaker",
                     "ABI",
                     "Adult Foster Care",
@@ -213,7 +208,19 @@ public class DataProviders {
                     "CCBHC",
                     "SBS – Free Care",
                     "TCM in Carceral Settings"
-            ), "Reimbursement – Institutional", List.of(
+            )),
+
+            Map.entry("Reimbursement – FMAP", List.of(
+                    "Federal Medical Assistance Percentage",
+                    "ARP 9817",
+                    "PHE Related"
+            )),
+
+            Map.entry("Reimbursement – UPL", List.of(
+                    "Upper Payment Limits",
+                    "ARP 9817",
+                    "PHE Related"
+            )), Map.entry("Reimbursement – Institutional", List.of(
                     "Behavioral Health Providers",
                     "Diagnosis Related Group Methodology",
                     "Disproportionate Share Hospital",
@@ -231,16 +238,75 @@ public class DataProviders {
                     "Psych Res Treat Facility",
                     "Upper Payment Limit Demonstrations",
                     "ARP 9817",
-                    "PHE Related"), "Reimbursement – FMAP", List.of(
-                    "Federal Medical Assistance Percentage",
-                    "ARP 9817",
-                    "PHE Related"), "Reimbursement – UPL", List.of(
-                    "Upper Payment Limits",
-                    "ARP 9817",
-                    "PHE Related"), "Reimbursement – Adm", List.of(
+                    "PHE Related"
+            )),
+
+            Map.entry("Reimbursement – Adm", List.of(
                     "Administration",
                     "ARP 9817",
-                    "PHE Related")
+                    "PHE Related"
+            )), Map.entry("Coverage – Non-Institutional 1905(a) Services", List.of(
+                    "Alternative Benefit Plan",
+                    "Amb Srvcs-Pregnant Women",
+                    "Behavioral Services",
+                    "Case Management",
+                    "Chiropractic Services",
+                    "Clinic Services",
+                    "Dental",
+                    "Denture",
+                    "Disease Management",
+                    "Drugs & Related Services",
+                    "Emergency Services for Aliens",
+                    "EPSDT",
+                    "Ext Svcs-Pregnant Women",
+                    "Eyeglasses",
+                    "Family Planning",
+                    "Federally Qualified Health Centers",
+                    "Freestanding Birth Centers",
+                    "Home Health",
+                    "Hospice",
+                    "Inpatient Hospital",
+                    "Integrated Care Model",
+                    "Lab and X-ray Services",
+                    "Lactation Consultation",
+                    "Managed Care",
+                    "Mandatory MAT Services (1006b)",
+                    "Medical & Surgical",
+                    "Multiple Services",
+                    "not IMD Inpatient Hosp",
+                    "Certified Nurse Midwife",
+                    "Certified Pediatric/Family Nurse Practitioner",
+                    "Nursing Home Stays",
+                    "Optometrist Services",
+                    "Organ Transplant",
+                    "Other Licensed Practitioners",
+                    "Outpatient Hospital",
+                    "Personal Care Services",
+                    "Physician Services",
+                    "Podiatrist Services",
+                    "Preventative Services",
+                    "Primary Care Case Management",
+                    "Private Duty Nursing",
+                    "Prosthetics",
+                    "Rehab Services",
+                    "Respiratory Care",
+                    "Rural Health Clinics",
+                    "School Based Services",
+                    "Screening",
+                    "Sickle Cell Treatment",
+                    "TB Related Services",
+                    "TCM-Targeted Case Management",
+                    "Telemedicine",
+                    "Therapies – PT/OT/Speech & Hearing",
+                    "Tobacco Cessation",
+                    "Transportation",
+                    "ARP 9817",
+                    "PHE Related",
+                    "Adult ACIP Vaccines",
+                    "CAA 5121",
+                    "CAA 5121TCM",
+                    "CAA 5122"))
+
     );
 
     @DataProvider(name = "typeSubtypeData")

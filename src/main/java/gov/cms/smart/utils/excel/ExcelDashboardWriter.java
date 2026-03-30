@@ -6,6 +6,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class ExcelDashboardWriter {
@@ -83,25 +85,10 @@ public class ExcelDashboardWriter {
      * C1:D1 merged (optional) = timestamp value
      */
     private static void updateExecutionDateTime(Sheet sheet, Workbook wb, LocalDateTime dateTime) {
-        Row row = getOrCreateRow(sheet, 0); // Excel row 1
-
-        // A1 label
-        Cell labelCell = getOrCreateCell(row, 0);
-        labelCell.setCellValue("Execution Date & Time:");
-
-        // Write datetime into C1 (column index 2)
-        Cell valueCell = getOrCreateCell(row, 2);
-        valueCell.setCellValue(java.sql.Timestamp.valueOf(dateTime));
-
-        CellStyle dateTimeStyle = wb.createCellStyle();
-        short format = wb.getCreationHelper()
-                .createDataFormat()
-                .getFormat("m/d/yyyy h:mm:ss AM/PM");
-        dateTimeStyle.setDataFormat(format);
-        valueCell.setCellStyle(dateTimeStyle);
-
-      /*  // Optional: merge C1:D1
-        mergeIfNeeded(sheet, 0, 0, 2, 3);*/
+        Row row = getOrCreateRow(sheet, 0);
+        String formatted = dateTime.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+        Cell cell = getOrCreateCell(row, 1);
+        cell.setCellValue(formatted);
     }
 
     private static Row findRowByArea(Sheet sheet, int startRowIndex, int areaCol, String area) {

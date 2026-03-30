@@ -105,7 +105,6 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
         utils.clickElement(typeEditIcon);
         By input = By.xpath("//input[@placeholder=\"Search Types...\"]");
         utils.sendKeys(input, type);
-        //div[@class="checkbox-list subtype-list"]/div/span[@class="type-name"]
         By typeCheckbox = By.xpath("//span[text()=\""+type+"\"]/parent::div[@role=\"checkbox\"]//input");
         utils.javaScriptClicker(typeCheckbox);
         List<String> actualOptions = new ArrayList<>();

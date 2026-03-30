@@ -36,7 +36,7 @@ public class TestListener  implements ITestListener, ISuiteListener {
     private static final Set<String> DASHBOARD_AREAS = java.util.Set.of(
             "Validations & Business Rules",
             "RAI Management",
-            "SRT Review Workflow",
+            "SRT Review",
             "Workflow & Status Transitions",
             "Record Lifecycle Management",
             "User Access & Permissions",

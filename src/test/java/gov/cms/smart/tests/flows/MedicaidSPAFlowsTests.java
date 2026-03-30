@@ -2,7 +2,7 @@ package gov.cms.smart.tests.flows;
 
 import gov.cms.smart.base.BaseTest;
 
-public class MedicaidSPAFlowsTest extends BaseTest {
+public class MedicaidSPAFlowsTests extends BaseTest {
 
    /* @BeforeClass()
     public void setup() {

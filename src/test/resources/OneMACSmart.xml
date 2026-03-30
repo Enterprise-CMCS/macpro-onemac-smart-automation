@@ -10,6 +10,8 @@
             <class name="gov.cms.smart.tests.functional.ValidationAndBusinessRulesTests"/>
             <class name="gov.cms.smart.tests.functional.RAIManagementTests"/>
             <class name="gov.cms.smart.tests.functional.UserAccessPermissionsTests"/>
+            <class name="gov.cms.smart.tests.functional.SRTReviewTests"/>
+            <class name="gov.cms.smart.tests.accessibility.NewSpaAccessibilityTests"/>
         </classes>
 
     </test>
