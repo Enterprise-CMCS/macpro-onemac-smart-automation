@@ -35,6 +35,8 @@ public class SPAsWaiversPage {
     private static final By SAVE_RAI = By.xpath("//footer/button/span[text()=\"Save\"]");
     private static final By ALERT = By.xpath("//strong[text()=\"ALERT!\"]");
     private static final By REVIEW_TAB = By.xpath("//a[text()=\"Review\"]/..");
+    private static final By FINANCIAL_INFO_TAB = By.xpath("//a[text()=\"Financial Information\"]/..");
+    private static final By NOTES_TAB = By.xpath("//a[text()=\"Notes\"]/..");
     private static final By ADJUDICATION_TAB = By.xpath("//a[text()=\"Adjudication\"]/..");
     public static final By PREP_RAI = By.xpath("//runtime_platform_actions-action-renderer[@title=\"Prepare RAI Questions\"]//lightning-button");
     public static final By PREP_RAI_MESSAGE1 = By.xpath("//span[text()=\"There are no RAI Questions to prepare.\"]");
@@ -49,6 +51,14 @@ public class SPAsWaiversPage {
     public ReviewTab goToReviewTab() {
         utils.clickElement(REVIEW_TAB);
         return PageFactory.getReviewTab(driver, utils);
+    }
+
+    public void goToFinancialInformationTab() {
+        utils.clickElement(FINANCIAL_INFO_TAB);
+    }
+
+    public void goToNotesTab() {
+        utils.clickElement(NOTES_TAB);
     }
 
     public AdjudicationTab goToAdjudicationTab() {

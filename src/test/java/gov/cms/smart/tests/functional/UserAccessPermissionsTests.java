@@ -3,79 +3,109 @@ package gov.cms.smart.tests.functional;
 import gov.cms.smart.base.BaseTest;
 import gov.cms.smart.utils.assertions.TestAssert;
 import gov.cms.smart.utils.driver.PageFactory;
+import gov.cms.smart.utils.excel.ExcelPackageSelector;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import static gov.cms.smart.pages.SPAsWaiversPage.NEW_BUTTON;
 
 public class UserAccessPermissionsTests extends BaseTest {
 
-    @BeforeMethod
-    public void setup() {
-        createDriverSession();
-    }
 
-    //User Access Permission Tests Start Here
-    @Test(groups = {"User Access & Permissions", "CPOC"})
-    public void verifyThatNewButtonIsDisplayedForCPOC() {
+    @BeforeMethod(onlyForGroups = "CPOC Tests")
+    public void cpocTestsSetup() {
+        createDriverSession();
         cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret();
+    }
+
+    @Test(groups = {"User Access & Permissions", "CPOC Tests"})
+    public void verifyThatNewButtonIsDisplayedForCPOC() {
         PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage();
         TestAssert.assertTrue(utils.isVisible(NEW_BUTTON), "");
-        //   createSPA("CO", "Medicaid SPA");
-        //   TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
     }
 
-    @Test(groups = {"User Access & Permissions"})
-    public void verifyThatNewButtonIsNotDisplayedForSRT() throws InterruptedException {
-        srtUser = createNewSRTUser();
-        srtUser.loginWithSharedSecret();
-        srtUser.goToSPAWaiversPage();
-        TestAssert.assertFalse(srtUser.isNewButtonPresent(), "");
-    }
-
-    @Test(groups = {"User Access & Permissions"})
-    public void verifyThatNewButtonIsDisplayedOSG() throws InterruptedException {
-        osgUser = createNewOSGUser();
-        osgUser.loginWithSharedSecret();
-        osgUser.goToSPAWaiversPage();
-        //  TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
-    }
-
-    @Test(groups = {"User Access & Permissions"})
-    public void userAccessPermission1(){
-        //  TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
-    }
-    @Test(groups = {"User Access & Permissions"})
-    public void userAccessPermission2(){
-        //  TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
-    }
-    @Test(groups = {"User Access & Permissions"})
-    public void userAccessPermission3(){
-        //  TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
-    }
-
-    @Test(groups = {"User Access & Permissions"})
-    public void userAccessPermission4(){
-        //  TestAssert.assertTrue(isSPACreated, "SPA creation failed - success confirmation message was not displayed");
-    }
-
-    @AfterMethod
-    public void rebootDriver(){
-        restartDriver();
-    }
-
-    //User Access Permission Tests End Here
-    @AfterClass(alwaysRun = true)
-
-    public void cleanUp() throws InterruptedException {
+    @AfterMethod(onlyForGroups = "CPOC Tests")
+    public void cpocTestsCleanUp() {
         WebDriver d = getDriver();
         if (d != null) {
-            Thread.sleep(5000);
             d.quit();
         }
     }
+
+    @BeforeGroups({"SRT Tests"})
+    public void srtTestsSetup() {
+        spaPackage = ExcelPackageSelector.selectSpa("CO", "Medicaid SPA", "");
+        createDriverSession();
+        srtUser = createNewSRTUser();
+        srtUser.loginWithSharedSecret();
+        PageFactory.getHomePage(getDriver(), getUtils()).goToSpasWaiversPage().searchSPA(spaPackage);
+        utils.openRecord(spaPackage.getPackageId());
+    }
+
+    @BeforeMethod(onlyForGroups = "SPA or Waivers")
+    public void goToSpaAndWaivers(){
+        PageFactory.getHomePage(getDriver(),getUtils()).goToSpasWaiversPage();
+    }
+
+    @Test(groups = {"User Access & Permissions", "SRT Tests","SPA or Waivers"}, priority = 5)
+    public void checkButtonIsNotDisplayedSRT(){
+        TestAssert.assertFalse(srtUser.isNewButtonPresent(), "");
+    }
+
+    @Test(groups = {"User Access & Permissions", "SRT Tests"}, priority = 1)
+    public void checkPriorityFieldSRT() {
+        By priorityCode = By.xpath("//span[text()=\"Priority Code\"]/../following-sibling::div//button");
+        TestAssert.assertFalse(utils.isVisible(priorityCode), "SRT should not be able to edit field");
+    }
+
+    @Test(groups = {"User Access & Permissions", "SRT Tests"}, priority = 2)
+    public void checkApprovedEffectiveDateSRTUser() {
+        By approvedEffectiveDate = By.xpath("//span[text()=\"Approved Effective Date\"]/../following-sibling::div//button");
+        TestAssert.assertFalse(utils.isVisible(approvedEffectiveDate), "SRT should not be able to edit field");
+    }
+
+    @Test(groups = {"User Access & Permissions", "SRT Tests"}, priority = 3)
+    public void checkCodingAfterInitialAssessmentSRTUser() {
+        By codingAfterInitialAssessment = By.xpath("//span[text()=\"Coding After Initial Assessment\"]/../following-sibling::div//button");
+        TestAssert.assertFalse(utils.isVisible(codingAfterInitialAssessment), "SRT should not be able to edit field");
+    }
+
+    @Test(groups = {"User Access & Permissions", "SRT Tests"}, priority = 4)
+    public void checkInitialSubmissionCompleteSRTUser() {
+        By initialSubmissionComplete = By.xpath("//span[text()=\"Initial Submission Complete\"]/../following-sibling::div//button");
+        TestAssert.assertFalse(utils.isVisible(initialSubmissionComplete), "SRT should not be able to edit field");
+    }
+
+    @AfterGroups("SRT Tests")
+    public void srtTestsCleanUp() {
+        WebDriver d = getDriver();
+        if (d != null) {
+            d.quit();
+        }
+    }
+
+    @BeforeMethod(onlyForGroups = "OSG Tests")
+    public void osgTestsSetup() {
+        createDriverSession();
+        osgUser = createNewOSGUser();
+        osgUser.loginWithSharedSecret();
+    }
+
+    @Test(groups = {"User Access & Permissions", "OSG Tests"})
+    public void verifyThatNewButtonIsDisplayedOSG() throws InterruptedException {
+        osgUser.goToSPAWaiversPage();
+        TestAssert.assertTrue(osgUser.isNewButtonPresent(), "");
+    }
+
+    @AfterMethod(onlyForGroups = "OSG Tests")
+    public void osgTestsCleanUp() {
+        WebDriver d = getDriver();
+        if (d != null) {
+            d.quit();
+        }
+    }
+
+
 }

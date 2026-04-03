@@ -27,7 +27,9 @@ public class OSGUser {
         String password = TestContext.osgPassword();
         return PageFactory.getLoginPage(driver, utils).loginWithSharedSecret(osgUsername, osgSharedSecret, password);
     }
-
+    public boolean isNewButtonPresent() {
+        return PageFactory.getSpaWaiversPage(driver, utils).isNewButtonPresent();
+    }
 
     public HomePage login() {
         return PageFactory.getLoginPage(driver, utils).login(TestContext.osgUsername());
