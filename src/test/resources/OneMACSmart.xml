@@ -8,7 +8,6 @@
             <class name="gov.cms.smart.tests.functional.TimeLineSLAManagementTests"/>
             <class name="gov.cms.smart.tests.functional.RecordLifecycleManagementTests"/>
             <class name="gov.cms.smart.tests.functional.ValidationAndBusinessRulesTests"/>
-            <class name="gov.cms.smart.tests.functional.RAIManagementTests"/>
             <class name="gov.cms.smart.tests.functional.UserAccessPermissionsTests"/>
             <class name="gov.cms.smart.tests.functional.SRTReviewTests"/>
             <class name="gov.cms.smart.tests.accessibility.AccessibilityTests"/>
