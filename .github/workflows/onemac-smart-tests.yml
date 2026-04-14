@@ -29,6 +29,15 @@ jobs:
       SRT_QA_USERNAME: ${{ secrets.SRT_QA_USERNAME }}
       SRT_QA_PASSWORD: ${{ secrets.SRT_QA_PASSWORD }}
       SRT_QA_SECRET: ${{ secrets.SRT_QA_SECRET }}
+      OSG_UAT_USERNAME: ${{ secrets.OSG_UAT_USERNAME }}
+      OSG_UAT_PASSWORD: ${{ secrets.OSG_UAT_PASSWORD }}
+      OSG_UAT_SECRET: ${{ secrets.OSG_UAT_SECRET }}
+      CPOC_UAT_USERNAME: ${{ secrets.CPOC_UAT_USERNAME }}
+      CPOC_UAT_PASSWORD: ${{ secrets.CPOC_UAT_PASSWORD }}
+      CPOC_UAT_SECRET: ${{ secrets.CPOC_UAT_SECRET }}
+      SRT_UAT_USERNAME: ${{ secrets.SRT_UAT_USERNAME }}
+      SRT_UAT_PASSWORD: ${{ secrets.SRT_UAT_PASSWORD }}
+      SRT_UAT_SECRET: ${{ secrets.SRT_UAT_SECRET }}
 
     steps:
       - name: Checkout repository

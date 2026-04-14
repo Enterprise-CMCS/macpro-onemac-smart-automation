@@ -20,7 +20,7 @@ public class NewSPAPage {
     private static final By NEXT_BUTTON = By.xpath("//button[span[text()='Next']]");
     private static final String AUTHORITY = "//span[text()=\"placeholder\"]/ancestor::label//input";
     private static final By SAVE = By.xpath("//button[text()=\"Save\"]");
-    private static final By ID_NUMBER_VALIDATION = By.xpath("//div[@data-name=\"SMART_CMCS_ID_Number__c\"]/span");
+    private static final By ID_NUMBER_VALIDATION = By.xpath("//div[@data-name=\"Name\"]/span");
     private static final By INITIAL_SUBMISSION_DATE_VALIDATION = By.xpath("//div[@data-name=\"SMART_CMCS_Initial_Submission_Date__c\"]/span");
     private static final By STATE_FIELD_VALIDATION = By.xpath("//div[@data-name=\"SMART_CMCS_Initial_Submission_Date__c\"]/span");
     private static final By STATE_FIELD_VALIDATION_DIV = By.xpath("//div[@data-name=\"SMART_CMCS_Initial_Submission_Date__c\"]");
