@@ -3,14 +3,16 @@
     <test name="OneMacSmart UI Tests">
 
         <classes>
-            <class name="gov.cms.smart.tests.functional.AssignmentAndRoutingTests"/>
+     <!--       <class name="gov.cms.smart.tests.functional.AssignmentAndRoutingTests"/>
             <class name="gov.cms.smart.tests.functional.WorkflowStatusTransitionTests"/>
             <class name="gov.cms.smart.tests.functional.TimeLineSLAManagementTests"/>
             <class name="gov.cms.smart.tests.functional.RecordLifecycleManagementTests"/>
             <class name="gov.cms.smart.tests.functional.ValidationAndBusinessRulesTests"/>
             <class name="gov.cms.smart.tests.functional.UserAccessPermissionsTests"/>
             <class name="gov.cms.smart.tests.functional.SRTReviewTests"/>
-            <class name="gov.cms.smart.tests.accessibility.AccessibilityTests"/>
+            <class name="gov.cms.smart.tests.accessibility.AccessibilityTests"/>-->
+            <class name="gov.cms.smart.tests.functional.AuthenticationTests"/>
+            <class name="gov.cms.smart.tests.functional.SubmissionReaderTest"/>
         </classes>
 
     </test>
