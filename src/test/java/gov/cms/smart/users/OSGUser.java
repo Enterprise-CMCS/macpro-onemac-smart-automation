@@ -21,7 +21,7 @@ public class OSGUser {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret() {
+    public HomePage loginWithSharedSecret() throws InterruptedException {
         String osgSharedSecret = TestContext.osgSharedSecret();
         String osgUsername = TestContext.osgUsername();
         String password = TestContext.osgPassword();

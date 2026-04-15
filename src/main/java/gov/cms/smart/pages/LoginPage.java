@@ -9,6 +9,10 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.aerogear.security.otp.Totp;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage {
 
@@ -26,19 +30,25 @@ public class LoginPage {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret(String username, String sharedSecret, String password) {
+    public HomePage loginWithSharedSecret(String username, String sharedSecret, String password) throws InterruptedException {
         logger.info("Signing in to Salesforce as: {}", username);
         utils.sendKeys(USERNAME, username);
         utils.sendKeys(PASSWORD, password);
         utils.clickElement(LOGIN_BUTTON);
         // Wait for MFA input to appear
-        utils.waitForVisibility(VERIFICATION_INPUT);
-        // Generate TOTP code **after MFA input is ready**
-        Totp totp = new Totp(sharedSecret);
-        String mfaCode = totp.now();
-        utils.sendKeys(VERIFICATION_INPUT, mfaCode);
-        utils.clickElement(VERIFY);
+        if(utils.isVisible(VERIFICATION_INPUT)){
+            // Generate TOTP code **after MFA input is ready**
+            Totp totp = new Totp(sharedSecret);
+            String mfaCode = totp.now();
+            utils.sendKeys(VERIFICATION_INPUT, mfaCode);
+            utils.clickElement(VERIFY);
+        }
         logger.info("Signing in to Salesforce as: {} user was successful.", username);
+        if(TestContext.env().equalsIgnoreCase("UAT")){
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@title=\"App Launcher\"]/ancestor::div[@role=\"navigation\"]"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@data-label=\"SMART\"]/.."))).click();
+        }
         return PageFactory.getHomePage(driver, utils);
     }
 

@@ -21,7 +21,7 @@ public class CPOCUser {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret() {
+    public HomePage loginWithSharedSecret() throws InterruptedException {
         String cpocUsername = TestContext.cpocUsername();
         String cpocSharedSecret = TestContext.cpocSharedSecret();
         String password = TestContext.cpocPassword();

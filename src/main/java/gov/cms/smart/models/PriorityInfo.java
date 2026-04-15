@@ -1,6 +1,5 @@
 package gov.cms.smart.models;
 
-import gov.cms.smart.models.enums.CodingAssessment;
 import gov.cms.smart.models.enums.PriorityCode;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,9 +13,10 @@ import lombok.ToString;
 public class PriorityInfo {
     // private String priorityCode;
     private PriorityCode priorityCode;
-    private CodingAssessment codingAssessment;
-    private String priorityComments;
-    private String dateOfCodingChange;
+    // private CodingAssessment codingAssessment;
+    //  private String priorityComments;
+    // private String dateOfCodingChange;
+    private String priorityCodeRational;
 
 
 }

@@ -16,7 +16,7 @@ import static gov.cms.smart.dataproviders.DataProviders.GROUP_TO_DIVISIONS;
 public class AssignmentAndRoutingTests extends BaseTest {
 
     @BeforeClass
-    public void setup() {
+    public void setup() throws InterruptedException {
         createDriverSession();
         cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret();

@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class SRTReviewTests extends BaseTest {
 
     @BeforeClass()
-    public void setup() {
+    public void setup() throws InterruptedException {
         spaPackage = ExcelPackageSelector.selectSpa("CO", "Medicaid SPA", "");
         createDriverSession();
         srtUser = createNewSRTUser();

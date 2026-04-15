@@ -22,7 +22,7 @@ import static gov.cms.smart.pages.DetailsTab.SUBMISSION_INFORMATION_SECTION;
 public class RecordLifecycleManagementTests extends BaseTest {
 
     @BeforeClass()
-    public void setup() {
+    public void setup() throws InterruptedException {
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         createDriverSession();
         osgUser = createNewOSGUser();
@@ -40,14 +40,12 @@ public class RecordLifecycleManagementTests extends BaseTest {
     }
 
     @Test(dataProvider = "priorityLevels", groups = {"Record Lifecycle Management", "RecordManagementDetailsPage"}, dataProviderClass = DataProviders.class)
-    public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
-        setTestName("priorityCode", priorityCode,"codingAssessment",codingAssessment);
+    public void verifyMedicaidSPAPriorityInfoWithDifferentPrioritiesAndCodingAssessment(PriorityCode priorityCode, String priorityCodeRational) throws InterruptedException {
+        setTestName("priorityCode", priorityCode,"priorityCodeRational",priorityCodeRational);
         PriorityInfo actual = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).
-                fillPriorityInfo(priorityCode, codingAssessment);
-        PriorityInfo expected = PageFactory.
-                getSpaDetailsPage(getDriver(), getUtils()).
-                readPriorityInfo();
-        TestAssert.assertEquals(actual, expected, "Priority Info should persist correctly after save");
+                fillPriorityInfo(priorityCode, priorityCodeRational);
+        PriorityInfo expected = PageFactory.getSpaDetailsPage(getDriver(), getUtils()).readPriorityInfo();
+      TestAssert.assertEquals(actual, expected, "Priority Info should persist correctly after save");
     }
 
     @AfterMethod(onlyForGroups = "RecordManagementDetailsPage")

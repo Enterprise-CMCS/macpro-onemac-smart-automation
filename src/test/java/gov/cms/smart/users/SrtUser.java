@@ -21,7 +21,7 @@ public class SrtUser {
         this.utils = utils;
     }
 
-    public HomePage loginWithSharedSecret() {
+    public HomePage loginWithSharedSecret() throws InterruptedException {
         String sharedSecret = TestContext.srtSharedSecret();
         String username = TestContext.srtUsername();
         String password = TestContext.srtPassword();

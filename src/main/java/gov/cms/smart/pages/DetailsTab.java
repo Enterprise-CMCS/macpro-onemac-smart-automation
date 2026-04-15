@@ -4,7 +4,6 @@ import gov.cms.smart.models.IdentifyingInfo;
 import gov.cms.smart.models.PlanInfo;
 import gov.cms.smart.models.PriorityInfo;
 import gov.cms.smart.models.SpaPackage;
-import gov.cms.smart.models.enums.CodingAssessment;
 import gov.cms.smart.models.enums.PriorityCode;
 import gov.cms.smart.utils.driver.PageFactory;
 import gov.cms.smart.utils.ui.UIElementUtils;
@@ -60,11 +59,9 @@ public class DetailsTab {
         this.utils = utils;
     }
 
-    public void waitForPriorityInfoDataToSave(String priorityCode, String codingAssessment, String priorityComments, String dateOfCodingChange) {
+    public void waitForPriorityInfoDataToSave(String priorityCode, String priorityCodeRationale) {
         utils.waitForFieldTextToBe("Priority Information", "Priority Code", priorityCode);
-        utils.waitForFieldTextToBe("Priority Information", "Coding After Initial Assessment", codingAssessment);
-        utils.waitForFieldTextToBe("Priority Information", "Priority Comments Memo", priorityComments);
-        utils.waitForFieldTextToBe("Priority Information", "Date Of Coding Change", dateOfCodingChange);
+        utils.waitForFieldTextToBe("Priority Information", "Priority Code Rationale", priorityCodeRationale);
     }
 
     public boolean isTypeAndSubTypeVisibleUnderSubmissionInfo() {
@@ -91,7 +88,7 @@ public class DetailsTab {
 
 
     public boolean areFieldsGroupedCorrectly() {
-        return utils.isVisible(PRIORITY_CODE) && utils.isVisible(CODING_ASSESSMENT) && utils.isVisible(PRIORITY_COMMENTS) && utils.isVisible(CODING_CHANGE_DATE);
+        return utils.isVisible(PRIORITY_CODE);
     }
 
     public IdentifyingInfo readIdentifyingInfo() {
@@ -165,22 +162,24 @@ public class DetailsTab {
         }
     }
 
-    public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, CodingAssessment codingAssessment) throws InterruptedException {
+    public PriorityInfo fillPriorityInfo(PriorityCode priorityCode, String priorityCodeRational) throws InterruptedException {
         PriorityInfo priorityInfo = new PriorityInfo();
-        priorityInfo.setPriorityComments("Test");
+        // priorityInfo.setPriorityComments("Test");
         utils.editByLabel("Priority Code");
         utils.selectFromComboBoxByLabel("Priority Code", priorityCode.getValue());
         priorityInfo.setPriorityCode(priorityCode);
-        utils.selectFromComboBoxByLabel("Coding After Initial Assessment", codingAssessment.getValue());
-        utils.clearTextAreaByLabel("Priority Comments Memo");
-        utils.sendKeysToTextAreaByLabel("Priority Comments Memo", "Test");
-        utils.clearInputByLabel("Date Of Coding Change");
-        utils.sendKeysToInputByLabel("Date Of Coding Change", utils.getTodayDateFormatted());
-        priorityInfo.setDateOfCodingChange(utils.getTodayDateFormatted());
-        priorityInfo.setCodingAssessment(codingAssessment);
+        //  utils.selectFromComboBoxByLabel("Coding After Initial Assessment", codingAssessment.getValue());
+        //   utils.clearTextAreaByLabel("Priority Comments Memo");
+        //  utils.sendKeysToTextAreaByLabel("Priority Comments Memo", "Test");
+        //  utils.clearInputByLabel("Date Of Coding Change");
+        //  utils.sendKeysToInputByLabel("Date Of Coding Change", utils.getTodayDateFormatted());
+        //   priorityInfo.setDateOfCodingChange(utils.getTodayDateFormatted());
+        //  priorityInfo.setCodingAssessment(codingAssessment);
+        utils.sendKeysToTextAreaByLabel("Priority Code Rationale", priorityCodeRational);
+        priorityInfo.setPriorityCodeRational(priorityCodeRational);
         utils.clickElement(SAVE);
-        waitForPriorityInfoDataToSave(priorityCode.getValue(), codingAssessment.getValue(), "Test", utils.getTodayDateFormatted());
-        //  utils.waitForInvisibility(SAVE);
+        waitForPriorityInfoDataToSave(priorityCode.getValue(),priorityCodeRational);
+        //utils.waitForInvisibility(SAVE);
         return priorityInfo;
     }
 
@@ -188,10 +187,11 @@ public class DetailsTab {
         PriorityInfo priorityInfo = new PriorityInfo();
         String priorityCode = utils.getFieldTextByLabel("Priority Code");
         priorityInfo.setPriorityCode(PriorityCode.fromUiValue(priorityCode));
-        priorityInfo.setPriorityComments(utils.getFieldTextByLabel("Priority Comments Memo"));
-        priorityInfo.setDateOfCodingChange(utils.getFieldTextByLabel("Date Of Coding Change"));
-        String codingAssessment = utils.getFieldTextByLabel("Coding After Initial Assessment");
-        priorityInfo.setCodingAssessment(CodingAssessment.fromUiValue(codingAssessment));
+        //priorityInfo.setPriorityComments(utils.getFieldTextByLabel("Priority Comments Memo"));
+        // priorityInfo.setDateOfCodingChange(utils.getFieldTextByLabel("Date Of Coding Change"));
+        String priorityCodeRationale = utils.getFieldTextByLabel("Priority Code Rationale");
+        priorityInfo.setPriorityCodeRational(priorityCodeRationale);
+        System.out.println(priorityInfo.getPriorityCodeRational());
         return priorityInfo;
     }
 

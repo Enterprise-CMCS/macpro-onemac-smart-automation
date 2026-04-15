@@ -68,7 +68,7 @@ public class SPAsWaiversPage {
 
     public HomePage goToHomePage() {
         utils.clickElement(HOME_PAGE);
-        utils.waitForVisibility(ALERT);
+      //  utils.waitForVisibility(ALERT);
 
 
         return PageFactory.getHomePage(driver, utils);

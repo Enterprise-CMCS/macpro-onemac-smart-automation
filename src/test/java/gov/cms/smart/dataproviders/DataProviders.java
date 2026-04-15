@@ -324,15 +324,21 @@ public class DataProviders {
     public Object[][] priorityLevels() {
 
         PriorityCode[] priorityCodes = PriorityCode.values();
-        CodingAssessment[] codingAssessments = CodingAssessment.values();
 
-        Object[][] data = new Object[priorityCodes.length * codingAssessments.length][2];
+        // Only 3 specific rationale values
+        String[] rationales = {
+               "Iteration 1",
+                "Iteration 2",
+                "Iteration 3"
+        };
+
+        Object[][] data = new Object[priorityCodes.length * rationales.length][2];
 
         int index = 0;
 
         for (PriorityCode priority : priorityCodes) {
-            for (CodingAssessment assessment : codingAssessments) {
-                data[index++] = new Object[]{priority, assessment};
+            for (String rationale : rationales) {
+                data[index++] = new Object[]{priority, rationale};
             }
         }
 

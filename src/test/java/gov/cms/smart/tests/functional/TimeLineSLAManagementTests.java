@@ -13,7 +13,7 @@ import static gov.cms.smart.pages.DetailsTab.*;
 public class TimeLineSLAManagementTests extends BaseTest {
 
     @BeforeClass()
-    public void setup() {
+    public void setup() throws InterruptedException {
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         createDriverSession();
         osgUser = createNewOSGUser();
@@ -121,6 +121,7 @@ public class TimeLineSLAManagementTests extends BaseTest {
     @Test(groups = {"Timeline & SLA Management"})
     public void verify15DayMilestoneCalculatedCorrectly() {
         String initialSubmissionDate = utils.getPastDate(5);
+        System.out.println(initialSubmissionDate);
         utils.clearInputByLabel("Initial Submission Date");
         utils.sendKeysToInputByLabel("Initial Submission Date", initialSubmissionDate);
         PageFactory.getSpaDetailsPage(getDriver(), getUtils()).save();

@@ -14,7 +14,7 @@ public class UserAccessPermissionsTests extends BaseTest {
 
 
     @BeforeMethod(onlyForGroups = "CPOC Tests")
-    public void cpocTestsSetup() {
+    public void cpocTestsSetup() throws InterruptedException {
         createDriverSession();
         cpocUser = createNewCPOCUser();
         cpocUser.loginWithSharedSecret();
@@ -35,7 +35,7 @@ public class UserAccessPermissionsTests extends BaseTest {
     }
 
     @BeforeGroups({"SRT Tests"})
-    public void srtTestsSetup() {
+    public void srtTestsSetup() throws InterruptedException {
         spaPackage = ExcelPackageSelector.selectSpa("CO", "Medicaid SPA", "");
         createDriverSession();
         srtUser = createNewSRTUser();
@@ -87,7 +87,7 @@ public class UserAccessPermissionsTests extends BaseTest {
     }
 
     @BeforeMethod(onlyForGroups = "OSG Tests")
-    public void osgTestsSetup() {
+    public void osgTestsSetup() throws InterruptedException {
         createDriverSession();
         osgUser = createNewOSGUser();
         osgUser.loginWithSharedSecret();

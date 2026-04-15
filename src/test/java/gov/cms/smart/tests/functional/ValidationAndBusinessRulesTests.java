@@ -30,7 +30,7 @@ public class ValidationAndBusinessRulesTests extends BaseTest {
        }*/
 
     @BeforeClass()
-    public void setup() {
+    public void setup() throws InterruptedException {
         spaPackage = ExcelPackageSelector.selectSpa("AL", "Medicaid SPA", "");
         createDriverSession();
         osgUser = createNewOSGUser();
