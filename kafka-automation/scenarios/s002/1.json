@@ -1,0 +1,58 @@
+{
+	"event": "new-medicaid-submission",
+	"additionalInformation": "This is for modifying the age group",
+	"attachments": {
+		"cmsForm179": {
+			"files": [
+				{
+					"filename": "Perf Log file.docx",
+					"title": "Perf Log file",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "d355cddb-fd5a-4501-96ed-344c0cab89a8.docx",
+					"uploadDate": 1781196061350
+				}
+			],
+			"label": "CMS-179 Form"
+		},
+		"spaPages": {
+			"files": [
+				{
+					"filename": "Adjudication_Notifications.xlsx",
+					"title": "Adjudication_Notifications",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "82598915-347e-47ff-8652-a14dc2c7b153.xlsx",
+					"uploadDate": 1781196073472
+				}
+			],
+			"label": "SPA Pages"
+		},
+		"coverLetter": {
+			"label": "Cover Letter"
+		},
+		"tribalEngagement": {
+			"label": "Document Demonstrating Good-Faith Tribal Engagement"
+		},
+		"existingStatePlanPages": {
+			"label": "Existing State Plan Page(s)"
+		},
+		"publicNotice": {
+			"label": "Public Notice"
+		},
+		"sfq": {
+			"label": "Standard Funding Questions (SFQs)"
+		},
+		"tribalConsultation": {
+			"label": "Tribal Consultation"
+		},
+		"other": {
+			"label": "Other"
+		}
+	},
+	"authority": "Medicaid SPA",
+	"proposedEffectiveDate": 1788220800000,
+	"id": "ZZ-26-0002",
+	"origin": "mako",
+	"submitterName": "George Harrison",
+	"submitterEmail": "george@example.com",
+	"timestamp": 1781196082195
+}

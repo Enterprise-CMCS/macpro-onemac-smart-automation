@@ -1,0 +1,78 @@
+{
+	"event": "upload-subsequent-documents",
+	"additionalInformation": "Updated ABP templates and responses.",
+	"attachments": {
+		"cmsForm179": {
+			"label": "CMS-179 Form"
+		},
+		"spaPages": {
+			"files": [
+				{
+					"filename": "ABP2a (1).pdf",
+					"title": "ABP2a (1)",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "505c5f8b-28aa-49b5-a983-831bc4946b78.pdf",
+					"uploadDate": 1781203237405
+				},
+				{
+					"filename": "ABP8_2025 Submission_5.29.26 (1).pdf",
+					"title": "ABP8_2025 Submission_5.29.26 (1)",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "5c68d6bb-cbdd-4d06-a333-3deef88cc187.pdf",
+					"uploadDate": 1781203238019
+				},
+				{
+					"filename": "ABP5_2025 Submission_6.5.26.pdf",
+					"title": "ABP5_2025 Submission_6.5.26",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "cacd3125-f453-4ddd-ab30-50a69d2634ff.pdf",
+					"uploadDate": 1781203237834
+				},
+				{
+					"filename": "IG_ABPSPATemplates_179_5.27.26.pdf",
+					"title": "IG_ABPSPATemplates_179_5.27.26",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "c99a9585-3f25-4ecf-9cf2-490776cbf999.pdf",
+					"uploadDate": 1781203236282
+				}
+			],
+			"label": "SPA Pages"
+		},
+		"coverLetter": {
+			"label": "Cover Letter"
+		},
+		"tribalEngagement": {
+			"label": "Document Demonstrating Good-Faith Tribal Engagement"
+		},
+		"existingStatePlanPages": {
+			"label": "Existing State Plan Page(s)"
+		},
+		"publicNotice": {
+			"label": "Public Notice"
+		},
+		"sfq": {
+			"label": "Standard Funding Questions (SFQs)"
+		},
+		"tribalConsultation": {
+			"label": "Tribal Consultation"
+		},
+		"other": {
+			"files": [
+				{
+					"filename": "MDH responses to CMS comments (1).docx",
+					"title": "MDH responses to CMS comments (1)",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "149bcffa-3207-488e-9aac-f0f6831a0227.docx",
+					"uploadDate": 1781203245112
+				}
+			],
+			"label": "Other"
+		}
+	},
+	"id": "ZZ-26-0002",
+	"authority": "Medicaid SPA",
+	"origin": "mako",
+	"submitterName": "George Harrison",
+	"submitterEmail": "george@example.com",
+	"timestamp": 1781203282195
+}

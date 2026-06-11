@@ -1,0 +1,7 @@
+scenario_id: s000
+id: ZZ-26-0000
+description: A typical Medicaid SPA, where a new submission event followed by a single batch of additional document uploads.
+delay: 5
+files:
+  - 1.json
+  - 2.json

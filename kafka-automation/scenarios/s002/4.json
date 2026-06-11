@@ -1,0 +1,16 @@
+{
+	"event": "withdraw-package",
+	"id": "ZZ-26-0002",
+	"authority": "Medicaid SPA",
+	"additionalInformation": "Withdrawing without attachments",
+	"attachments": {
+		"supportingDocumentation": {
+			"files": [],
+			"label": "Supporting Documentation"
+		}
+	},
+	"origin": "mako",
+	"submitterName": "George Harrison",
+	"submitterEmail": "george@example.com",
+	"timestamp": 1781206882195
+}

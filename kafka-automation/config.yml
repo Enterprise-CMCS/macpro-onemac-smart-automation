@@ -1,0 +1,77 @@
+# Default local config for connecting to the BigMAC MSK cluster.
+#
+# Override env/user from Python with load_config(..., env="qa", user="gattu")
+# or by editing this file for your local workflow.
+env: dev
+user: biju
+
+environments:
+  dev:
+    msk_stage: master
+    topic_suffix: devtest
+  qa:
+    msk_stage: val
+    topic_suffix: qatest
+
+aws:
+  profile: bigmac
+  region: us-east-1
+
+msk:
+  project: bigmac
+  stage: "{msk_stage}"
+
+  # The supplied kafka-ui-local.sh reads bigmac/{stage}/brokerString from
+  # AWS Secrets Manager. SSM Parameter Store is also supported here if needed.
+  parameter_source: secretsmanager
+  broker_secret_id_template: "{project}/{stage}/brokerString"
+  broker_parameter_name_template: "/{project}/{stage}/brokerString"
+
+  security_protocol: SSL
+  ssl_endpoint_identification_algorithm: none
+
+topics:
+  inbound: "aws.onemac.migration.cdc.{topic_suffix}"
+  outbound: "aws.mulesoft.onemac.events.{topic_suffix}"
+
+clients:
+  consumer_group_id: "onemac-smart-automation-{env}-{user}"
+  consumer_client_id: "onemac-smart-automation-consumer-{env}-{user}"
+  producer_client_id: "onemac-smart-automation-producer-{env}-{user}"
+  admin_client_id: "onemac-smart-automation-admin-{env}-{user}"
+
+consumer:
+  auto_offset_reset: earliest
+  enable_auto_commit: false
+  poll_timeout_seconds: 1.0
+
+producer:
+  delivery_timeout_ms: 30000
+
+cli:
+  publish:
+    topic: inbound
+    headers:
+      origin: mako
+    flush_timeout_seconds: 30
+  receive:
+    topic: outbound
+    partition: 0
+    offset: -1
+    count:
+    timeout_seconds: 60
+    commit: false
+  purge:
+    timeout_seconds: 60
+
+kafka_ui:
+  local_port: 8080
+  read_only_in_production: true
+
+run_folder: runs/data-2026-06-11
+
+sqlite:
+  auto_perist: true
+  db_name: kafka_messages.sqlite
+  received_messages_table: received_messages
+  published_messages_table: published_messages
