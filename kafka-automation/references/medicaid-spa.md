@@ -283,7 +283,7 @@ The system will send a message to Kafka topic which has the following attributes
 }
 ```
 
-## Respond to RAI
+## Withdraw to RAI
 **Context**:  The user even after responding to the RAI, may sometimes choose to withdraw their package. When that happens, system will send a message to Kafka topic which has the following attributes:
     - Key  `id` (example: ZZ-26-0001). 
     - Header is `{"source": "mako" }`

@@ -10,7 +10,7 @@ environments:
     msk_stage: master
     topic_suffix: devtest
   qa:
-    msk_stage: val
+    msk_stage: master
     topic_suffix: qatest
 
 aws:
