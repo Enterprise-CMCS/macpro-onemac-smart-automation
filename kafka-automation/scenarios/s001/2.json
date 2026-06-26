@@ -1,0 +1,58 @@
+{
+    "event": "upload-subsequent-documents",
+	"additionalInformation": "I have attached corrected documents for supporting the changes suggested in the original package for your kind review.",
+	"attachments": {
+		"cmsForm179": {
+			"files": [
+				{
+					"filename": "QA Validations_RAI Validations for 5588 Records.xlsx",
+					"title": "QA Validations_RAI Validations for 5588 Records",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "0f8e81ac-79ef-4510-b6fd-facc98fc394e.xlsx",
+					"uploadDate": 1781113221199
+				}
+			],
+			"label": "CMS-179 Form"
+		},
+		"spaPages": {
+			"files": [
+				{
+					"filename": "Base Data Seatool headings 1 (1).xlsx",
+					"title": "Base Data Seatool headings 1 (1)",
+					"bucket": "mako-main-attachments-635052997545",
+					"key": "d0d30630-db4f-430f-a83c-b374b84ebd9c.xlsx",
+					"uploadDate": 1781113273029
+				}
+			],
+			"label": "SPA Pages"
+		},
+		"coverLetter": {
+			"label": "Cover Letter"
+		},
+		"tribalEngagement": {
+			"label": "Document Demonstrating Good-Faith Tribal Engagement"
+		},
+		"existingStatePlanPages": {
+			"label": "Existing State Plan Page(s)"
+		},
+		"publicNotice": {
+			"label": "Public Notice"
+		},
+		"sfq": {
+			"label": "Standard Funding Questions (SFQs)"
+		},
+		"tribalConsultation": {
+			"label": "Tribal Consultation"
+		},
+		"other": {
+			"label": "Other"
+		}
+	},
+	"authority": "Medicaid SPA",
+	"proposedEffectiveDate": 1785542400000,
+	"id": "ZZ-26-0001",
+	"origin": "mako",
+	"submitterName": "George Harrison",
+	"submitterEmail": "george@example.com",
+	"timestamp": 1781113282195
+}
